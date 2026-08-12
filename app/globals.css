@@ -35,8 +35,32 @@
     @apply bg-sounding text-ink-inverse;
   }
 
+  /*
+   * The focus ring, and the surface it is drawn against.
+   *
+   * `ring-offset` was hardcoded to stage-deep everywhere, but focusable things
+   * sit on four different surfaces. On a raised card or a filled bamboo button
+   * the offset painted a near-black gap belonging to some other surface, which
+   * weakened the ring exactly where its contrast has to hold (WCAG 1.4.11).
+   *
+   * The offset is now a variable. A surface that is not the page ground opts in
+   * with `.surface-raised`, declared once here and applied by the components
+   * that draw those surfaces — matching on Tailwind class names instead would
+   * couple this rule to utility strings that are free to change.
+   *
+   * Add a surface, give it the class. Do not reach for a one-off ring.
+   */
+  :root {
+    --ring-offset: theme('colors.stage.deep');
+  }
+
+  .surface-raised {
+    --ring-offset: theme('colors.stage.raised');
+  }
+
   :focus-visible {
-    @apply outline-none ring-2 ring-sounding ring-offset-2 ring-offset-stage-deep;
+    @apply outline-none ring-2 ring-sounding ring-offset-2;
+    --tw-ring-offset-color: var(--ring-offset);
     border-radius: 0.35rem;
   }
 

@@ -97,7 +97,7 @@ export function SegmentedControl<T extends string>({
       <legend className="eyebrow mb-1.5">{label}</legend>
       <div
         className={cx(
-          'inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage-raised p-1',
+          'surface-raised inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage-raised p-1',
           disabled && 'opacity-45',
         )}
       >
@@ -189,7 +189,7 @@ export function Card({
   return (
     <Tag
       className={cx(
-        'rounded-card border border-stage-line bg-stage-raised/80 p-5 shadow-raised backdrop-blur-[2px] sm:p-6',
+        'surface-raised rounded-card border border-stage-line bg-stage-raised/80 p-5 shadow-raised backdrop-blur-[2px] sm:p-6',
         className,
       )}
     >
@@ -213,7 +213,7 @@ export function CardLink({
   return (
     <Link
       href={href}
-      className="group flex flex-col gap-2 rounded-card border border-stage-line bg-stage-raised/80 p-5 shadow-raised transition duration-300 ease-physical hover:-translate-y-0.5 hover:border-bamboo/60 hover:bg-stage-hover hover:shadow-lifted sm:p-6"
+      className="surface-raised group flex flex-col gap-2 rounded-card border border-stage-line bg-stage-raised/80 p-5 shadow-raised transition duration-300 ease-physical hover:-translate-y-0.5 hover:border-bamboo/60 hover:bg-stage-hover hover:shadow-lifted sm:p-6"
     >
       {eyebrow !== undefined ? <span className="eyebrow">{eyebrow}</span> : null}
       <span className="font-display text-step-2 text-ink transition-colors group-hover:text-sounding">
