@@ -158,4 +158,14 @@ The site credits Daeng Soetigna for the 1938 diatonic-chromatic angklung and Udj
 
 ## Current state
 
-M0 — not yet scaffolded. Next: the modal resonator, the three excitation patterns, and the offline render suite. **No UI work until pitch, partials, and onset tests pass and the polyphony benchmark clears.**
+M0–M6 built. 84 tests green; lint and typecheck clean; static export ~100 KB First Load JS per page against the 250 KB budget.
+
+- **M0** — modal resonator, three excitation patterns, offline render suite, purity test that reads the source. `bench:voices` clears 64 simultaneous voices at ~18× realtime on a development machine, which is why the voice budget and buffer pooling in `lib/audio` exist.
+- **M1–M6** — rack, ensemble with three modes, conductor cues, technique lab and the accompaniment chord switch, laras comparison with editable cents, arrangement solver with share links.
+
+**Not yet done, and required before any release touching the audio path: audio startup tested on a real iOS device.** Nothing else in the deployment checklist is outstanding.
+
+Two things worth knowing before changing them:
+
+- The rack diverges from PRD §5.1's click-for-centok wording. Distinguishing a tap from a hold means delaying every note by the tap threshold, and latency on a percussion instrument is worse than a lost shortcut, so the rack has a technique selector plus press-and-hold. The copy describes what it actually does.
+- Kurulung and tengkep are rendered at a fixed six seconds and faded on release, because a shake has no predetermined length. That approximation lives in `lib/audio/voices.ts` and must stay there — not in the model.
