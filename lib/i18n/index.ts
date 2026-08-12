@@ -41,6 +41,8 @@ export interface Dictionary {
     readonly startHere: string
     readonly creditsTitle: string
     readonly creditsBody: string
+    readonly repertoireTitle: string
+    readonly repertoireBody: string
     readonly disclaimer: string
     readonly ritual: string
     readonly visit: string
@@ -176,6 +178,9 @@ const id: Dictionary = {
     creditsTitle: 'Orang-orangnya',
     creditsBody:
       'Daeng Soetigna menciptakan angklung padaeng yang diatonis-kromatis pada 1938, khusus agar angklung bisa bermain bersama alat musik Barat. Udjo Ngalagena mengembangkan teknik permainan di atas laras salendro dan pelog degung.',
+    repertoireTitle: 'Kenapa belum ada lagu Sunda di sini',
+    repertoireBody:
+      'Lagu yang dimuat di sini hanya yang domain publik atau ciptaan sendiri — dan belum ada satu pun lagu rakyat Sunda. Bukan karena hak cipta: Cing Cangkeling dan Tokecang memang tanpa pencipta tercatat. Alasannya ketepatan. Memuat melodi yang keliru dengan nama aslinya adalah penggambaran yang salah terhadap tradisi yang masih hidup, dan menyalin not angka dari satu sumber tanpa pembanding belum cukup untuk memastikannya. Kekosongan ini disengaja dan sebaiknya diisi — syaratnya dicatat di data/melodies/README.md.',
     disclaimer:
       'Ini proyek pribadi untuk belajar, bukan otoritas. Laras dan teknik berbeda-beda antar tradisi dan antar guru; angka yang dipakai di sini disertai sumber dan bisa Anda ubah.',
     ritual:
@@ -318,6 +323,9 @@ const en: Dictionary = {
     creditsTitle: 'The people',
     creditsBody:
       'Daeng Soetigna created the diatonic-chromatic angklung padaeng in 1938, specifically so angklung could play alongside Western instruments. Udjo Ngalagena developed the playing technique on laras salendro and pelog degung.',
+    repertoireTitle: 'Why there is no Sundanese song here yet',
+    repertoireBody:
+      'Only public-domain or own-composition melodies ship, and so far none of them is Sundanese repertoire. Not for copyright reasons: Cing Cangkeling and Tokecang have no recorded composer. The reason is accuracy. Shipping a wrong melody under its real name misrepresents a living tradition, and copying cipher notation from a single unchecked source is not enough to rule that out. The gap is deliberate and ought to be filled — the requirements are written down in data/melodies/README.md.',
     disclaimer:
       'This is a personal educational project, not an authority. Tunings and techniques vary between traditions and between teachers; every figure here carries its source and can be edited.',
     ritual:

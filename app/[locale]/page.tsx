@@ -77,6 +77,11 @@ export default function HomePage({ params }: { params: { locale: string } }) {
         <h2 className="font-display text-3xl text-sounding">{dict.home.creditsTitle}</h2>
         <p className="leading-relaxed text-bamboo/80">{dict.home.creditsBody}</p>
       </section>
+
+      <section className="max-w-3xl space-y-3 border-l-2 border-rattan pl-6">
+        <h2 className="font-display text-2xl text-sounding">{dict.home.repertoireTitle}</h2>
+        <p className="leading-relaxed text-bamboo/70">{dict.home.repertoireBody}</p>
+      </section>
     </div>
   )
 }
