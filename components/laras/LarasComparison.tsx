@@ -30,8 +30,6 @@ import type { Dictionary } from '@/lib/i18n'
  */
 const TOGETHER_KEY = 'bersama'
 
-const SEED = 20250812
-
 export function LarasComparison({ dict }: { dict: Dictionary }) {
   const { play, releaseAll, engine, status } = useAudio()
   const [edits, setEdits] = useState<Record<string, Record<number, number>>>({})
@@ -145,67 +143,78 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
 
   return (
     <div className="space-y-6">
-      <p className="max-w-3xl text-step-0 text-ink-muted">{dict.laras.samePhrase}</p>
+      {/*
+        * Two sections, and the heading levels now say which is which. The three
+        * tuning cards were h2 at step-2 and the comparison that follows them was
+        * h2 at step-3 — the same document level at two ranks, with the sibling
+        * reading as the parent. The cards are h3 under a named section, and the
+        * comparison is the h2 they build towards.
+        */}
+      <section className="space-y-5">
+        <div className="space-y-2">
+          <h2 className="font-display text-step-3">{dict.laras.oneAtATime}</h2>
+          <p className="max-w-3xl text-step-0 text-ink-muted">{dict.laras.samePhrase}</p>
+        </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        {TUNINGS.map((tuning) => {
-          const definition = tuned(tuning)
-          const isPlaying = playingId === tuning.id
-          const degreeIndexes = PENTATONIC_DEGREE_INDEX[tuning.laras]
+        <div className="grid gap-5 lg:grid-cols-3">
+          {TUNINGS.map((tuning) => {
+            const definition = tuned(tuning)
+            const isPlaying = playingId === tuning.id
+            const degreeIndexes = PENTATONIC_DEGREE_INDEX[tuning.laras]
 
-          return (
-            <article
-              key={tuning.id}
-              className="flex flex-col gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5"
-            >
-              <header className="space-y-2">
-                <h2 className="font-display text-step-2 text-sounding">{tuning.name}</h2>
-                <p className="text-step--1 leading-relaxed text-ink-muted">{tuning.description}</p>
-              </header>
-
-              <Button
-                tone="primary"
-                size="sm"
-                className="self-start"
-                disabled={status !== 'siap'}
-                onClick={() => (isPlaying ? stop() : playPhrase(tuning))}
+            return (
+              <article
+                key={tuning.id}
+                className="flex flex-col gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5"
               >
-                {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
-              </Button>
+                <header className="space-y-2">
+                  <h3 className="font-display text-step-2 text-sounding">{tuning.name}</h3>
+                  <p className="text-step--1 leading-relaxed text-ink-muted">{tuning.description}</p>
+                </header>
 
-              <div className="space-y-1">
-                <p className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
-                  {dict.laras.edit}
-                </p>
-                <ul className="space-y-1">
-                  {degreeIndexes.map((degreeIndex) => {
-                    const degree = definition.degrees[degreeIndex]
-                    if (degree === undefined) return null
-                    return (
-                      <li key={degreeIndex} className="flex items-center gap-2 font-mono text-step--1">
-                        <span className="w-10 text-ink-muted">{degree.name}</span>
-                        <NumberInput
-                          step={1}
-                          value={degree.cents}
-                          aria-label={`${degree.name} — ${dict.laras.cents}`}
-                          onChange={(event) =>
-                            setEdits((current) => ({
-                              ...current,
-                              [tuning.id]: {
-                                ...(current[tuning.id] ?? {}),
-                                [degreeIndex]: Number(event.target.value),
-                              },
-                            }))
-                          }
-                          className="w-24 px-2 py-1"
-                        />
-                        <span className="text-ink-faint">{dict.laras.cents}</span>
-                        <span className="tabular-nums text-ink-faint">
-                          {pitchToHz(definition, { degreeIndex, octave: 4 }).toFixed(1)} Hz
-                        </span>
-                      </li>
-                    )
-                  })}
+                <Button
+                  tone="primary"
+                  size="sm"
+                  className="self-start"
+                  disabled={status !== 'siap'}
+                  onClick={() => (isPlaying ? stop() : playPhrase(tuning))}
+                >
+                  {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
+                </Button>
+
+                <div className="space-y-1">
+                  <p className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
+                    {dict.laras.edit}
+                  </p>
+                  <ul className="space-y-1">
+                    {degreeIndexes.map((degreeIndex) => {
+                      const degree = definition.degrees[degreeIndex]
+                      if (degree === undefined) return null
+                      return (
+                        <li key={degreeIndex} className="flex items-center gap-2 font-mono text-step--1">
+                          <span className="w-10 text-ink-muted">{degree.name}</span>
+                          <NumberInput
+                            step={1}
+                            value={degree.cents}
+                            aria-label={`${degree.name} — ${dict.laras.cents}`}
+                            onChange={(event) =>
+                              setEdits((current) => ({
+                                ...current,
+                                [tuning.id]: {
+                                  ...(current[tuning.id] ?? {}),
+                                  [degreeIndex]: Number(event.target.value),
+                                },
+                              }))
+                            }
+                            className="w-24 px-2 py-1"
+                          />
+                          <span className="text-ink-faint">{dict.laras.cents}</span>
+                          <span className="tabular-nums text-ink-faint">
+                            {pitchToHz(definition, { degreeIndex, octave: 4 }).toFixed(1)} Hz
+                          </span>
+                        </li>
+                      )
+                    })}
                 </ul>
                 {edits[tuning.id] !== undefined ? (
                   <Button
@@ -247,7 +256,8 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
             </article>
           )
         })}
-      </div>
+        </div>
+      </section>
 
       {/*
         * Sequential comparison is the friendly version, and it hides the point.

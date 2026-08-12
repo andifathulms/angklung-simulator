@@ -197,6 +197,7 @@ export interface Dictionary {
   readonly laras: {
     readonly title: string
     readonly lede: string
+    readonly oneAtATime: string
     readonly samePhrase: string
     readonly cents: string
     readonly edit: string
@@ -462,6 +463,7 @@ const id: Dictionary = {
   laras: {
     title: 'Laras',
     lede: 'Frasa yang sama, tiga laras. Cara tercepat mendengar kenapa temuan 1938 itu penting — dan kenapa perangkat berlaras satu tidak bisa begitu saja bergabung dengan yang lain.',
+    oneAtATime: 'Satu per satu',
     samePhrase: 'Frasa yang dimainkan sama persis; yang berbeda hanya larasnya.',
     cents: 'sen',
     edit: 'Ubah nilai sen',
@@ -731,6 +733,7 @@ const en: Dictionary = {
   laras: {
     title: 'Laras',
     lede: 'The same phrase, three tunings. The fastest way to hear why the 1938 innovation mattered — and why a set tuned one way cannot simply join an ensemble tuned another.',
+    oneAtATime: 'One at a time',
     samePhrase: 'The phrase is identical; only the laras changes.',
     cents: 'cents',
     edit: 'Edit the cents',
