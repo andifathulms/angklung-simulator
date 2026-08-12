@@ -124,7 +124,7 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
       <div className="rounded-card border border-stage-line bg-stage-raised/70 p-5 shadow-lifted sm:p-7">
         {/* The instrument, drawn to scale. Tube length goes as 1/f, so this is the
             physical logic of the set and not a decorative ramp. */}
-        <div className="flex items-start justify-center gap-1 sm:gap-2.5">
+        <div className="flex items-start justify-center gap-[2px] sm:gap-2">
           {set.map((entry) => {
             const sounding = lit.has(entry.spec.nomor)
             return (
@@ -145,10 +145,14 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
                   })()
                 }}
                 aria-label={`${dict.rak.nomor} ${entry.spec.nomor} — ${entry.spec.label}`}
-                className="group flex flex-col items-center gap-2 rounded-lg p-1 transition-transform duration-200 ease-physical hover:-translate-y-0.5"
+                className="group flex min-w-0 flex-1 flex-col items-center gap-2 rounded-lg p-0.5 transition-transform duration-200 ease-physical hover:-translate-y-0.5 sm:p-1"
               >
                 <span
-                  className={sounding ? 'angklung-sway' : ''}
+                  className={
+                    sounding
+                      ? 'angklung-sway block w-full max-w-[3.375rem]'
+                      : 'block w-full max-w-[3.375rem]'
+                  }
                   style={{ ['--sway-period' as string]: '400ms' }}
                 >
                   <AngklungFigure
@@ -156,6 +160,7 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
                     relativeLength={relativeTubeLength(entry.spec.rootHz, set)}
                     sounding={sounding}
                     tengkep={false}
+                    className="h-auto w-full"
                   />
                 </span>
                 <span

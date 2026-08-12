@@ -22,6 +22,11 @@ export interface AngklungFigureProps {
   readonly relativeLength: number
   readonly sounding: boolean
   readonly tengkep: boolean
+  /**
+   * Let the parent size it. Without this the figure is a fixed 54px, and eight of
+   * them overflow a narrow phone — which is exactly where the hero has to work.
+   */
+  readonly className?: string
 }
 
 export function AngklungFigure({
@@ -29,6 +34,7 @@ export function AngklungFigure({
   relativeLength,
   sounding,
   tengkep,
+  className,
 }: AngklungFigureProps) {
   // Within one angklung, tubes are drawn against each other by 1/f as well, so an
   // octave tube really is half the length of its tabung dasar.
@@ -47,10 +53,9 @@ export function AngklungFigure({
   return (
     <svg
       viewBox={`0 0 ${FRAME_WIDTH} ${FRAME_HEIGHT + 14}`}
-      width={FRAME_WIDTH}
-      height={FRAME_HEIGHT + 14}
+      {...(className === undefined ? { width: FRAME_WIDTH, height: FRAME_HEIGHT + 14 } : {})}
       aria-hidden="true"
-      className="overflow-visible"
+      className={className === undefined ? 'overflow-visible' : `overflow-visible ${className}`}
     >
       {/* Rattan lashing across the top — what the tubes hang from. */}
       <rect x={2} y={0} width={FRAME_WIDTH - 4} height={5} rx={2} className="fill-rattan" />
