@@ -154,6 +154,7 @@ export interface Dictionary {
     readonly absenceBody: string
     readonly absenceHint: string
     readonly restoreAll: string
+    readonly andMore: string
     readonly withAkompanimen: string
     readonly akompanimenOff: string
     readonly akompanimenOn: string
@@ -416,6 +417,7 @@ const id: Dictionary = {
     absenceHint:
       'Nada-nadanya tidak dihapus dari lagu — lagunya tetap utuh, hanya ada lubang di tempat orangnya seharusnya berdiri. Itulah yang terjadi kalau satu orang tidak datang latihan.',
     restoreAll: 'Panggil semuanya kembali',
+    andMore: '+{rest} lagi',
     withAkompanimen: 'Akompanimen',
     akompanimenOff: 'tanpa',
     akompanimenOn: 'dengan',
@@ -686,6 +688,7 @@ const en: Dictionary = {
     absenceHint:
       'The notes are not removed from the piece — the melody is intact, there is simply a hole where a person should have been standing. This is what happens when one person misses a rehearsal.',
     restoreAll: 'Bring everyone back',
+    andMore: '+{rest} more',
     withAkompanimen: 'Accompaniment',
     akompanimenOff: 'without',
     akompanimenOn: 'with',

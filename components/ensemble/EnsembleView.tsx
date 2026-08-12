@@ -35,6 +35,13 @@ const COUNT_IN_CHOICES = [0, 2, 4] as const
  */
 const PER_PLAYER_CHOICES = [2, 1] as const
 
+/**
+ * How many silenced notes are listed one by one before the rest are summarised.
+ * The total is always stated exactly next to the list; only the enumeration is
+ * bounded, and it says how much it left out.
+ */
+const SILENCED_SHOWN = 16
+
 /** The derivation of the minimum, put into words. Data comes from the solver. */
 function describeDriver(driver: MinimumDriver, dict: Dictionary): readonly string[] {
   switch (driver.type) {
@@ -537,8 +544,19 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                   total: absence.totalNotes,
                 })}
               </p>
+              {/*
+                * The enumeration is capped; the count above it never is. Taking
+                * out an accompanist silences twenty-four chords and taking out
+                * the room silences sixty-six, and a list that long stops being
+                * read — which would leave the report reporting nothing.
+                *
+                * What must not be capped is the number. `absenceBody` above
+                * states the exact total against the exact whole, and that is
+                * the part invariant 9 cares about: nothing is silently gone.
+                * This list is evidence, not the finding.
+                */}
               <ul className="flex flex-wrap gap-1.5">
-                {absence.silenced.map((assignment) => (
+                {absence.silenced.slice(0, SILENCED_SHOWN).map((assignment) => (
                   <li
                     key={assignment.note.index}
                     className="rounded border border-dashed border-stage-strong px-2 py-0.5 font-mono text-step--2 text-ink-faint"
@@ -546,6 +564,13 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                     {assignment.angklung.spec.nomor} · {assignment.note.startSec.toFixed(1)}s
                   </li>
                 ))}
+                {absence.silenced.length > SILENCED_SHOWN ? (
+                  <li className="px-1 py-0.5 font-mono text-step--2 text-ink-muted">
+                    {fill(dict.ansambel.andMore, {
+                      rest: absence.silenced.length - SILENCED_SHOWN,
+                    })}
+                  </li>
+                ) : null}
               </ul>
               <p className="max-w-prose text-step--1 leading-relaxed text-ink-faint">
                 {dict.ansambel.absenceHint}
