@@ -439,29 +439,35 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
         <>
           <div className="space-y-4 rounded-card border border-stage-line bg-stage-raised/60 px-6 py-5">
             <div className="flex flex-wrap items-end gap-x-10 gap-y-4">
-              <Stat
-                value={String(minimumPlayers ?? '—')}
-                label={`${dict.ansambel.needs} ${dict.ansambel.player.toLowerCase()}`}
-                tone="sounding"
-                size="lead"
-              />
+              {/*
+                * The lead stat and its explanation are one unit. The button used
+                * to be `ml-auto` against the container, so at some widths it sat
+                * beside the stats and at others it dropped to its own line still
+                * pinned right — detached from the only number it talks about.
+                */}
+              <div className="flex flex-col items-start gap-2">
+                <Stat
+                  value={String(minimumPlayers ?? '—')}
+                  label={`${dict.ansambel.needs} ${dict.ansambel.player.toLowerCase()}`}
+                  tone="sounding"
+                  size="lead"
+                />
+                <Button
+                  tone="secondary"
+                  size="sm"
+                  onClick={() => setShowWhy((current) => !current)}
+                  aria-expanded={showWhy}
+                >
+                  {showWhy ? dict.ansambel.hideWhy : dict.ansambel.whyThisNumber}
+                </Button>
+              </div>
+
               <Stat
                 value={String(ensemble?.totalPlayers ?? 0)}
                 label={dict.ansambel.playersLabel}
               />
               <Stat value={String(melody.notes.length)} label={dict.ansambel.notesCount} />
               <Stat value={`${Math.round(durationSec)}s`} label={melody.title} />
-
-              {/* The headline number is the one figure a visitor cannot check.
-                  This is where it stops being an assertion. */}
-              <button
-                type="button"
-                onClick={() => setShowWhy((current) => !current)}
-                aria-expanded={showWhy}
-                className="ml-auto rounded-full border border-stage-strong px-3.5 py-1.5 text-step--1 text-ink-muted transition duration-200 ease-physical hover:border-bamboo hover:text-ink"
-              >
-                {showWhy ? dict.ansambel.hideWhy : dict.ansambel.whyThisNumber}
-              </button>
             </div>
 
             {showWhy ? (
