@@ -8,7 +8,7 @@ import { useAudio } from '@/components/audio/AudioProvider'
 import { Button, Card, Field, SegmentedControl, Select, Stat } from '@/components/ui'
 import { audioClock, createScheduler, intervalTimer } from '@/lib/audio'
 import type { Scheduler } from '@/lib/audio'
-import { describeInfeasibility, distribute } from '@/lib/distribute'
+import { describeInfeasibility, distribute, reportAbsence } from '@/lib/distribute'
 import type { MinimumDriver, NoteAssignment } from '@/lib/distribute'
 import { MELODIES, getMelody, melodyDurationSec, toTimedNotes } from '@/lib/melody'
 import { buildSet, getSet } from '@/lib/set'
@@ -67,6 +67,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   const [countInBeats, setCountInBeats] = useState<number>(4)
   const [angklungPerPlayer, setAngklungPerPlayer] = useState<number>(2)
   const [showWhy, setShowWhy] = useState(false)
+  const [absentPlayers, setAbsentPlayers] = useState<readonly number[]>([])
 
   const schedulerRef = useRef<Scheduler<NoteAssignment | null> | null>(null)
   const frameRef = useRef<number | null>(null)
@@ -92,6 +93,11 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
   const minimumPlayers = result.type === 'feasible' ? result.minimumPlayers : null
 
+  const absence = useMemo(
+    () => reportAbsence(result, absentPlayers),
+    [result, absentPlayers],
+  )
+
   const yourPart =
     result.type === 'feasible'
       ? (result.players.find((player) => player.playerIndex === yourPlayerIndex) ?? null)
@@ -111,7 +117,13 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   // a distribution it no longer matches.
   useEffect(() => {
     stop()
-  }, [melodyId, playerCount, mode, tempo, countInBeats, angklungPerPlayer, stop])
+  }, [melodyId, playerCount, mode, tempo, countInBeats, angklungPerPlayer, absentPlayers, stop])
+
+  // A distribution the roster no longer matches would leave people marked absent
+  // who do not exist in it.
+  useEffect(() => {
+    setAbsentPlayers([])
+  }, [melodyId, playerCount, angklungPerPlayer])
 
   const start = useCallback(() => {
     if (engine === null || result.type !== 'feasible') return
@@ -139,6 +151,9 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
         }
         if (mode === 'semua-bagian') return
         if (mode === 'bagian-anda' && assignment.playerIndex === yourPlayerIndex) return
+        // Nobody is holding this angklung. The note stays in the distribution and
+        // in the report; it simply has no hands.
+        if (absentPlayers.includes(assignment.playerIndex)) return
         play({
           angklung: assignment.angklung.spec,
           techniqueType: 'kurulung',
@@ -173,7 +188,19 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
       frameRef.current = requestAnimationFrame(followPlayhead)
     }
     frameRef.current = requestAnimationFrame(followPlayhead)
-  }, [beatSec, countInBeats, countInSec, engine, mode, play, result, set, stop, yourPlayerIndex])
+  }, [
+    absentPlayers,
+    beatSec,
+    countInBeats,
+    countInSec,
+    engine,
+    mode,
+    play,
+    result,
+    set,
+    stop,
+    yourPlayerIndex,
+  ])
 
   /** What the conductor is about to signal, from the audio clock's position. */
   const upcoming = useMemo(() => {
@@ -383,27 +410,84 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
             ) : null}
           </div>
 
+          {/*
+            * The cost of an empty chair, itemised. Invariant 9 says the solver
+            * never silently drops a note; a player taken out of the room is not
+            * the solver dropping anything, but the notes still have to be
+            * accounted for or the feature becomes exactly what the invariant
+            * forbids. So they are counted and named here.
+            */}
+          {absence.silenced.length > 0 ? (
+            <section className="rise-in space-y-3 rounded-card border border-stage-strong bg-stage-raised/40 p-5 sm:p-6">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <h2 className="font-display text-step-2 text-ink">{dict.ansambel.absenceTitle}</h2>
+                <button
+                  type="button"
+                  onClick={() => setAbsentPlayers([])}
+                  className="text-step--1 text-bamboo transition hover:text-sounding"
+                >
+                  {dict.ansambel.restoreAll}
+                </button>
+              </div>
+              <p className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
+                {fill(dict.ansambel.absenceBody, {
+                  players: absence.absentPlayers
+                    .map((index) => `${dict.ansambel.player} ${index + 1}`)
+                    .join(', '),
+                  silenced: absence.silenced.length,
+                  total: absence.totalNotes,
+                })}
+              </p>
+              <ul className="flex flex-wrap gap-1.5">
+                {absence.silenced.map((assignment) => (
+                  <li
+                    key={assignment.note.index}
+                    className="rounded border border-dashed border-stage-strong px-2 py-0.5 font-mono text-step--2 text-ink-faint"
+                  >
+                    {assignment.angklung.spec.nomor} · {assignment.note.startSec.toFixed(1)}s
+                  </li>
+                ))}
+              </ul>
+              <p className="max-w-prose text-step--1 leading-relaxed text-ink-faint">
+                {dict.ansambel.absenceHint}
+              </p>
+            </section>
+          ) : null}
+
           <CueLane upcoming={upcoming} beatSec={beatSec} dict={dict} />
 
           <section className="grid gap-6 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
             <ol className="space-y-1">
               {result.players.map((player) => {
                 const isYours = player.playerIndex === yourPlayerIndex
+                const isAbsent = absentPlayers.includes(player.playerIndex)
                 const restShare =
                   1 -
                   player.notes.reduce((total, note) => total + note.durationSec, 0) /
                     Math.max(durationSec, 0.001)
                 return (
-                  <li key={player.playerIndex}>
+                  <li
+                    key={player.playerIndex}
+                    className={[
+                      'flex items-stretch gap-1 rounded-lg border transition duration-200 ease-physical',
+                      isAbsent
+                        ? 'border-dashed border-stage-strong bg-transparent'
+                        : isYours
+                          ? 'border-yourPart bg-yourPart/10'
+                          : 'border-stage-line bg-stage-raised/50 hover:border-bamboo/60 hover:bg-stage-hover',
+                    ].join(' ')}
+                  >
                     <button
                       type="button"
                       onClick={() => setYourPlayerIndex(player.playerIndex)}
                       aria-pressed={isYours}
                       className={[
-                        'flex w-full items-baseline justify-between gap-3 rounded-lg border px-3.5 py-2.5 text-left text-step-0 transition duration-200 ease-physical',
-                        isYours
-                          ? 'border-yourPart bg-yourPart/10 text-yourPart-light'
-                          : 'border-stage-line bg-stage-raised/50 text-ink-muted hover:border-bamboo/60 hover:bg-stage-hover',
+                        'flex min-w-0 flex-1 items-baseline justify-between gap-3 rounded-l-lg px-3.5 py-2.5 text-left text-step-0',
+                        isAbsent
+                          ? 'text-ink-faint line-through decoration-1'
+                          : isYours
+                            ? 'text-yourPart-light'
+                            : 'text-ink-muted',
                       ].join(' ')}
                     >
                       <span className="font-mono">
@@ -418,6 +502,33 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                         {Math.round(restShare * 100)}% {dict.ansambel.rests}
                       </span>
                     </button>
+
+                    {/* Absence is a separate act from choosing whose part is
+                        yours, so it is a separate control rather than a fourth
+                        mode — you can take out a player and still be one. */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setAbsentPlayers((current) =>
+                          current.includes(player.playerIndex)
+                            ? current.filter((index) => index !== player.playerIndex)
+                            : [...current, player.playerIndex],
+                        )
+                      }
+                      aria-pressed={isAbsent}
+                      aria-label={`${isAbsent ? dict.ansambel.bringBack : dict.ansambel.markAbsent} — ${dict.ansambel.player} ${player.playerIndex + 1}`}
+                      title={isAbsent ? dict.ansambel.bringBack : dict.ansambel.markAbsent}
+                      className={[
+                        // Neutral ink, never cue amber: amber is the conductor's
+                        // upcoming signal and nothing else (invariant 12).
+                        'shrink-0 rounded-r-lg px-3 font-mono text-step--1 transition duration-200',
+                        isAbsent
+                          ? 'text-ink hover:text-ink'
+                          : 'text-ink-faint hover:bg-stage-hover hover:text-ink',
+                      ].join(' ')}
+                    >
+                      <span aria-hidden="true">{isAbsent ? '＋' : '−'}</span>
+                    </button>
                   </li>
                 )
               })}
@@ -430,6 +541,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
               yourPlayerIndex={yourPlayerIndex}
               peakSec={showWhy ? result.peak.atSec : null}
               peakNoteIndexes={showWhy ? result.peak.noteIndexes : []}
+              absentPlayers={absentPlayers}
               dict={dict}
             />
           </section>

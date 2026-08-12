@@ -19,6 +19,8 @@ export interface TimelineProps {
   /** The instant that forces the ensemble size, when the visitor asks to see it. */
   readonly peakSec?: number | null
   readonly peakNoteIndexes?: readonly number[]
+  /** Players who are not in the room. Their notes are drawn as the space they leave. */
+  readonly absentPlayers?: readonly number[]
   readonly dict: Dictionary
 }
 
@@ -29,10 +31,12 @@ export function Timeline({
   yourPlayerIndex,
   peakSec = null,
   peakNoteIndexes = [],
+  absentPlayers = [],
   dict,
 }: TimelineProps) {
   const width = Math.max(320, durationSec * PX_PER_SEC + 24)
   const atPeak = new Set(peakNoteIndexes)
+  const missing = new Set(absentPlayers)
 
   return (
     <div className="overflow-x-auto">
@@ -75,6 +79,13 @@ export function Timeline({
         <ol className="relative">
           {players.map((player) => {
             const isYours = player.playerIndex === yourPlayerIndex
+            /*
+             * An absent player's notes are drawn as outlines: the shape of the
+             * note with nothing in it. Not the muted colour, which means a tube
+             * held silent under tengkep and nothing else (invariant 12) — this
+             * is a note nobody is holding, which is a different fact.
+             */
+            const isAbsent = missing.has(player.playerIndex)
             return (
               <li
                 key={player.playerIndex}
@@ -90,7 +101,11 @@ export function Timeline({
                     title={`${note.pitchId} · ${note.startSec.toFixed(2)}s`}
                     className={[
                       'absolute top-1.5 rounded-sm',
-                      isYours ? 'bg-yourPart' : 'bg-bamboo/70',
+                      isAbsent
+                        ? 'border border-dashed border-ink-faint bg-transparent'
+                        : isYours
+                          ? 'bg-yourPart'
+                          : 'bg-bamboo/70',
                       atPeak.has(note.index) ? 'ring-1 ring-ink' : '',
                     ].join(' ')}
                     style={{

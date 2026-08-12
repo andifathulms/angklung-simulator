@@ -135,6 +135,12 @@ export interface Dictionary {
     readonly perPlayerOne: string
     readonly perPlayerTwo: string
     readonly perPlayerHint: string
+    readonly markAbsent: string
+    readonly bringBack: string
+    readonly absenceTitle: string
+    readonly absenceBody: string
+    readonly absenceHint: string
+    readonly restoreAll: string
   }
   readonly teknik: {
     readonly title: string
@@ -358,6 +364,14 @@ const id: Dictionary = {
     perPlayerTwo: 'dua',
     perPlayerHint:
       'Dua tangan, dua angklung — itu batas yang dipakai di sini. Di banyak kelas tiap anak memegang satu, dan jumlah orang yang dibutuhkan pun berubah.',
+    markAbsent: 'Tandai tidak hadir',
+    bringBack: 'Panggil kembali',
+    absenceTitle: 'Ada yang tidak datang',
+    absenceBody:
+      '{players} tidak hadir. {silenced} dari {total} nada tidak ada yang memegang, jadi nada-nada itu tidak berbunyi.',
+    absenceHint:
+      'Nada-nadanya tidak dihapus dari lagu — lagunya tetap utuh, hanya ada lubang di tempat orangnya seharusnya berdiri. Itulah yang terjadi kalau satu orang tidak datang latihan.',
+    restoreAll: 'Panggil semuanya kembali',
   },
   teknik: {
     title: 'Laboratorium teknik',
@@ -586,6 +600,14 @@ const en: Dictionary = {
     perPlayerTwo: 'two',
     perPlayerHint:
       'Two hands, two angklung — that is the limit used here. In many classrooms each child holds exactly one, and the number of people needed changes with it.',
+    markAbsent: 'Mark absent',
+    bringBack: 'Bring back',
+    absenceTitle: 'Somebody did not come',
+    absenceBody:
+      '{players} absent. {silenced} of {total} notes have nobody holding them, so those notes do not sound.',
+    absenceHint:
+      'The notes are not removed from the piece — the melody is intact, there is simply a hole where a person should have been standing. This is what happens when one person misses a rehearsal.',
+    restoreAll: 'Bring everyone back',
   },
   teknik: {
     title: 'Technique lab',

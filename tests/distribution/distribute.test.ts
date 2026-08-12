@@ -6,6 +6,7 @@ import {
   maxSimultaneousNotes,
   partFor,
   peakSimultaneity,
+  reportAbsence,
 } from '@/lib/distribute'
 import { MELODIES, getMelody, toTimedNotes } from '@/lib/melody'
 import { buildSet, getSet } from '@/lib/set'
@@ -365,5 +366,60 @@ describe('the minimum is a property of the piece', () => {
       expect(sized.minimumPlayers).toBe(alone.minimumPlayers)
       expect(sized.players).toHaveLength(playerCount)
     }
+  })
+})
+
+describe('a player who did not come', () => {
+  const melody = getMelody('bintang-kecil')
+  const timed = toTimedNotes(melody)
+  const result = distribute({ notes: timed, set: diatonis })
+
+  it('names every note that now has nobody holding it', () => {
+    if (result.type !== 'feasible') throw new Error('seharusnya bisa dimainkan')
+    const player = result.players[1]
+    expect(player).toBeDefined()
+    if (player === undefined) return
+
+    const report = reportAbsence(result, [1])
+    expect(report.absentPlayers).toEqual([1])
+    expect(report.silenced).toHaveLength(player.notes.length)
+    // Reported, never quietly discarded: every silenced note is a real note of
+    // the melody, and it is still in the distribution.
+    for (const assignment of report.silenced) {
+      expect(assignment.playerIndex).toBe(1)
+      expect(result.assignments).toContain(assignment)
+    }
+    expect(report.totalNotes).toBe(melody.notes.length)
+    expect(report.silencedShare).toBeCloseTo(player.notes.length / melody.notes.length, 10)
+  })
+
+  it('silences nothing when everyone turns up', () => {
+    const report = reportAbsence(result, [])
+    expect(report.silenced).toEqual([])
+    expect(report.silencedShare).toBe(0)
+  })
+
+  it('silences the whole piece when nobody turns up', () => {
+    if (result.type !== 'feasible') throw new Error('seharusnya bisa dimainkan')
+    const everyone = result.players.map((player) => player.playerIndex)
+    const report = reportAbsence(result, everyone)
+    expect(report.silenced).toHaveLength(melody.notes.length)
+    expect(report.silencedShare).toBe(1)
+  })
+
+  it('ignores a repeated or unknown player rather than double-counting', () => {
+    const report = reportAbsence(result, [1, 1, 999])
+    expect(report.absentPlayers).toEqual([1, 999])
+    const indexes = report.silenced.map((assignment) => assignment.note.index)
+    expect(new Set(indexes).size).toBe(indexes.length)
+  })
+
+  it('reports nothing for an arrangement that could not be played anyway', () => {
+    const impossible = distribute({
+      notes: notes([['C7', 0, 1]]),
+      set: diatonis,
+    })
+    expect(impossible.type).toBe('infeasible')
+    expect(reportAbsence(impossible, [0]).silenced).toEqual([])
   })
 })

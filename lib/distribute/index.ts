@@ -418,6 +418,45 @@ function degreeOf(conflicts: readonly boolean[][], index: number): number {
   return (conflicts[index] as boolean[]).reduce((sum, isConflict) => sum + (isConflict ? 1 : 0), 0)
 }
 
+/**
+ * What an absent player costs.
+ *
+ * A rehearsal is not a full room. Someone is ill, someone is late, and the piece
+ * still has to be attempted — so the ensemble view can take a player out and hear
+ * the result. The notes they were holding do not vanish quietly: they come back
+ * here, named, in the same spirit as invariant 9. The solver never drops a note,
+ * and neither does this. It reports one that has nobody to play it.
+ */
+export interface AbsenceReport {
+  readonly absentPlayers: readonly number[]
+  /** The assignments that now have nobody holding them, in melody order. */
+  readonly silenced: readonly NoteAssignment[]
+  readonly totalNotes: number
+  /** Fraction of the piece that goes unplayed, 0–1. */
+  readonly silencedShare: number
+}
+
+export function reportAbsence(
+  result: DistributionResult,
+  absentPlayers: Iterable<number>,
+): AbsenceReport {
+  const absent = [...new Set(absentPlayers)].sort((a, b) => a - b)
+  if (result.type !== 'feasible') {
+    return { absentPlayers: absent, silenced: [], totalNotes: 0, silencedShare: 0 }
+  }
+
+  const missing = new Set(absent)
+  const silenced = result.assignments.filter((assignment) => missing.has(assignment.playerIndex))
+  const totalNotes = result.assignments.length
+
+  return {
+    absentPlayers: absent,
+    silenced,
+    totalNotes,
+    silencedShare: totalNotes === 0 ? 0 : silenced.length / totalNotes,
+  }
+}
+
 /** One player's part, for the play-your-part view. */
 export function partFor(result: DistributionResult, playerIndex: number): PlayerPart | null {
   if (result.type !== 'feasible') return null
