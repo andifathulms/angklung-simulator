@@ -305,18 +305,28 @@ export function Section({
 }
 
 /**
- * A Sundanese term with its plain-language gloss attached. The terms are never
- * translated away (invariant 16), so the interface has to teach them instead —
- * otherwise "tengkep" is just a word an average visitor scrolls past.
+ * A Sundanese term, marked as Sundanese.
+ *
+ * This used to be an <abbr title={gloss}> — a tooltip that appears on hover and
+ * nowhere else. It never appeared on keyboard focus, never appeared on touch at
+ * all, and is announced inconsistently by screen readers, so the one mechanism
+ * meant to teach these words taught them only to people using a mouse. Building
+ * a real tooltip widget would be out of all proportion to a five-word gloss, so
+ * the gloss is visible text at the call sites instead and the tooltip is gone.
+ *
+ * What replaces it is worth more than it was: `lang="su"` tells a screen reader
+ * to pronounce kurulung, centok and tengkep as Sundanese rather than reading
+ * them through Indonesian or English phonetics (WCAG 3.1.2). The dotted
+ * underline stays as the visual mark that this is a term of art.
  */
-export function Term({ term, gloss }: { term: string; gloss: string }) {
+export function Term({ term }: { term: string }) {
   return (
-    <abbr
-      title={gloss}
-      className="cursor-help font-medium text-bamboo-light no-underline decoration-dotted underline-offset-4 [text-decoration-line:underline]"
+    <span
+      lang="su"
+      className="font-medium text-bamboo-light no-underline decoration-dotted underline-offset-4 [text-decoration-line:underline]"
     >
       {term}
-    </abbr>
+    </span>
   )
 }
 

@@ -96,8 +96,9 @@ export default function HomePage({ params }: { params: { locale: string } }) {
         </ol>
       </Section>
 
-      {/* Techniques. Glossed inline, because the Sundanese words are never
-          translated away and so the page has to teach them. */}
+      {/* Techniques. Each card carries the gloss as visible text, because the
+          Sundanese words are never translated away and so the page has to teach
+          them — to everyone, not only to whoever can hover. */}
       <Section title={dict.home.techniquesTitle} description={dict.home.whyBody}>
         <div className="grid gap-5 sm:grid-cols-3">
           {techniques.map((technique) => (
@@ -109,7 +110,7 @@ export default function HomePage({ params }: { params: { locale: string } }) {
         </div>
         <p className="font-mono text-step--1 text-ink-faint">
           {KURULUNG_SHAKE_RATE_RANGE_HZ.minHz}–{KURULUNG_SHAKE_RATE_RANGE_HZ.maxHz} Hz ·{' '}
-          <Term term="kurulung" gloss={dict.teknikDesc.kurulung} />
+          <Term term="kurulung" />
         </p>
       </Section>
 
@@ -118,7 +119,7 @@ export default function HomePage({ params }: { params: { locale: string } }) {
         <div className="max-w-readable space-y-4">
           <p className="eyebrow text-cue-light">{dict.home.tengkepTitle}</p>
           <h2 className="text-step-3">
-            <Term term="Tengkep" gloss={dict.teknikDesc.tengkep} />
+            <Term term="Tengkep" />
           </h2>
           <p className="text-step-1 leading-relaxed text-ink-muted">{dict.home.tengkepBody}</p>
           <ButtonLink href={localePath(locale, '/teknik')} tone="secondary" size="md">

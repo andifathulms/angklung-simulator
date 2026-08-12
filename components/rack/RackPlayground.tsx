@@ -53,7 +53,7 @@ export function RackPlayground({ dict }: { dict: Dictionary }) {
         {/* What the selected technique is, in plain language, right where the
             choice was made rather than in a paragraph further down the page. */}
         <p className="max-w-readable text-step-0 leading-relaxed text-ink-muted">
-          <Term term={dict.teknikNames[technique]} gloss={dict.teknikDesc[technique]} /> —{' '}
+          <Term term={dict.teknikNames[technique]} /> —{' '}
           {dict.teknikDesc[technique]}
         </p>
       </Card>
