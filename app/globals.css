@@ -95,6 +95,47 @@
     @apply border-stage-line bg-stage text-ink;
   }
 
+  /*
+   * A select is the one control browsers still draw themselves.
+   *
+   * Chrome on this palette happens to look close to the rest of the interface;
+   * Safari draws a macOS bevel with its own light background and a double
+   * arrow, so the same markup looked designed in one browser and untouched in
+   * the other. `appearance: none` removes the platform chrome and the chevron
+   * below replaces the arrow, so every select is the same control everywhere.
+   *
+   * The chevron is inline SVG in a data URI: a background-image cannot take
+   * currentColor, so it carries ink-muted directly. If that token changes, this
+   * changes with it.
+   */
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23CDBFA9' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.6rem auto;
+  }
+
+  /* Safari renders option lists with the system palette; this is the one place
+     the stage colours have to be restated or the open list is white. */
+  select option {
+    @apply bg-stage text-ink;
+  }
+
+  /* The spinner Safari and Chrome draw on a number input is platform chrome for
+     a value the cents editor already steps with the keyboard. */
+  input[type='number'] {
+    appearance: textfield;
+    -webkit-appearance: textfield;
+  }
+
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
   input[type='range'] {
     @apply h-1.5 w-full cursor-pointer appearance-none rounded-full bg-stage-line;
   }
