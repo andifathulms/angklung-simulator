@@ -168,31 +168,43 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
           </p>
         </div>
 
-        <div className="grid gap-x-5 gap-y-4 lg:grid-cols-3 lg:grid-rows-[auto_auto_auto_auto]">
+        {/*
+          * Four sections per card — heading, play, cents, source — and the row
+          * shares one set of tracks so all four line up across the three cards.
+          * Changing the number of sections means changing --card-row-rows with
+          * it; see the .card-row comment in globals.css.
+          */}
+        <div className="card-row" style={{ ['--card-row-rows' as string]: 4 }}>
           {TUNINGS.map((tuning) => {
             const definition = tuned(tuning)
             const isPlaying = playingId === tuning.id
             const degreeIndexes = PENTATONIC_DEGREE_INDEX[tuning.laras]
 
             return (
-              <article
+              <div
                 key={tuning.id}
-                className="grid grid-cols-1 content-start gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5 lg:row-span-4 lg:grid-rows-subgrid lg:gap-y-4"
+                className="card-row-card grid grid-cols-1 content-start gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5"
               >
                 <header className="space-y-2">
                   <h3 className="font-display text-step-2 text-sounding">{tuning.name}</h3>
                   <p className="text-step--1 leading-relaxed text-ink-muted">{tuning.description}</p>
                 </header>
 
-                <Button
-                  tone="primary"
-                  size="sm"
-                  className="self-start justify-self-start"
-                  disabled={status !== 'siap'}
-                  onClick={() => (isPlaying ? stop() : playPhrase(tuning))}
-                >
-                  {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
-                </Button>
+                {/*
+                  * Wrapped, because a section of the card carries the card's own
+                  * side padding and a bare Button brings its own — which would
+                  * replace it and sit flush against the border.
+                  */}
+                <div>
+                  <Button
+                    tone="primary"
+                    size="sm"
+                    disabled={status !== 'siap'}
+                    onClick={() => (isPlaying ? stop() : playPhrase(tuning))}
+                  >
+                    {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
+                  </Button>
+                </div>
 
                 <div className="space-y-1">
                   <p className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
@@ -265,7 +277,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                   </a>
                 ))}
               </footer>
-            </article>
+            </div>
           )
         })}
         </div>

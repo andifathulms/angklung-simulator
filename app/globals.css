@@ -155,6 +155,74 @@
 }
 
 @layer components {
+  /*
+   * A row of cards whose internal sections line up with the cards beside them.
+   *
+   * Each card lays itself out independently, so a description one line longer
+   * than its neighbour's pushes only that card's button down and every section
+   * below it drifts out of line. The fix is for all three cards to share one set
+   * of row tracks, so a row is as tall as the tallest card needs and the shorter
+   * ones simply carry blank space.
+   *
+   * `grid-template-rows: subgrid` is the tool designed for exactly this, and it
+   * is not used here: Safari only gained it in 16, and this site is being read in
+   * an older one. Instead each card steps out of the way with `display: contents`
+   * and its sections become items of the row itself, placed column by column.
+   * That needs nothing newer than 2017 grid.
+   *
+   * Two things this asks of the markup:
+   *   - every card must have exactly `--card-row-rows` direct children, since
+   *     each one occupies a track;
+   *   - the card's own border and background are not drawn at this width — the
+   *     card box no longer generates one — so the sections carry the chrome, and
+   *     the vertical rhythm inside a card is padding rather than gap, because a
+   *     row gap would open a stripe of page background across the card's back.
+   */
+  .card-row {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    .card-row {
+      grid-auto-flow: column;
+      grid-template-rows: repeat(var(--card-row-rows, 4), auto);
+      grid-auto-columns: minmax(0, 1fr);
+      column-gap: 1.25rem;
+      row-gap: 0;
+    }
+
+    .card-row > .card-row-card {
+      display: contents;
+    }
+
+    .card-row > .card-row-card > * {
+      background-color: theme('colors.stage.raised');
+      border-left: 1px solid theme('colors.stage.line');
+      border-right: 1px solid theme('colors.stage.line');
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
+
+    .card-row > .card-row-card > *:first-child {
+      border-top: 1px solid theme('colors.stage.line');
+      border-top-left-radius: theme('borderRadius.lg');
+      border-top-right-radius: theme('borderRadius.lg');
+      padding-top: 1.25rem;
+    }
+
+    .card-row > .card-row-card > *:last-child {
+      border-bottom: 1px solid theme('colors.stage.line');
+      border-bottom-left-radius: theme('borderRadius.lg');
+      border-bottom-right-radius: theme('borderRadius.lg');
+      padding-bottom: 1.25rem;
+    }
+
+    .card-row > .card-row-card > * + * {
+      padding-top: 1rem;
+    }
+  }
+
   .eyebrow {
     @apply font-mono text-step--2 uppercase tracking-[0.18em] text-ink-faint;
   }
