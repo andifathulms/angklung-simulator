@@ -204,12 +204,28 @@ export function renderExcitation(
     const startSample = Math.round(strike.timeSec * sampleRateHz)
     if (startSample >= lengthSamples) continue
 
+    /*
+     * The pulse carries unit area, not unit height.
+     *
+     * A resonator responds to the energy delivered at its frequency, so a pulse
+     * normalised to a fixed peak gets louder as it gets wider — which made the
+     * instrument's level depend on the strike hardness, on the pitch, and worst of
+     * all on the device's sample rate, since width is measured in samples. A
+     * 44.1 kHz phone came out quieter than a 48 kHz laptop.
+     *
+     * Normalising the area instead means one strike delivers one unit of impulse
+     * however it is shaped. Hardness still changes the shape, and therefore still
+     * changes the brightness — it just no longer changes the volume by accident.
+     */
+    const area = widthSamples / 2 // sum of the raised cosine over its own width
+    const scale = strike.strength / area
+
     for (let n = 0; n < widthSamples; n += 1) {
       const index = startSample + n
       if (index >= lengthSamples) break
       // Half-cosine window: a smooth impact rather than a digital click.
       const shape = 0.5 * (1 - Math.cos((2 * Math.PI * (n + 0.5)) / widthSamples))
-      buffer[index] += strike.strength * shape
+      buffer[index] += scale * shape
     }
   }
 

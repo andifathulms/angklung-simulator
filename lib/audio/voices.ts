@@ -1,4 +1,4 @@
-import { render, suggestedDurationSec } from '@/lib/synth'
+import { peakOf, render, suggestedDurationSec } from '@/lib/synth'
 import type { AngklungSpec, Mode, Technique, TechniqueType } from '@/lib/synth'
 import type { AudioEngine } from './context'
 
@@ -30,6 +30,24 @@ export const DEFAULT_MAX_VOICES = 28
 
 /** Seeded variants per instrument, so repeated notes are not identical takes. */
 const SEED_VARIANTS = 3
+
+/**
+ * Headroom. The model renders one hard centok at a peak of about 1.3 — a physical
+ * result, not a mistake, since nothing in a resonator knows about full scale. The
+ * decision about how loud that should be is a playback decision, so it lives here.
+ *
+ * At this gain the loudest single note lands near 0.65, which leaves room for an
+ * ensemble to sum before the mix-bus limiter has to do anything.
+ */
+export const VOICE_RENDER_GAIN = 0.5
+
+/**
+ * Last-resort safety, for tuned mode banks from the technique lab: someone can
+ * push a mode's amplitude far past anything the shipped instrument does, and a
+ * buffer well over full scale would clip into the limiter and sound broken. This
+ * only ever scales down, so the shipped instrument is untouched by it.
+ */
+const MAX_BUFFER_PEAK = 0.95
 
 export interface VoiceRequest {
   readonly angklung: AngklungSpec
@@ -135,12 +153,18 @@ export function createVoicePool(
     const base = {
       angklung: request.angklung,
       technique,
-      gain: 1,
+      gain: VOICE_RENDER_GAIN,
       sampleRateHz: engine.context.sampleRate,
       ...(request.modes === undefined ? {} : { modes: request.modes }),
     }
     const durationSec = suggestedDurationSec(base)
     const samples = render({ ...base, durationSec })
+
+    const peak = peakOf(samples)
+    if (peak > MAX_BUFFER_PEAK) {
+      const scale = MAX_BUFFER_PEAK / peak
+      for (let n = 0; n < samples.length; n += 1) samples[n] *= scale
+    }
 
     const buffer = engine.context.createBuffer(1, samples.length, engine.context.sampleRate)
     buffer.copyToChannel(samples, 0)
@@ -149,11 +173,27 @@ export function createVoicePool(
   }
 
   const dropOldest = (atSec: number): void => {
-    // Oldest first, and only ever a voice already ringing out if one exists.
+    // Prefer a voice already ringing out; otherwise the oldest still being held.
     const index = active.findIndex((voice) => voice.released)
     const victim = index >= 0 ? active[index] : active[0]
     if (victim === undefined) return
-    fadeOut(victim, atSec, 0.04)
+
+    /*
+     * Stopped outright rather than through fadeOut, which returns early for a
+     * voice already marked released — and every scheduled note is marked released
+     * the moment it is queued with a duration. Routing the drop through fadeOut
+     * therefore did nothing at all, so the voice budget was not enforced (it has
+     * to be: invariant 14).
+     */
+    const now = Math.max(atSec, engine.context.currentTime)
+    victim.gain.gain.cancelScheduledValues(now)
+    victim.gain.gain.setValueAtTime(victim.gain.gain.value, now)
+    victim.gain.gain.linearRampToValueAtTime(0.0001, now + 0.04)
+    victim.source.stop(now + 0.05)
+    victim.released = true
+
+    const position = active.indexOf(victim)
+    if (position >= 0) active.splice(position, 1)
   }
 
   const fadeOut = (voice: ActiveVoice, atSec: number, fadeSec: number): void => {

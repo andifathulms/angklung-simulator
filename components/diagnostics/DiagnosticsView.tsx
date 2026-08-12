@@ -2,8 +2,15 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import { useAudio } from '@/components/audio/AudioProvider'
-import { deviceReport, measureJitter, measureRenderCost, verdictFor } from '@/lib/audio'
+import {
+  deviceReport,
+  measureJitter,
+  measureRenderCost,
+  playReferenceTone,
+  verdictFor,
+} from '@/lib/audio'
 import type { DeviceReport, JitterResult, RenderCost } from '@/lib/audio'
+import { Button, Card } from '@/components/ui'
 import { buildSet, getSet } from '@/lib/set'
 import type { Dictionary } from '@/lib/i18n'
 
@@ -11,7 +18,7 @@ import type { Dictionary } from '@/lib/i18n'
 const VOICE_STEPS = [8, 16, 24, 32] as const
 
 export function DiagnosticsView({ dict }: { dict: Dictionary }) {
-  const { engine, status, play, releaseAll, now } = useAudio()
+  const { engine, status, play, releaseAll, now, contextState } = useAudio()
   const [device, setDevice] = useState<DeviceReport | null>(null)
   const [cost, setCost] = useState<RenderCost | null>(null)
   const [results, setResults] = useState<readonly JitterResult[]>([])
@@ -76,6 +83,52 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
 
   return (
     <div className="space-y-8">
+      {/* First thing on the page, because "I hear nothing" is the report that
+          needs answering before any measurement is worth taking. */}
+      <Card className="space-y-4 border-bamboo/30">
+        <div className="space-y-1.5">
+          <h2 className="font-display text-step-2 text-sounding">{dict.diagnostik.soundCheck}</h2>
+          <p className="max-w-readable text-step--1 leading-relaxed text-ink-muted">
+            {dict.diagnostik.soundCheckBody}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            tone="primary"
+            disabled={status !== 'siap'}
+            onClick={() => {
+              if (engine !== null) playReferenceTone(engine)
+            }}
+          >
+            <span aria-hidden="true">♪</span>
+            {dict.diagnostik.referenceTone}
+          </Button>
+          <Button
+            disabled={status !== 'siap'}
+            onClick={() => {
+              const first = set[4] ?? set[0]
+              if (first !== undefined) {
+                play({
+                  angklung: first.spec,
+                  techniqueType: 'centok',
+                  hardness: 0.8,
+                  gain: 1,
+                })
+              }
+            }}
+          >
+            {dict.diagnostik.oneAngklung}
+          </Button>
+          {status !== 'siap' ? (
+            <span className="text-step--1 text-cue-light">{dict.diagnostik.bothSilent}</span>
+          ) : (
+            <span className="font-mono text-step--1 text-ink-faint">
+              {contextState ?? '—'} · {engine?.context.sampleRate ?? '—'} Hz
+            </span>
+          )}
+        </div>
+      </Card>
+
       <div className="flex flex-wrap items-center gap-4">
         <button
           type="button"

@@ -36,6 +36,39 @@ export function deviceReport(engine: AudioEngine): DeviceReport {
   }
 }
 
+/**
+ * A plain oscillator, bypassing the synthesis core, the voice pool, and every
+ * buffer in the project. It exists to answer one question when someone reports
+ * hearing nothing: is Web Audio working on this device at all?
+ *
+ * If the reference tone sounds and the instrument does not, the fault is in the
+ * rendered buffer. If neither sounds, the fault is in the context, the output
+ * device, or a silent switch. Without this the two are indistinguishable from a
+ * bug report, and I cannot hold the phone.
+ */
+export function playReferenceTone(engine: AudioEngine, durationSec = 0.7): void {
+  const context = engine.context
+  const at = context.currentTime + 0.02
+
+  const oscillator = context.createOscillator()
+  oscillator.type = 'sine'
+  oscillator.frequency.value = 440
+
+  const gain = context.createGain()
+  // Shaped rather than switched: an abrupt start on a sine is a click.
+  gain.gain.setValueAtTime(0.0001, at)
+  gain.gain.exponentialRampToValueAtTime(0.25, at + 0.02)
+  gain.gain.setValueAtTime(0.25, at + durationSec - 0.06)
+  gain.gain.exponentialRampToValueAtTime(0.0001, at + durationSec)
+
+  // Straight to the destination, past the master and the limiter, so nothing in
+  // this project's own graph can be the reason it is inaudible.
+  oscillator.connect(gain)
+  gain.connect(context.destination)
+  oscillator.start(at)
+  oscillator.stop(at + durationSec + 0.02)
+}
+
 export interface RenderCost {
   readonly angklungId: string
   readonly durationSec: number

@@ -186,6 +186,11 @@ export interface Dictionary {
     readonly copy: string
     readonly copied: string
     readonly silentOk: string
+    readonly soundCheck: string
+    readonly soundCheckBody: string
+    readonly referenceTone: string
+    readonly oneAngklung: string
+    readonly bothSilent: string
   }
   readonly aransemen: {
     readonly title: string
@@ -390,6 +395,12 @@ const id: Dictionary = {
     copy: 'Salin hasil',
     copied: 'Tersalin',
     silentOk: 'Pengukuran ini tetap sahih walau sakelar senyap iPhone menyala: yang diukur adalah beban, bukan bunyinya.',
+    soundCheck: 'Cek suara',
+    soundCheckBody:
+      'Kalau tidak ada yang terdengar, dua tombol ini memisahkan penyebabnya. Nada acuan adalah osilator biasa yang langsung menuju keluaran, melewati seluruh mesin sintesis proyek ini. Kalau nada acuan terdengar tetapi angklungnya tidak, yang salah ada di bunyi yang dihitung. Kalau dua-duanya diam, yang salah ada di konteks audio, perangkat keluaran, atau sakelar senyap.',
+    referenceTone: 'Nada acuan (440 Hz)',
+    oneAngklung: 'Satu angklung',
+    bothSilent: 'Nyalakan suara dulu lewat tombol di kepala halaman.',
   },
   aransemen: {
     title: 'Aransemen',
@@ -593,6 +604,12 @@ const en: Dictionary = {
     copy: 'Copy the results',
     copied: 'Copied',
     silentOk: 'These numbers hold even with the iPhone silent switch on: what is measured is load, not sound.',
+    soundCheck: 'Sound check',
+    soundCheckBody:
+      'If you hear nothing, these two buttons separate the causes. The reference tone is a plain oscillator wired straight to the output, bypassing this project’s synthesis entirely. If the tone sounds and the angklung does not, the fault is in the computed sound. If neither sounds, the fault is in the audio context, the output device, or a silent switch.',
+    referenceTone: 'Reference tone (440 Hz)',
+    oneAngklung: 'One angklung',
+    bothSilent: 'Start sound first, using the control in the header.',
   },
   aransemen: {
     title: 'Arrangement',
