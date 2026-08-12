@@ -168,7 +168,21 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
           </p>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-3">
+        {/*
+          * Four rows, shared across all three cards.
+          *
+          * Each card is its own box with its own content lengths, so the play
+          * button sat at a different height in each one, the cents editors
+          * started at three different places and the sources never lined up.
+          * The eye reads that as three unrelated panels rather than one
+          * comparison.
+          *
+          * grid-rows-subgrid opts each card into the parent's row track, so
+          * heading, button, editor and source line up straight across —
+          * without inventing a fixed height that longer copy would spill out
+          * of. Single column below lg, where there is nothing to align to.
+          */}
+        <div className="grid gap-5 lg:grid-cols-3 lg:grid-rows-[auto_auto_1fr_auto]">
           {TUNINGS.map((tuning) => {
             const definition = tuned(tuning)
             const isPlaying = playingId === tuning.id
@@ -177,7 +191,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
             return (
               <article
                 key={tuning.id}
-                className="flex flex-col gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5"
+                className="surface-raised flex flex-col gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5 lg:row-span-4 lg:grid lg:grid-rows-subgrid lg:gap-4"
               >
                 <header className="space-y-2">
                   <h3 className="font-display text-step-2 text-sounding">{tuning.name}</h3>
@@ -246,7 +260,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                 ) : null}
               </div>
 
-              <footer className="mt-auto space-y-1 border-t border-stage-line pt-3 text-step--2 leading-relaxed text-ink-faint">
+              <footer className="space-y-1 border-t border-stage-line pt-3 text-step--2 leading-relaxed text-ink-faint">
                 <p className="font-mono uppercase tracking-widest">{dict.laras.source}</p>
                 <p>{tuning.source.title}</p>
                 <p>{tuning.source.note}</p>
