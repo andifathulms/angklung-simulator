@@ -64,6 +64,23 @@
     border-radius: 0.35rem;
   }
 
+  /*
+   * Except where the element is only focusable programmatically.
+   *
+   * `tabindex="-1"` means "focus can be moved here, but nobody tabs here" — it
+   * is on <main> so a route change can land focus in the right place. Drawing
+   * the ring there put a gold box-shadow around the entire page column after
+   * every navigation. `outline-none` did not remove it, because a Tailwind ring
+   * is a box-shadow rather than an outline.
+   *
+   * A focus ring answers "where did my keyboard go"; a landmark that receives
+   * focus without being tabbed to is not answering that question.
+   */
+  [tabindex='-1']:focus-visible,
+  [tabindex='-1']:focus {
+    box-shadow: none;
+  }
+
   /* Numbers are the conductor's language here, so they never wobble in width. */
   .font-mono {
     font-variation-settings: 'MONO' 1, 'CASL' 0;
