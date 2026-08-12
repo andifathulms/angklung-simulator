@@ -141,6 +141,13 @@ export interface Dictionary {
     readonly absenceBody: string
     readonly absenceHint: string
     readonly restoreAll: string
+    readonly withAkompanimen: string
+    readonly akompanimenOff: string
+    readonly akompanimenOn: string
+    readonly akompanimenNone: string
+    readonly akompanimenBody: string
+    readonly roleAkompanimen: string
+    readonly akompanimenAdds: string
   }
   readonly teknik: {
     readonly title: string
@@ -381,6 +388,14 @@ const id: Dictionary = {
     absenceHint:
       'Nada-nadanya tidak dihapus dari lagu — lagunya tetap utuh, hanya ada lubang di tempat orangnya seharusnya berdiri. Itulah yang terjadi kalau satu orang tidak datang latihan.',
     restoreAll: 'Panggil semuanya kembali',
+    withAkompanimen: 'Akompanimen',
+    akompanimenOff: 'tanpa',
+    akompanimenOn: 'dengan',
+    akompanimenNone: 'Lagu ini belum punya bagian akompanimen yang bisa dipertanggungjawabkan.',
+    akompanimenBody:
+      'Angklung akompanimen bukan satu nada, melainkan satu akor — empat tabung sekaligus, dan kelingking pemainnya adalah sakelar kualitas akor. Perhatikan barisnya di garis waktu: pemain melodi lebih banyak menunggu, pemain akompanimen hampir tidak pernah berhenti. Dua pekerjaan yang berbeda di ruangan yang sama.',
+    roleAkompanimen: 'akompanimen',
+    akompanimenAdds: 'Iringannya menambah {added} orang lagi, jadi {total} orang di ruangan.',
   },
   teknik: {
     title: 'Laboratorium teknik',
@@ -628,6 +643,14 @@ const en: Dictionary = {
     absenceHint:
       'The notes are not removed from the piece — the melody is intact, there is simply a hole where a person should have been standing. This is what happens when one person misses a rehearsal.',
     restoreAll: 'Bring everyone back',
+    withAkompanimen: 'Accompaniment',
+    akompanimenOff: 'without',
+    akompanimenOn: 'with',
+    akompanimenNone: 'This piece has no accompaniment part that could be defended yet.',
+    akompanimenBody:
+      'An angklung akompanimen is not a note but a chord — four tubes at once, and the player\u2019s little finger is a chord-quality switch. Watch the rows on the timeline: melody players spend most of the piece waiting, accompanists almost never stop. Two different jobs in one room.',
+    roleAkompanimen: 'accompaniment',
+    akompanimenAdds: 'The accompaniment adds {added} more people, so {total} in the room.',
   },
   teknik: {
     title: 'Technique lab',

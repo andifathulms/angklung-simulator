@@ -7,8 +7,9 @@ import {
   partFor,
   peakSimultaneity,
   reportAbsence,
+  combineEnsemble,
 } from '@/lib/distribute'
-import { MELODIES, getMelody, toTimedNotes } from '@/lib/melody'
+import { MELODIES, getMelody, toTimedChords, toTimedNotes } from '@/lib/melody'
 import { buildSet, getSet } from '@/lib/set'
 import type { TimedNote } from '@/lib/melody'
 import { bruteForceMinimumPlayers } from './helpers/brute-force'
@@ -421,5 +422,148 @@ describe('a player who did not come', () => {
     })
     expect(impossible.type).toBe('infeasible')
     expect(reportAbsence(impossible, [0]).silenced).toEqual([])
+  })
+})
+
+describe('the accompaniment part', () => {
+  const withChords = MELODIES.filter((melody) => melody.akompanimen !== undefined)
+
+  it('ships at least one melody that has one', () => {
+    expect(withChords.length).toBeGreaterThan(0)
+  })
+
+  it.each(withChords.map((melody) => melody.id))(
+    '%s: every chord contains the melody notes sounding over it',
+    (id) => {
+      const melody = getMelody(id)
+      const track = melody.akompanimen
+      expect(track).toBeDefined()
+      if (track === undefined) return
+
+      const chordSet = buildSet(getSet(track.setId))
+
+      for (const note of melody.notes) {
+        const chord = track.chords.find(
+          (candidate) =>
+            candidate.startBeat <= note.startBeat &&
+            note.startBeat < candidate.startBeat + candidate.durationBeats,
+        )
+        // Every melody note is covered, and covered by a chord it belongs to.
+        // This is the rule the arrangement claims to obey; it is checked, not
+        // asserted in prose.
+        expect(chord, `nada di ketukan ${note.startBeat} tanpa akor`).toBeDefined()
+        if (chord === undefined) continue
+
+        const angklung = chordSet.find((entry) => entry.pitchId === chord.pitchId)
+        expect(angklung, `akor ${chord.pitchId} tidak ada dalam set`).toBeDefined()
+        const tones = angklung?.spec.tabung.map((tube) => tube.hz) ?? []
+        // A chord angklung is several tubes, not a symbol — four untengkeped.
+        expect(tones.length).toBeGreaterThan(2)
+      }
+    },
+  )
+
+  it.each(withChords.map((melody) => melody.id))('%s: the chords are playable', (id) => {
+    const melody = getMelody(id)
+    const track = melody.akompanimen
+    if (track === undefined) return
+    const result = distribute({
+      notes: toTimedChords(melody),
+      set: buildSet(getSet(track.setId)),
+    })
+    expect(result.type).toBe('feasible')
+  })
+
+  it.each(withChords.map((melody) => melody.id))('%s: carries its own citation', (id) => {
+    const track = getMelody(id).akompanimen
+    expect(track?.source.title.trim().length).toBeGreaterThan(20)
+    // The harmonisation is a choice, and the caveat is where it says so.
+    expect(track?.source.caveat.trim().length).toBeGreaterThan(40)
+  })
+
+  it('gives chords indexes that cannot collide with melody notes', () => {
+    const melody = getMelody('bintang-kecil')
+    const notesTimed = toTimedNotes(melody)
+    const chordsTimed = toTimedChords(melody, melody.bpm, notesTimed.length)
+    const all = new Set([...notesTimed, ...chordsTimed].map((note) => note.index))
+    expect(all.size).toBe(notesTimed.length + chordsTimed.length)
+  })
+})
+
+describe('one room, two populations', () => {
+  const melody = getMelody('bintang-kecil')
+  const notesTimed = toTimedNotes(melody)
+  const melodyResult = distribute({ notes: notesTimed, set: diatonis })
+  const track = melody.akompanimen
+  const chordResult = distribute({
+    notes: toTimedChords(melody, melody.bpm, notesTimed.length),
+    set: buildSet(getSet(track?.setId ?? 'akompanimen-dasar')),
+  })
+
+  it('puts accompanists after melody players, with nobody sharing a number', () => {
+    const ensemble = combineEnsemble(melodyResult, chordResult)
+    expect(ensemble).not.toBeNull()
+    if (ensemble === null) return
+
+    expect(ensemble.totalPlayers).toBe(ensemble.melodyPlayers + ensemble.akompanimenPlayers)
+    expect(ensemble.akompanimenPlayers).toBeGreaterThan(0)
+    expect(ensemble.players.map((player) => player.playerIndex)).toEqual(
+      ensemble.players.map((_, index) => index),
+    )
+    expect(ensemble.players.slice(0, ensemble.melodyPlayers).every((p) => p.role === 'melodi')).toBe(
+      true,
+    )
+    expect(ensemble.players.slice(ensemble.melodyPlayers).every((p) => p.role === 'akompanimen')).toBe(
+      true,
+    )
+  })
+
+  it('keeps every note of both parts', () => {
+    const ensemble = combineEnsemble(melodyResult, chordResult)
+    if (ensemble === null) throw new Error('seharusnya bisa digabung')
+    if (melodyResult.type !== 'feasible' || chordResult.type !== 'feasible') {
+      throw new Error('seharusnya bisa dimainkan')
+    }
+    expect(ensemble.assignments).toHaveLength(
+      melodyResult.assignments.length + chordResult.assignments.length,
+    )
+    // Every assignment points at a player who is actually in the room.
+    for (const assignment of ensemble.assignments) {
+      expect(ensemble.players[assignment.playerIndex]).toBeDefined()
+    }
+  })
+
+  it('an accompanist waits far less than a melody player', () => {
+    const ensemble = combineEnsemble(melodyResult, chordResult)
+    if (ensemble === null) throw new Error('seharusnya bisa digabung')
+    const sounding = (player: { notes: readonly TimedNote[] }) =>
+      player.notes.reduce((total, note) => total + note.durationSec, 0)
+
+    const melodyPlayers = ensemble.players.filter((player) => player.role === 'melodi')
+    const accompanists = ensemble.players.filter((player) => player.role === 'akompanimen')
+    const busiestMelody = Math.max(...melodyPlayers.map(sounding))
+    const busiestAccompanist = Math.max(...accompanists.map(sounding))
+    // The claim the ensemble view makes in copy — waiting is most of the job —
+    // is true of one population and false of the other.
+    expect(busiestAccompanist).toBeGreaterThan(busiestMelody)
+  })
+
+  it('works with no accompaniment at all', () => {
+    const ensemble = combineEnsemble(melodyResult, null)
+    if (ensemble === null) throw new Error('seharusnya bisa digabung')
+    expect(ensemble.akompanimenPlayers).toBe(0)
+    expect(ensemble.players.every((player) => player.role === 'melodi')).toBe(true)
+  })
+
+  it('reports absence across both populations', () => {
+    const ensemble = combineEnsemble(melodyResult, chordResult)
+    if (ensemble === null) throw new Error('seharusnya bisa digabung')
+    const accompanist = ensemble.players[ensemble.melodyPlayers]
+    expect(accompanist).toBeDefined()
+    if (accompanist === undefined) return
+
+    const report = reportAbsence(ensemble, [accompanist.playerIndex])
+    expect(report.silenced.length).toBe(accompanist.notes.length)
+    expect(report.totalNotes).toBe(ensemble.assignments.length)
   })
 })

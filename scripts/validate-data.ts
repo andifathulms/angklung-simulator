@@ -84,6 +84,53 @@ for (const melody of MELODIES) {
       )
     }
   }
+
+  /*
+   * A chord track is an arrangement this project made up, not a transcription it
+   * is repeating, so it is held to the same citation rule as a tuning: it says
+   * where it stops being verified. It also has to cover the melody — a chord
+   * track with a hole in it would let notes play unaccompanied without anyone
+   * deciding that they should.
+   */
+  const track = melody.akompanimen
+  if (track !== undefined) {
+    check(
+      track.source.title.trim().length > 20,
+      `akompanimen ${melody.id}: kutipan sumber terlalu pendek`,
+    )
+    check(
+      track.source.caveat.trim().length > 40,
+      `akompanimen ${melody.id}: catatan keraguan terlalu pendek — iringan adalah pilihan, dan caveat-nya yang mengatakan begitu`,
+    )
+    check(track.chords.length > 0, `akompanimen ${melody.id}: kosong`)
+
+    const chordSet = SETS.find((candidate) => candidate.id === track.setId)
+    if (chordSet === undefined) {
+      problems.push(`akompanimen ${melody.id}: set ${track.setId} tidak ada`)
+    } else {
+      const chordsAvailable = new Set(
+        buildSet(chordSet, getTuning(chordSet.laras)).map((a) => a.pitchId),
+      )
+      for (const chord of track.chords) {
+        check(
+          chordsAvailable.has(chord.pitchId),
+          `akompanimen ${melody.id}: akor ${chord.pitchId} tidak ada dalam set ${track.setId}`,
+        )
+      }
+    }
+
+    for (const note of melody.notes) {
+      const covering = track.chords.find(
+        (chord) =>
+          chord.startBeat <= note.startBeat &&
+          note.startBeat < chord.startBeat + chord.durationBeats,
+      )
+      check(
+        covering !== undefined,
+        `akompanimen ${melody.id}: nada di ketukan ${note.startBeat} tidak tertutup akor mana pun`,
+      )
+    }
+  }
 }
 
 // Invariant 2: no sampled audio, ever.

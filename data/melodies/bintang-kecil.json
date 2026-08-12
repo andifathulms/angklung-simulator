@@ -223,5 +223,135 @@
       "startBeat": 46,
       "durationBeats": 2
     }
-  ]
+  ],
+  "akompanimen": {
+    "setId": "akompanimen-dasar",
+    "source": {
+      "title": "Iringan I–IV–V untuk “Ah! vous dirai-je, maman” — aransemen proyek ini",
+      "note": "Satu akor per setengah birama. Aturannya satu dan bisa diperiksa: setiap nada melodi yang berbunyi di atas sebuah akor adalah nada akor itu sendiri. Hanya memakai enam akor yang ada dalam set akompanimen-dasar.",
+      "caveat": "Ini aransemen, bukan kutipan. Melodinya domain publik dan tidak diragukan; pembagian akornya adalah pilihan proyek ini, satu di antara banyak iringan yang sama sahihnya. Tidak ada sumber Sunda maupun sumber angklung yang menetapkan iringan ini — yang dikutip hanyalah susunan akor angklung akompanimen itu sendiri, di data/sets/akompanimen-dasar.json. Jangan membacanya sebagai cara baku mengiringi lagu ini."
+    },
+    "chords": [
+      {
+        "pitchId": "C3",
+        "startBeat": 0,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 2,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "F3",
+        "startBeat": 4,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 6,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "F3",
+        "startBeat": 8,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 10,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "G3",
+        "startBeat": 12,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 14,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 16,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "F3",
+        "startBeat": 18,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 20,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "G3",
+        "startBeat": 22,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 24,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "F3",
+        "startBeat": 26,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 28,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "G3",
+        "startBeat": 30,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 32,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 34,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "F3",
+        "startBeat": 36,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 38,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "F3",
+        "startBeat": 40,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 42,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "G3",
+        "startBeat": 44,
+        "durationBeats": 2
+      },
+      {
+        "pitchId": "C3",
+        "startBeat": 46,
+        "durationBeats": 2
+      }
+    ]
+  }
 }

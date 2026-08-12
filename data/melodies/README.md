@@ -42,3 +42,45 @@ Yang dibutuhkan sebelum sebuah melodi masuk:
 ```
 
 Daftarkan berkasnya di `lib/melody/index.ts`, lalu jalankan `pnpm data:validate` dan `pnpm test:distribution`.
+
+## Bagian akompanimen (`akompanimen`)
+
+Opsional, dan sengaja opsional. Satu-satunya lagu yang punya bagian ini sekarang
+adalah `bintang-kecil.json`.
+
+Menyusun iringan itu **membuat aransemen, bukan menyalin sumber**. Melodinya bisa
+saja domain publik dan tidak diragukan sedikit pun, sementara pembagian akornya
+tetap sebuah pilihan — satu di antara banyak yang sama sahihnya. Karena itu blok
+`akompanimen` membawa `source` sendiri, terpisah dari `source` milik melodi, dan
+`caveat`-nya harus mengatakan bahwa iringan itu pilihan proyek ini.
+
+Aturan yang dipegang dan diperiksa mesin (`pnpm data:validate` dan
+`pnpm test:distribution`):
+
+1. Setiap nada melodi tertutup oleh satu akor.
+2. Setiap akor ada di dalam set yang ditunjuk `setId`.
+3. `source.title` dan `source.caveat` terisi cukup panjang.
+
+Ada satu aturan lagi yang dipegang untuk `bintang-kecil` dan **belum** dipaksakan
+lewat validator: setiap nada melodi yang berbunyi di atas sebuah akor adalah nada
+akor itu sendiri. Aturan itu bisa dipenuhi untuk lagu ini; untuk lagu lain belum
+tentu. `frere-jacques.json` misalnya — sebagai lagu kanon, iringan lazimnya satu
+akor tonika sepanjang lagu, dan di atas akor itu ada nada lewat (D, F, A) yang
+bukan nada akor. Iringan seperti itu benar secara praktik, tetapi melanggar
+aturan di atas, jadi lagu itu belum diberi bagian akompanimen sampai ada cara
+menyatakan nada lewat secara jujur di dalam data.
+
+Menambahkan iringan asal-asalan lebih buruk daripada tidak menambahkannya, dengan
+alasan yang sama seperti tidak adanya lagu rakyat Sunda di sini.
+
+```json
+"akompanimen": {
+  "setId": "akompanimen-dasar",
+  "source": {
+    "title": "sebut ini aransemen, bukan kutipan",
+    "note": "aturan apa yang dipakai membagi akornya",
+    "caveat": "bahwa ini pilihan, dan sumber apa yang tidak menetapkannya"
+  },
+  "chords": [{ "pitchId": "C3", "startBeat": 0, "durationBeats": 2 }]
+}
+```

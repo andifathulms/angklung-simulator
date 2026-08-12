@@ -8,9 +8,14 @@ import { useAudio } from '@/components/audio/AudioProvider'
 import { Button, Card, Field, SegmentedControl, Select, Stat } from '@/components/ui'
 import { audioClock, createScheduler, intervalTimer } from '@/lib/audio'
 import type { Scheduler } from '@/lib/audio'
-import { describeInfeasibility, distribute, reportAbsence } from '@/lib/distribute'
+import {
+  combineEnsemble,
+  describeInfeasibility,
+  distribute,
+  reportAbsence,
+} from '@/lib/distribute'
 import type { MinimumDriver, NoteAssignment } from '@/lib/distribute'
-import { MELODIES, getMelody, melodyDurationSec, toTimedNotes } from '@/lib/melody'
+import { MELODIES, getMelody, melodyDurationSec, toTimedChords, toTimedNotes } from '@/lib/melody'
 import { buildSet, getSet } from '@/lib/set'
 import { fill } from '@/lib/i18n'
 import type { Dictionary } from '@/lib/i18n'
@@ -68,6 +73,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   const [angklungPerPlayer, setAngklungPerPlayer] = useState<number>(2)
   const [showWhy, setShowWhy] = useState(false)
   const [absentPlayers, setAbsentPlayers] = useState<readonly number[]>([])
+  const [withAkompanimen, setWithAkompanimen] = useState(false)
 
   const schedulerRef = useRef<Scheduler<NoteAssignment | null> | null>(null)
   const frameRef = useRef<number | null>(null)
@@ -93,15 +99,38 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
   const minimumPlayers = result.type === 'feasible' ? result.minimumPlayers : null
 
+  /*
+   * The accompaniment is solved by the same call as the melody, because it is the
+   * same problem: one instrument sounding one thing, one pair of hands that has
+   * to be free. Only the set and the track differ.
+   */
+  const hasAkompanimen = melody.akompanimen !== undefined
+  const chordSet = useMemo(
+    () =>
+      melody.akompanimen === undefined ? null : buildSet(getSet(melody.akompanimen.setId)),
+    [melody.akompanimen],
+  )
+  const chordResult = useMemo(() => {
+    if (chordSet === null || !withAkompanimen) return null
+    return distribute({
+      notes: toTimedChords(melody, tempo, notes.length),
+      set: chordSet,
+      maxAngklungPerPlayer: angklungPerPlayer,
+    })
+  }, [chordSet, withAkompanimen, melody, tempo, notes.length, angklungPerPlayer])
+
+  const ensemble = useMemo(
+    () => combineEnsemble(result, chordResult),
+    [result, chordResult],
+  )
+
   const absence = useMemo(
-    () => reportAbsence(result, absentPlayers),
-    [result, absentPlayers],
+    () => reportAbsence(ensemble ?? result, absentPlayers),
+    [ensemble, result, absentPlayers],
   )
 
   const yourPart =
-    result.type === 'feasible'
-      ? (result.players.find((player) => player.playerIndex === yourPlayerIndex) ?? null)
-      : null
+    ensemble?.players.find((player) => player.playerIndex === yourPlayerIndex) ?? null
 
   const stop = useCallback(() => {
     schedulerRef.current?.stop()
@@ -117,16 +146,31 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   // a distribution it no longer matches.
   useEffect(() => {
     stop()
-  }, [melodyId, playerCount, mode, tempo, countInBeats, angklungPerPlayer, absentPlayers, stop])
+  }, [
+    melodyId,
+    playerCount,
+    mode,
+    tempo,
+    countInBeats,
+    angklungPerPlayer,
+    absentPlayers,
+    withAkompanimen,
+    stop,
+  ])
 
   // A distribution the roster no longer matches would leave people marked absent
-  // who do not exist in it.
+  // who do not exist in it, and "you" pointing at a chair that is gone.
   useEffect(() => {
     setAbsentPlayers([])
-  }, [melodyId, playerCount, angklungPerPlayer])
+    setYourPlayerIndex(0)
+  }, [melodyId, playerCount, angklungPerPlayer, withAkompanimen])
+
+  useEffect(() => {
+    if (!hasAkompanimen) setWithAkompanimen(false)
+  }, [hasAkompanimen])
 
   const start = useCallback(() => {
-    if (engine === null || result.type !== 'feasible') return
+    if (engine === null || ensemble === null) return
     stop()
 
     const scheduler = createScheduler<NoteAssignment | null>({
@@ -154,12 +198,15 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
         // Nobody is holding this angklung. The note stays in the distribution and
         // in the report; it simply has no hands.
         if (absentPlayers.includes(assignment.playerIndex)) return
+        // An angklung akompanimen is four tubes against a melody angklung's two,
+        // so at equal gain it buries the tune. Accompaniment sits under.
+        const isAkompanimen = assignment.playerIndex >= ensemble.melodyPlayers
         play({
           angklung: assignment.angklung.spec,
           techniqueType: 'kurulung',
           atSec: audioTimeSec,
           durationSec: assignment.note.durationSec,
-          gain: 0.55,
+          gain: isAkompanimen ? 0.3 : 0.55,
         })
       },
       onFinished: () => {
@@ -174,7 +221,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
         timeSec: beat * beatSec,
         payload: null,
       })),
-      ...result.assignments.map((assignment) => ({
+      ...ensemble.assignments.map((assignment) => ({
         timeSec: countInSec + assignment.note.startSec,
         payload: assignment,
       })),
@@ -194,9 +241,9 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
     countInBeats,
     countInSec,
     engine,
+    ensemble,
     mode,
     play,
-    result,
     set,
     stop,
     yourPlayerIndex,
@@ -204,13 +251,13 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
   /** What the conductor is about to signal, from the audio clock's position. */
   const upcoming = useMemo(() => {
-    if (result.type !== 'feasible' || positionSec === null) return []
+    if (ensemble === null || positionSec === null) return []
     const relevant =
       mode === 'bagian-anda'
-        ? result.assignments.filter(
+        ? ensemble.assignments.filter(
             (assignment) => assignment.playerIndex === yourPlayerIndex,
           )
-        : result.assignments
+        : ensemble.assignments
     return relevant
       .map((assignment) => ({
         assignment,
@@ -218,7 +265,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
       }))
       .filter((entry) => entry.inSec >= -0.05 && entry.inSec < beatSec * 6)
       .slice(0, 6)
-  }, [beatSec, countInSec, mode, positionSec, result, yourPlayerIndex])
+  }, [beatSec, countInSec, ensemble, mode, positionSec, yourPlayerIndex])
 
   const cuedNumber =
     upcoming.find((entry) => entry.inSec <= beatSec * CUE_LEAD_BEATS)?.assignment.angklung.spec
@@ -261,6 +308,34 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
             ))}
           </select>
         </label>
+
+        {/*
+          * The second population. Off by default so the headline number stays
+          * the one the home page demonstrated — and so that turning it on, and
+          * watching the room grow, is something the visitor does rather than
+          * something they arrive to.
+          */}
+        <fieldset className="min-w-0" disabled={!hasAkompanimen}>
+          <legend className="eyebrow mb-1.5">{dict.ansambel.withAkompanimen}</legend>
+          <div className="inline-flex gap-1 rounded-full border border-stage-line bg-stage p-1 disabled:opacity-40">
+            {[false, true].map((on) => (
+              <button
+                key={String(on)}
+                type="button"
+                onClick={() => setWithAkompanimen(on)}
+                aria-pressed={withAkompanimen === on}
+                disabled={!hasAkompanimen}
+                className={
+                  withAkompanimen === on
+                    ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
+                    : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50'
+                }
+              >
+                {on ? dict.ansambel.akompanimenOn : dict.ansambel.akompanimenOff}
+              </button>
+            ))}
+          </div>
+        </fieldset>
 
         {/*
           * The two-hands assumption, which was a constant in the solver and
@@ -347,7 +422,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
         <button
           type="button"
-          disabled={status !== 'siap' || result.type !== 'feasible'}
+          disabled={status !== 'siap' || ensemble === null}
           onClick={() => (isPlaying ? stop() : start())}
           className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
         >
@@ -382,7 +457,10 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                 label={`${dict.ansambel.needs} ${dict.ansambel.player.toLowerCase()}`}
                 tone="sounding"
               />
-              <Stat value={String(result.players.length)} label={dict.ansambel.playersLabel} />
+              <Stat
+                value={String(ensemble?.totalPlayers ?? 0)}
+                label={dict.ansambel.playersLabel}
+              />
               <Stat value={String(melody.notes.length)} label={dict.ansambel.notesCount} />
               <Stat value={`${Math.round(durationSec)}s`} label={melody.title} />
 
@@ -409,6 +487,33 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
               </div>
             ) : null}
           </div>
+
+          {/*
+            * What the second population costs and what it teaches. The chord
+            * angklung has been a solo exhibit in the technique lab; here it is
+            * a person standing in a room with a different job from everyone
+            * else's, and the timeline shows the difference better than prose.
+            */}
+          {withAkompanimen && ensemble !== null && ensemble.akompanimenPlayers > 0 ? (
+            <section className="rise-in space-y-2 rounded-card border border-bamboo/30 bg-bamboo/[0.05] p-5 sm:p-6">
+              <p className="text-step-0 leading-relaxed text-ink">
+                {fill(dict.ansambel.akompanimenAdds, {
+                  added: ensemble.akompanimenPlayers,
+                  total: ensemble.totalPlayers,
+                })}
+              </p>
+              <p className="max-w-readable text-step-0 leading-relaxed text-ink-muted">
+                {dict.ansambel.akompanimenBody}
+              </p>
+              <p className="max-w-readable text-step--1 leading-relaxed text-ink-faint">
+                {melody.akompanimen?.source.caveat}
+              </p>
+            </section>
+          ) : null}
+
+          {!hasAkompanimen ? (
+            <p className="text-step--1 text-ink-faint">{dict.ansambel.akompanimenNone}</p>
+          ) : null}
 
           {/*
             * The cost of an empty chair, itemised. Invariant 9 says the solver
@@ -458,7 +563,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
           <section className="grid gap-6 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
             <ol className="space-y-1">
-              {result.players.map((player) => {
+              {(ensemble?.players ?? []).map((player) => {
                 const isYours = player.playerIndex === yourPlayerIndex
                 const isAbsent = absentPlayers.includes(player.playerIndex)
                 const restShare =
@@ -490,8 +595,13 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                             : 'text-ink-muted',
                       ].join(' ')}
                     >
-                      <span className="font-mono">
+                      <span className="flex min-w-0 items-baseline gap-2 font-mono">
                         {dict.ansambel.player} {player.playerIndex + 1}
+                        {player.role === 'akompanimen' ? (
+                          <span className="shrink-0 rounded-full border border-stage-strong px-1.5 text-step--2 uppercase tracking-wider text-ink-faint">
+                            {dict.ansambel.roleAkompanimen}
+                          </span>
+                        ) : null}
                       </span>
                       <span className="font-mono text-step--1">
                         {player.angklung.length === 0
@@ -535,7 +645,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
             </ol>
 
             <Timeline
-              players={result.players}
+              players={ensemble?.players ?? []}
               durationSec={durationSec}
               positionSec={positionSec}
               yourPlayerIndex={yourPlayerIndex}

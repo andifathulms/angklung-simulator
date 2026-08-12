@@ -23,6 +23,31 @@ export interface MelodyNote {
   readonly durationBeats: number
 }
 
+/**
+ * A chord in the accompaniment part, identified by the root pitch of the
+ * angklung akompanimen that plays it — the set entry carries the chord quality.
+ */
+export interface MelodyChord {
+  readonly pitchId: string
+  readonly startBeat: number
+  readonly durationBeats: number
+}
+
+/**
+ * The accompaniment part, when a melody has one.
+ *
+ * Optional on purpose. Harmonising a melody is an arrangement decision, not a
+ * transcription, so a chord track is a claim this project is making rather than
+ * one it is repeating — and it carries its own citation separate from the
+ * melody's, because the melody may be beyond doubt while the harmonisation is a
+ * choice. A melody with no defensible chord track ships without one.
+ */
+export interface AkompanimenTrack {
+  readonly setId: string
+  readonly source: TuningSource
+  readonly chords: readonly MelodyChord[]
+}
+
 export interface Melody {
   readonly id: string
   readonly title: string
@@ -34,6 +59,7 @@ export interface Melody {
   readonly bpm: number
   readonly beatsPerBar: number
   readonly notes: readonly MelodyNote[]
+  readonly akompanimen?: AkompanimenTrack
 }
 
 export const MELODIES: readonly Melody[] = [
@@ -69,6 +95,33 @@ export function toTimedNotes(melody: Melody, bpm: number = melody.bpm): readonly
     startSec: note.startBeat * secPerBeat,
     durationSec: note.durationBeats * secPerBeat,
     index,
+  }))
+}
+
+/**
+ * The accompaniment part placed in time.
+ *
+ * Chords come out as `TimedNote` — the same shape the melody uses — because they
+ * are the same problem. An angklung akompanimen is one instrument sounding one
+ * thing at a time, held by one person who must be free when it arrives, so the
+ * distribution solver does not need to know it is looking at chords.
+ *
+ * `indexOffset` keeps chord indexes from colliding with melody indexes once the
+ * two parts share a room.
+ */
+export function toTimedChords(
+  melody: Melody,
+  bpm: number = melody.bpm,
+  indexOffset = 0,
+): readonly TimedNote[] {
+  const track = melody.akompanimen
+  if (track === undefined) return []
+  const secPerBeat = 60 / bpm
+  return track.chords.map((chord, index) => ({
+    pitchId: chord.pitchId,
+    startSec: chord.startBeat * secPerBeat,
+    durationSec: chord.durationBeats * secPerBeat,
+    index: indexOffset + index,
   }))
 }
 

@@ -419,6 +419,79 @@ function degreeOf(conflicts: readonly boolean[][], index: number): number {
 }
 
 /**
+ * Which population a player belongs to.
+ *
+ * A real angklung ensemble is two kinds of job. A melody player holds one or two
+ * notes and spends most of the piece waiting. An accompanist holds one chord and
+ * plays almost continuously — and their little finger is a chord-quality switch
+ * (PRD §2). "Waiting is most of the job" is true of the first and false of the
+ * second, and an ensemble view with only melody players teaches half a room.
+ */
+export type PlayerRole = 'melodi' | 'akompanimen'
+
+export interface RosterPlayer extends PlayerPart {
+  readonly role: PlayerRole
+}
+
+/**
+ * Two distributions standing in one room.
+ *
+ * The accompaniment is solved by the same `distribute` as the melody, because it
+ * is the same constraint problem — one instrument, one thing at a time, one pair
+ * of hands that has to be free. Combining is only re-indexing: accompanists sit
+ * after melody players so the roster is one list and one person is one number.
+ */
+export interface Ensemble {
+  readonly players: readonly RosterPlayer[]
+  readonly assignments: readonly NoteAssignment[]
+  readonly melodyPlayers: number
+  readonly akompanimenPlayers: number
+  readonly totalPlayers: number
+}
+
+export function combineEnsemble(
+  melody: DistributionResult,
+  akompanimen: DistributionResult | null,
+): Ensemble | null {
+  if (melody.type !== 'feasible') return null
+  if (akompanimen !== null && akompanimen.type !== 'feasible') return null
+
+  const melodyPlayers: RosterPlayer[] = melody.players.map((player) => ({
+    ...player,
+    role: 'melodi',
+  }))
+
+  if (akompanimen === null) {
+    return {
+      players: melodyPlayers,
+      assignments: melody.assignments,
+      melodyPlayers: melodyPlayers.length,
+      akompanimenPlayers: 0,
+      totalPlayers: melodyPlayers.length,
+    }
+  }
+
+  const offset = melodyPlayers.length
+  const akompanimenPlayers: RosterPlayer[] = akompanimen.players.map((player) => ({
+    ...player,
+    playerIndex: player.playerIndex + offset,
+    role: 'akompanimen',
+  }))
+  const akompanimenAssignments = akompanimen.assignments.map((assignment) => ({
+    ...assignment,
+    playerIndex: assignment.playerIndex + offset,
+  }))
+
+  return {
+    players: [...melodyPlayers, ...akompanimenPlayers],
+    assignments: [...melody.assignments, ...akompanimenAssignments],
+    melodyPlayers: melodyPlayers.length,
+    akompanimenPlayers: akompanimenPlayers.length,
+    totalPlayers: melodyPlayers.length + akompanimenPlayers.length,
+  }
+}
+
+/**
  * What an absent player costs.
  *
  * A rehearsal is not a full room. Someone is ill, someone is late, and the piece
@@ -437,17 +510,18 @@ export interface AbsenceReport {
 }
 
 export function reportAbsence(
-  result: DistributionResult,
+  source: DistributionResult | Ensemble,
   absentPlayers: Iterable<number>,
 ): AbsenceReport {
   const absent = [...new Set(absentPlayers)].sort((a, b) => a - b)
-  if (result.type !== 'feasible') {
+  // An Ensemble is always feasible by construction; a DistributionResult is not.
+  if ('type' in source && source.type !== 'feasible') {
     return { absentPlayers: absent, silenced: [], totalNotes: 0, silencedShare: 0 }
   }
 
   const missing = new Set(absent)
-  const silenced = result.assignments.filter((assignment) => missing.has(assignment.playerIndex))
-  const totalNotes = result.assignments.length
+  const silenced = source.assignments.filter((assignment) => missing.has(assignment.playerIndex))
+  const totalNotes = source.assignments.length
 
   return {
     absentPlayers: absent,
