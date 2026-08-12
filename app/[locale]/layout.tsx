@@ -1,7 +1,8 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AudioProvider } from '@/components/audio/AudioProvider'
 import { SiteNav } from '@/components/SiteNav'
-import { LOCALES, getDictionary, isLocale } from '@/lib/i18n'
+import { LOCALES, getDictionary, isLocale, localePath } from '@/lib/i18n'
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
@@ -37,6 +38,14 @@ export default function LocaleLayout({
                 Saung Angklung Udjo
               </a>{' '}
               — {dict.home.visit}
+            </p>
+            <p>
+              <Link
+                className="underline decoration-rattan underline-offset-4 hover:text-sounding"
+                href={localePath(params.locale, '/diagnostik')}
+              >
+                {dict.diagnostik.title}
+              </Link>
             </p>
           </div>
         </footer>

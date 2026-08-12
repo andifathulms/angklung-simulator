@@ -134,6 +134,23 @@ export interface Dictionary {
     readonly notAuthority: string
     readonly source: string
   }
+  readonly diagnostik: {
+    readonly title: string
+    readonly lede: string
+    readonly device: string
+    readonly renderCost: string
+    readonly run: string
+    readonly running: string
+    readonly voices: string
+    readonly medianLate: string
+    readonly worstLate: string
+    readonly missed: string
+    readonly verdict: string
+    readonly explain: string
+    readonly copy: string
+    readonly copied: string
+    readonly silentOk: string
+  }
   readonly aransemen: {
     readonly title: string
     readonly lede: string
@@ -281,6 +298,24 @@ const id: Dictionary = {
       'Salendro dan pelog degung tidak punya standar baku dan berbeda antar perangkat. Angka di sini satu set terdokumentasi, bukan satu-satunya yang benar.',
     source: 'Sumber',
   },
+  diagnostik: {
+    title: 'Diagnostik',
+    lede: 'Halaman ini mengukur perangkat yang sedang Anda pegang. Tolok ukur di Node mengukur inti sintesisnya; yang menentukan justru apakah utas utama peramban masih sempat berjalan ketika ansambelnya ramai — karena utas itulah yang menjadwalkan nada berikutnya.',
+    device: 'Perangkat',
+    renderCost: 'Biaya render satu nada',
+    run: 'Jalankan pengukuran',
+    running: 'Mengukur…',
+    voices: 'suara serentak',
+    medianLate: 'keterlambatan tengah',
+    worstLate: 'keterlambatan terburuk',
+    missed: 'bangun terlambat melewati lookahead',
+    verdict: 'Hasil',
+    explain:
+      'Penjadwal melihat 200 ms ke depan. Kalau satu bangun datang lebih dari 200 ms terlambat, nada yang seharusnya dia antrikan sudah lewat — itulah bunyi nada yang hilang, dan bisa diukur tanpa perlu mendengarkan.',
+    copy: 'Salin hasil',
+    copied: 'Tersalin',
+    silentOk: 'Pengukuran ini tetap sahih walau sakelar senyap iPhone menyala: yang diukur adalah beban, bukan bunyinya.',
+  },
   aransemen: {
     title: 'Aransemen',
     lede: 'Masukkan melodi, pilih set dan jumlah pemain, lihat pembagiannya — dan lihat apa yang tidak bisa dimainkan.',
@@ -426,6 +461,24 @@ const en: Dictionary = {
     notAuthority:
       'Salendro and pelog degung have no fixed standard and vary between sets. These are one documented interval set, not the only correct one.',
     source: 'Source',
+  },
+  diagnostik: {
+    title: 'Diagnostics',
+    lede: 'This page measures the device in your hand. The Node benchmark measures the synthesis core; what decides the outcome is whether the browser main thread still gets to run while the ensemble is loud — because that thread is what schedules the next note.',
+    device: 'Device',
+    renderCost: 'Cost of rendering one note',
+    run: 'Run the measurement',
+    running: 'Measuring…',
+    voices: 'simultaneous voices',
+    medianLate: 'median lateness',
+    worstLate: 'worst lateness',
+    missed: 'wakeups later than the lookahead',
+    verdict: 'Verdict',
+    explain:
+      'The scheduler looks 200 ms ahead. A wakeup arriving more than 200 ms late means a note it should have queued is already in the past — that is what a dropped note sounds like, and it is measurable without listening.',
+    copy: 'Copy the results',
+    copied: 'Copied',
+    silentOk: 'These numbers hold even with the iPhone silent switch on: what is measured is load, not sound.',
   },
   aransemen: {
     title: 'Arrangement',
