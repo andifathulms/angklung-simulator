@@ -2,7 +2,7 @@
   "name": "angklung-simulator",
   "version": "0.1.0",
   "private": true,
-  "description": "Angklung Ensemble — one angklung is one note, so a song is a coordination problem.",
+  "description": "Angklung Simulator — one angklung is one note, so a song is a coordination problem.",
   "scripts": {
     "dev": "next dev",
     "build": "pnpm data:validate && next build && node scripts/postbuild.mjs",

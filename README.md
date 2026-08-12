@@ -1,4 +1,4 @@
-# Angklung Ensemble
+# Angklung Simulator
 
 **Satu angklung hanya bisa membunyikan satu nada. Maka sebuah lagu adalah persoalan koordinasi — dan itulah yang disimulasikan di sini.**
 

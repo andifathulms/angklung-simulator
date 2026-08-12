@@ -1,4 +1,4 @@
-# PRD — Angklung Ensemble
+# PRD — Angklung Simulator
 
 **One angklung is one note. So a song is a coordination problem — and that is the thing this simulates.**
 
@@ -11,7 +11,7 @@
 | **Language** | Indonesian-first UI; Sundanese terminology throughout; English secondary |
 | **Audio** | Synthesised from a physical model. No sampled recordings — see §4. |
 
-*Name: explanatory, as asked. "Ensemble" is the differentiator — a single-instrument angklung toy already exists; the coordination is what doesn't. Alternatives: **Angklung Simulator**, **Main Angklung**.*
+*Name: **Angklung Simulator**, chosen from the shortlist. It is the plainest of the options and the one that reads without explanation. The coordination — a single-instrument angklung toy already exists; the ensemble is what doesn't — remains the differentiator, and the site has to carry that rather than the title. Considered and set aside: **Angklung Ensemble**, **Main Angklung**.*
 
 ---
 

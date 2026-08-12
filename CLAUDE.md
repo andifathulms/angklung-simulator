@@ -1,4 +1,4 @@
-# CLAUDE.md — Angklung Ensemble
+# CLAUDE.md — Angklung Simulator
 
 Angklung simulator built around the coordination problem: one angklung is one note, so a song needs many players. Synthesised from a physical model, no sampled audio. Static site, GitHub Pages, no backend, no runtime network.
 

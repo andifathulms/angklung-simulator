@@ -25,7 +25,7 @@ const mono = Recursive({
 })
 
 export const metadata: Metadata = {
-  title: 'Angklung Ensemble — satu angklung, satu nada',
+  title: 'Angklung Simulator — satu angklung, satu nada',
   description:
     'Simulator angklung: satu angklung hanya bisa membunyikan satu nada, jadi sebuah lagu adalah persoalan koordinasi. Bunyinya disintesis dari model fisik, tanpa rekaman.',
 }
