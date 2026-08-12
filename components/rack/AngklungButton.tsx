@@ -114,7 +114,7 @@ export function AngklungButton({
       >
         {entry.spec.nomor}
       </span>
-      <span className="font-mono text-[0.64rem] text-ink-faint group-hover:text-ink-muted">
+      <span className="font-mono text-step--2 text-ink-faint group-hover:text-ink-muted">
         {entry.spec.label}
       </span>
     </button>

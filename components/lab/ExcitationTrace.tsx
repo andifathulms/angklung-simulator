@@ -19,7 +19,7 @@ export function ExcitationTrace({
 }) {
   return (
     <figure className="space-y-2">
-      <figcaption className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+      <figcaption className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
         {label} · {strikes.length}
       </figcaption>
       <svg
@@ -73,7 +73,7 @@ export function WaveformTrace({
 
   return (
     <figure className="space-y-2">
-      <figcaption className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+      <figcaption className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
         {label}
       </figcaption>
       <svg

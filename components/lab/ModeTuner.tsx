@@ -57,7 +57,7 @@ export function ModeTuner({ modes, onChange, dict }: ModeTunerProps) {
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h3 className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+        <h3 className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
           {dict.teknik.modes}
         </h3>
         {!isStock ? (
@@ -92,11 +92,11 @@ export function ModeTuner({ modes, onChange, dict }: ModeTunerProps) {
                 />
               </label>
               {collidesWithOctave(mode.ratio) ? (
-                <p className="mt-1 text-[0.64rem] leading-tight text-cue-light">{dict.teknik.octaveWarning}</p>
+                <p className="mt-1 text-step--2 leading-tight text-cue-light">{dict.teknik.octaveWarning}</p>
               ) : null}
             </div>
 
-            <label className="flex flex-col gap-1 text-[0.68rem] text-ink-faint">
+            <label className="flex flex-col gap-1 text-step--2 text-ink-faint">
               <span>
                 {dict.teknik.amplitude}{' '}
                 <span className="font-mono tabular-nums text-sounding">
@@ -114,7 +114,7 @@ export function ModeTuner({ modes, onChange, dict }: ModeTunerProps) {
               />
             </label>
 
-            <label className="flex flex-col gap-1 text-[0.68rem] text-ink-faint">
+            <label className="flex flex-col gap-1 text-step--2 text-ink-faint">
               <span>
                 {dict.teknik.decay}{' '}
                 <span className="font-mono tabular-nums text-sounding">
@@ -137,11 +137,11 @@ export function ModeTuner({ modes, onChange, dict }: ModeTunerProps) {
 
       {!isStock ? (
         <div className="space-y-2">
-          <p className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+          <p className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
             {dict.teknik.exportTitle}
           </p>
           <p className="max-w-3xl text-step--1 text-ink-faint">{dict.teknik.exportHint}</p>
-          <pre className="overflow-x-auto rounded border border-stage-line bg-stage-raised/70 p-3 font-mono text-[0.68rem] leading-relaxed text-sounding">
+          <pre className="overflow-x-auto rounded border border-stage-line bg-stage-raised/70 p-3 font-mono text-step--2 leading-relaxed text-sounding">
             {source}
           </pre>
         </div>

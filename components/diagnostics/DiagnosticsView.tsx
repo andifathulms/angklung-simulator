@@ -188,7 +188,7 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
 
       {device !== null ? (
         <section className="space-y-2">
-          <h2 className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+          <h2 className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
             {dict.diagnostik.device}
           </h2>
           <dl className="grid gap-x-6 gap-y-1 font-mono text-step--1 text-ink-muted sm:grid-cols-2">
@@ -222,7 +222,7 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
 
       {results.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+          <h2 className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
             {dict.diagnostik.verdict}
           </h2>
           <div className="overflow-x-auto">

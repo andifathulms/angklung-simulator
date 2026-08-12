@@ -62,6 +62,14 @@ const config: Config = {
           DEFAULT: '#4A3D2E',
         },
       },
+      /*
+       * Three families, which is one more than a page normally earns. Recursive
+       * is the exception and it is load-bearing: angklung numbers are the
+       * conductor's language (invariant 12, and the padaeng numbering is the
+       * user-facing identity), cents are compared column-against-column in
+       * /laras, and both need tabular figures that do not shift width as they
+       * change. Display and sans are one superfamily. Do not add a fourth.
+       */
       fontFamily: {
         display: ['var(--font-display)', 'Georgia', 'serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
@@ -70,8 +78,14 @@ const config: Config = {
       // Fluid scale. Phones get a readable size without a media query, and the
       // display sizes stay in proportion rather than collapsing.
       fontSize: {
+        // step--2 is the label size: eyebrows, badges, figure captions, status
+        // dots. It existed as a literal `text-[0.68rem]` in twenty places before
+        // it existed as a token, which is how a scale stops being a scale.
+        'step--2': ['clamp(0.7rem, 0.68rem + 0.1vw, 0.75rem)', { lineHeight: '1.45' }],
         'step--1': ['clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem)', { lineHeight: '1.5' }],
-        'step-0': ['clamp(0.94rem, 0.9rem + 0.2vw, 1.03rem)', { lineHeight: '1.65' }],
+        // Body starts at 1rem on the narrowest phone. Below 16px the measure is
+        // legible but tiring, and this is a page people read standing up.
+        'step-0': ['clamp(1rem, 0.96rem + 0.2vw, 1.06rem)', { lineHeight: '1.65' }],
         'step-1': ['clamp(1.13rem, 1.05rem + 0.4vw, 1.3rem)', { lineHeight: '1.55' }],
         'step-2': ['clamp(1.35rem, 1.2rem + 0.7vw, 1.7rem)', { lineHeight: '1.35' }],
         'step-3': ['clamp(1.65rem, 1.4rem + 1.2vw, 2.3rem)', { lineHeight: '1.2' }],

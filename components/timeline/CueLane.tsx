@@ -17,7 +17,7 @@ export interface CueLaneProps {
 export function CueLane({ upcoming, beatSec, dict }: CueLaneProps) {
   return (
     <div className="rounded-lg border border-stage-line bg-stage-raised/70 p-4">
-      <p className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+      <p className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
         {dict.ansambel.cueLane}
       </p>
       <ol className="mt-3 flex min-h-[3.5rem] items-baseline gap-4">
@@ -36,7 +36,7 @@ export function CueLane({ upcoming, beatSec, dict }: CueLaneProps) {
                 ].join(' ')}
               >
                 {assignment.angklung.spec.nomor}
-                <span className="ml-1 text-[0.68rem] text-ink-faint">{inSec.toFixed(1)}s</span>
+                <span className="ml-1 text-step--2 text-ink-faint">{inSec.toFixed(1)}s</span>
               </li>
             )
           })

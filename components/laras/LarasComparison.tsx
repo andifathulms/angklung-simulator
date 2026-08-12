@@ -142,7 +142,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
               </button>
 
               <div className="space-y-1">
-                <p className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
+                <p className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
                   {dict.laras.edit}
                 </p>
                 <ul className="space-y-1">
@@ -192,7 +192,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                 ) : null}
               </div>
 
-              <footer className="mt-auto space-y-1 border-t border-stage-line pt-3 text-[0.68rem] leading-relaxed text-ink-faint">
+              <footer className="mt-auto space-y-1 border-t border-stage-line pt-3 text-step--2 leading-relaxed text-ink-faint">
                 <p className="font-mono uppercase tracking-widest">{dict.laras.source}</p>
                 <p>{tuning.source.title}</p>
                 <p>{tuning.source.note}</p>

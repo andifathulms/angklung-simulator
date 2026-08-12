@@ -96,7 +96,7 @@ export function SiteNav({ locale, dict }: { locale: Locale; dict: Dictionary }) 
             <StartAudio dict={dict} />
           </div>
 
-          <div className="flex items-center rounded-full border border-stage-line p-0.5 font-mono text-[0.68rem]">
+          <div className="flex items-center rounded-full border border-stage-line p-0.5 font-mono text-step--2">
             {LOCALES.map((candidate) => (
               <Link
                 key={candidate}

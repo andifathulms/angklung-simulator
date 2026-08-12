@@ -24,8 +24,8 @@ export function StartAudio({ dict }: { dict: Dictionary }) {
         <p
           className={
             interrupted
-              ? 'flex items-center gap-1.5 font-mono text-[0.68rem] text-cue-light'
-              : 'flex items-center gap-1.5 font-mono text-[0.68rem] text-yourPart-light'
+              ? 'flex items-center gap-1.5 font-mono text-step--2 text-cue-light'
+              : 'flex items-center gap-1.5 font-mono text-step--2 text-yourPart-light'
           }
           role="status"
         >
@@ -40,7 +40,7 @@ export function StartAudio({ dict }: { dict: Dictionary }) {
           {interrupted ? dict.audio.interrupted : dict.audio.ready}
         </p>
         {needsSilentSwitchHint ? (
-          <p className="max-w-[22rem] text-[0.68rem] leading-snug text-ink-faint">
+          <p className="max-w-[22rem] text-step--2 leading-snug text-ink-faint">
             {dict.audio.silentSwitch}
           </p>
         ) : null}
@@ -50,7 +50,7 @@ export function StartAudio({ dict }: { dict: Dictionary }) {
 
   if (status === 'tidak-didukung' || status === 'gagal') {
     return (
-      <p className="font-mono text-[0.68rem] text-cue-light" role="status">
+      <p className="font-mono text-step--2 text-cue-light" role="status">
         {dict.audio.failed}
       </p>
     )
