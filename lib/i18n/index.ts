@@ -90,6 +90,10 @@ export interface Dictionary {
     readonly listen: string
     readonly pitchesLabel: string
     readonly caveat: string
+    readonly whatIf: string
+    readonly whatIfBody: string
+    readonly moveLabel: string
+    readonly reset: string
   }
   readonly teknikNames: {
     readonly kurulung: string
@@ -368,6 +372,11 @@ const id: Dictionary = {
     pitchesLabel: 'Nada berbeda',
     caveat:
       'Contoh ini sengaja dibuat sependek mungkin agar bisa dihitung dengan tangan. Lagu sungguhan punya puluhan nada, tetapi aturannya persis sama — tidak ada aturan tambahan yang muncul belakangan.',
+    whatIf: 'Bagaimana kalau nadanya digeser?',
+    whatIfBody:
+      'Geser G4 ke kiri sampai ia ikut berbunyi bersama C4 dan E4. Tidak ada nada yang ditambah atau dibuang — yang berubah hanya kapan satu nada dimulai — dan jumlah orang yang dibutuhkan ikut berubah. Di situlah letak persoalannya: bukan pada berapa banyak nadanya, melainkan pada berapa banyak yang berbunyi bersamaan.',
+    moveLabel: 'Mulai G4 pada detik',
+    reset: 'Kembalikan',
   },
   teknikNames: { kurulung: 'Kurulung', centok: 'Centok', tengkep: 'Tengkep' },
   teknikDesc: {
@@ -670,6 +679,11 @@ const en: Dictionary = {
     pitchesLabel: 'Distinct pitches',
     caveat:
       'This example is deliberately as short as it can be, so it can be checked by hand. A real song has dozens of notes, but the rule is exactly the same one — no extra rule appears later.',
+    whatIf: 'What if a note moved?',
+    whatIfBody:
+      'Drag G4 to the left until it sounds alongside C4 and E4. No note is added and none is removed — the only change is when one note begins — and the number of people needed changes with it. That is where the difficulty actually lives: not in how many notes there are, but in how many sound at once.',
+    moveLabel: 'Start G4 at second',
+    reset: 'Reset',
   },
   teknikNames: { kurulung: 'Kurulung', centok: 'Centok', tengkep: 'Tengkep' },
   teknikDesc: {

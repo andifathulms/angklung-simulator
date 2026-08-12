@@ -28,15 +28,26 @@ import type { Dictionary } from '@/lib/i18n'
 
 /**
  * Deliberately the smallest phrase that still shows the rule doing something
- * non-obvious: C4 collides with both of the others, while E4 and G4 never meet
- * and so travel together. Two people, not three.
+ * non-obvious: at G4's resting position C4 collides with both of the others,
+ * while E4 and G4 never meet and so travel together. Two people, not three.
+ *
+ * G4's start is the one thing a reader can move, and it is the right thing to
+ * move: slide it under C4 and E4 and three pitches sound at once, so the answer
+ * becomes three. Nothing is added or removed — only *when* — which is the whole
+ * argument of the site reduced to one slider.
  */
-const EXAMPLE: readonly TimedNote[] = [
-  { pitchId: 'C4', startSec: 0, durationSec: 1, index: 0 },
-  { pitchId: 'E4', startSec: 0.5, durationSec: 1, index: 1 },
-  { pitchId: 'G4', startSec: 2, durationSec: 1, index: 2 },
-  { pitchId: 'C4', startSec: 2.5, durationSec: 1, index: 3 },
-]
+const G4_HOME_SEC = 2
+const G4_MIN_SEC = 0.25
+const G4_MAX_SEC = 2.5
+
+function phraseWith(g4StartSec: number): readonly TimedNote[] {
+  return [
+    { pitchId: 'C4', startSec: 0, durationSec: 1, index: 0 },
+    { pitchId: 'E4', startSec: 0.5, durationSec: 1, index: 1 },
+    { pitchId: 'G4', startSec: g4StartSec, durationSec: 1, index: 2 },
+    { pitchId: 'C4', startSec: 2.5, durationSec: 1, index: 3 },
+  ]
+}
 
 const TOTAL_SEC = 3.5
 const PX_PER_SEC = 92
@@ -46,19 +57,22 @@ export function WorkedExample({ dict }: { dict: Dictionary }) {
   const [playing, setPlaying] = useState(false)
   const schedulerRef = useRef<Scheduler<AngklungInSet> | null>(null)
 
+  const [g4StartSec, setG4StartSec] = useState(G4_HOME_SEC)
+  const phrase = useMemo(() => phraseWith(g4StartSec), [g4StartSec])
+
   const set = useMemo(() => buildSet(getSet('melodi-diatonis')), [])
-  const result = useMemo(() => distribute({ notes: EXAMPLE, set }), [set])
-  const pitchIds = useMemo(() => [...new Set(EXAMPLE.map((note) => note.pitchId))], [])
+  const result = useMemo(() => distribute({ notes: phrase, set }), [phrase, set])
+  const pitchIds = useMemo(() => [...new Set(phrase.map((note) => note.pitchId))], [phrase])
 
   /** Every unordered pair, each compared once, with the instant of any collision. */
   const pairs = useMemo(
     () =>
       pitchIds.flatMap((pitchId, index) =>
-        compatibilityWith(EXAMPLE, pitchId)
+        compatibilityWith(phrase, pitchId)
           .filter((entry) => pitchIds.indexOf(entry.pitchId) > index)
           .map((entry) => ({ a: pitchId, ...entry })),
       ),
-    [pitchIds],
+    [phrase, pitchIds],
   )
 
   const stop = useCallback(() => {
@@ -91,12 +105,12 @@ export function WorkedExample({ dict }: { dict: Dictionary }) {
     })
     schedulerRef.current = scheduler
     scheduler.start(
-      EXAMPLE.flatMap((note) => {
+      phrase.flatMap((note) => {
         const angklung = findByPitchId(set, note.pitchId)
         return angklung === null ? [] : [{ timeSec: note.startSec, payload: angklung }]
       }),
     )
-  }, [engine, play, set, stop])
+  }, [engine, phrase, play, set, stop])
 
   const players = result.type === 'feasible' ? result.minimumPlayers : null
 
@@ -121,7 +135,7 @@ export function WorkedExample({ dict }: { dict: Dictionary }) {
                 <span className="absolute -left-0 top-1 z-10 font-mono text-step--1 text-ink-faint">
                   {pitchId}
                 </span>
-                {EXAMPLE.filter((note) => note.pitchId === pitchId).map((note) => (
+                {phrase.filter((note) => note.pitchId === pitchId).map((note) => (
                   <span
                     key={note.index}
                     className="absolute top-0 flex h-7 items-center justify-end rounded-sm bg-bamboo/70 pr-1.5 font-mono text-step--2 text-ink-inverse"
@@ -198,6 +212,44 @@ export function WorkedExample({ dict }: { dict: Dictionary }) {
           <span aria-hidden="true">{playing ? '■' : '▶'}</span>
           {playing ? dict.ansambel.stop : dict.contoh.listen}
         </Button>
+      </div>
+
+      <div className="rule-fade" aria-hidden="true" />
+
+      {/*
+        * The one thing a reader can move, and the whole argument reduced to it.
+        * Everything above answers "how was this worked out"; this answers "what
+        * if it had been different", which is the question that follows and the
+        * one the site had no way to try. Nothing is added or removed — only
+        * when — and the answer above changes as it moves.
+        */}
+      <div className="space-y-3">
+        <h3 className="font-display text-step-2 text-ink">{dict.contoh.whatIf}</h3>
+        <p className="max-w-readable text-step-0 leading-relaxed text-ink-muted">
+          {dict.contoh.whatIfBody}
+        </p>
+        <div className="flex flex-wrap items-center gap-4">
+          <label className="flex items-center gap-3">
+            <span className="eyebrow">{dict.contoh.moveLabel}</span>
+            <input
+              type="range"
+              min={G4_MIN_SEC}
+              max={G4_MAX_SEC}
+              step={0.25}
+              value={g4StartSec}
+              onChange={(event) => setG4StartSec(Number(event.target.value))}
+              className="w-40 accent-bamboo"
+            />
+            <span className="font-mono text-step-0 tabular-nums text-sounding">
+              {g4StartSec.toFixed(2)}s
+            </span>
+          </label>
+          {g4StartSec !== G4_HOME_SEC ? (
+            <Button tone="ghost" size="sm" onClick={() => setG4StartSec(G4_HOME_SEC)}>
+              {dict.contoh.reset}
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       <p className="max-w-readable border-l-2 border-stage-strong pl-4 text-step--1 leading-relaxed text-ink-faint">
