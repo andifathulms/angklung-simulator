@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { HeroDemo } from '@/components/home/HeroDemo'
+import { WorkedExample } from '@/components/home/WorkedExample'
 import { ButtonLink, Card, CardLink, Section, Term } from '@/components/ui'
 import { LOCALES, getDictionary, isLocale, localePath } from '@/lib/i18n'
 import { KURULUNG_SHAKE_RATE_RANGE_HZ } from '@/lib/synth'
@@ -74,6 +75,15 @@ export default function HomePage({ params }: { params: { locale: string } }) {
 
         <HeroDemo dict={dict} />
       </section>
+
+      {/*
+        * The worked example comes before the three steps, and before every
+        * other explanation on the page. The steps describe the mechanism in
+        * prose; this one shows it happening to four real notes, with the same
+        * solver the ensemble page runs. Someone who reads only this should be
+        * able to reconstruct the rest.
+        */}
+      <WorkedExample dict={dict} />
 
       {/* Three steps, numbered, because the mechanism is a sequence. */}
       <Section title={dict.hero.stepsTitle}>

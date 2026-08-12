@@ -77,6 +77,20 @@ export interface Dictionary {
     readonly ritual: string
     readonly visit: string
   }
+  readonly contoh: {
+    readonly title: string
+    readonly lede: string
+    readonly phrase: string
+    readonly step1: string
+    readonly step2: string
+    readonly step3: string
+    readonly answer: string
+    readonly clashLine: string
+    readonly clearLine: string
+    readonly listen: string
+    readonly pitchesLabel: string
+    readonly caveat: string
+  }
   readonly teknikNames: {
     readonly kurulung: string
     readonly centok: string
@@ -339,6 +353,21 @@ const id: Dictionary = {
     ritual:
       'Angklung buhun hidup dalam ritual pertanian padi dan penghormatan kepada Nyai Sri Pohaci. Konteks itu disebut di sini dengan hormat, dan tidak disimulasikan.',
     visit: 'Saung Angklung Udjo dan sanggar-sanggar setempat adalah tempat mempelajari yang sebenarnya.',
+  },
+  contoh: {
+    title: 'Contoh yang bisa diikuti sampai selesai',
+    lede: 'Empat nada, tiga nada berbeda. Angka-angka di bawah ini dihitung oleh pembagi yang sama yang dipakai di seluruh situs — bukan ditulis tangan.',
+    phrase: 'Frasa contoh',
+    step1: 'Pertama, catat kapan tiap nada berbunyi dan berapa lama.',
+    step2: 'Lalu bandingkan tiap pasang nada: pernahkah keduanya berbunyi pada saat yang sama?',
+    step3: 'Nada yang pernah bertabrakan harus dipegang orang yang berbeda. Yang tidak pernah bertabrakan boleh menumpang di satu pasang tangan.',
+    answer: 'Jadi frasa ini butuh {players} orang.',
+    clashLine: '{a} dan {b} bertabrakan pada detik {atSec} — dua orang',
+    clearLine: '{a} dan {b} tidak pernah bersamaan — boleh satu orang',
+    listen: 'Dengarkan frasanya',
+    pitchesLabel: 'Nada berbeda',
+    caveat:
+      'Contoh ini sengaja dibuat sependek mungkin agar bisa dihitung dengan tangan. Lagu sungguhan punya puluhan nada, tetapi aturannya persis sama — tidak ada aturan tambahan yang muncul belakangan.',
   },
   teknikNames: { kurulung: 'Kurulung', centok: 'Centok', tengkep: 'Tengkep' },
   teknikDesc: {
@@ -626,6 +655,21 @@ const en: Dictionary = {
     ritual:
       'Angklung buhun lives inside rice-cultivation ritual and the veneration of Nyai Sri Pohaci. That context is noted here with respect, and is not simulated.',
     visit: 'Saung Angklung Udjo and local ensembles are where the instrument is actually learned.',
+  },
+  contoh: {
+    title: 'A worked example you can follow to the end',
+    lede: 'Four notes, three distinct pitches. Every figure below is computed by the same solver the rest of the site uses — none of it is written by hand.',
+    phrase: 'The example phrase',
+    step1: 'First, write down when each note sounds and for how long.',
+    step2: 'Then compare each pair of pitches: is there any instant where both are sounding?',
+    step3: 'Pitches that ever collide need different people. Pitches that never collide can share one pair of hands.',
+    answer: 'So this phrase needs {players} people.',
+    clashLine: '{a} and {b} collide at {atSec} seconds — two people',
+    clearLine: '{a} and {b} are never together — one person can hold both',
+    listen: 'Hear the phrase',
+    pitchesLabel: 'Distinct pitches',
+    caveat:
+      'This example is deliberately as short as it can be, so it can be checked by hand. A real song has dozens of notes, but the rule is exactly the same one — no extra rule appears later.',
   },
   teknikNames: { kurulung: 'Kurulung', centok: 'Centok', tengkep: 'Tengkep' },
   teknikDesc: {
