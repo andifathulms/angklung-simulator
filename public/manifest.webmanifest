@@ -1,0 +1,18 @@
+{
+  "name": "Angklung Simulator",
+  "short_name": "Angklung",
+  "description": "Satu angklung hanya bisa membunyikan satu nada, jadi sebuah lagu adalah persoalan koordinasi. Bunyinya disintesis dari model fisik, tanpa rekaman.",
+  "start_url": "id/",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#1B120A",
+  "theme_color": "#1B120A",
+  "categories": ["music", "education"],
+  "lang": "id",
+  "icons": [
+    { "src": "brand/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "brand/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

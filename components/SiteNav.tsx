@@ -8,14 +8,33 @@ import { cx } from './ui'
 import { LOCALES, localePath } from '@/lib/i18n'
 import type { Dictionary, Locale } from '@/lib/i18n'
 
-/** The wordmark: three tubes graduated by length, which is the instrument in miniature. */
+/**
+ * The brand mark, redrawn inline from the same geometry as exports/svg/favicon.svg:
+ * two bamboo tubes of different heights hanging from one shared rack bar.
+ *
+ * Inline rather than an <img> so it inherits theme colours and costs no request on
+ * a site that makes none after first load. The node line the full icon carries is
+ * dropped here — the kit specifies it only at 64px and above, and this is 22.
+ *
+ * The long tube is bamboo and the short one is cue amber, never swapped: on a real
+ * angklung the longer tube is the lower note, so reversing them would make the mark
+ * lie about the instrument.
+ */
 function Mark() {
   return (
-    <svg viewBox="0 0 26 20" className="h-5 w-[26px]" aria-hidden="true">
-      <rect x="0" y="2" width="26" height="2.2" rx="1.1" className="fill-rattan" />
-      <rect x="3" y="4" width="4" height="15" rx="2" className="fill-bamboo" />
-      <rect x="11" y="4" width="4" height="11" rx="2" className="fill-bamboo" opacity="0.8" />
-      <rect x="19" y="4" width="4" height="7.5" rx="2" className="fill-bamboo" opacity="0.6" />
+    <svg viewBox="0 0 100 100" className="h-[26px] w-[26px]" aria-hidden="true">
+      <line
+        x1="18"
+        y1="24"
+        x2="82"
+        y2="24"
+        stroke="currentColor"
+        strokeWidth="7"
+        strokeLinecap="round"
+        className="text-rattan-light"
+      />
+      <rect x="26" y="24" width="16" height="54" rx="8" className="fill-bamboo" />
+      <rect x="58" y="24" width="16" height="36" rx="8" className="fill-cue" />
     </svg>
   )
 }
@@ -42,11 +61,12 @@ export function SiteNav({ locale, dict }: { locale: Locale; dict: Dictionary }) 
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-5 py-3">
         <Link
           href={localePath(locale)}
+          aria-label="Angklung Simulator"
           className="flex shrink-0 items-center gap-2.5 transition-opacity hover:opacity-80"
         >
           <Mark />
           <span className="font-display text-step-1 leading-none text-ink">
-            Angklung<span className="text-bamboo"> Simulator</span>
+            Angklung <span className="text-bamboo">Simulator</span>
           </span>
         </Link>
 
