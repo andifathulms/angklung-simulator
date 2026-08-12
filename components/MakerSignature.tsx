@@ -87,7 +87,6 @@ export function MakerSignature() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={link.label}
-              title={link.label}
               className="flex rounded-lg p-1.5 text-ink-faint transition-colors duration-200 hover:bg-stage-raised hover:text-bamboo"
             >
               <svg

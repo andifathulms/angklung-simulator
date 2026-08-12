@@ -26,7 +26,6 @@ export function ExcitationTrace({
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         className="w-full rounded border border-stage-line bg-stage-raised/70"
         role="img"
-        aria-label={label}
       >
         <line x1={0} y1={HEIGHT - 8} x2={WIDTH} y2={HEIGHT - 8} className="stroke-stage-strong" />
         {Array.from({ length: Math.floor(durationSec) + 1 }, (_, second) => (
@@ -81,7 +80,6 @@ export function WaveformTrace({
         preserveAspectRatio="none"
         className="h-24 w-full rounded border border-stage-line bg-stage-raised/70"
         role="img"
-        aria-label={label}
       >
         {peaks.map((peak, index) => (
           <line

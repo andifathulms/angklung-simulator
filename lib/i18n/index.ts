@@ -16,7 +16,6 @@ export function isLocale(value: string): value is Locale {
 export interface Dictionary {
   readonly localeName: string
   readonly nav: {
-    readonly beranda: string
     readonly rak: string
     readonly ansambel: string
     readonly teknik: string
@@ -264,7 +263,6 @@ export interface Dictionary {
 const id: Dictionary = {
   localeName: 'Bahasa Indonesia',
   nav: {
-    beranda: 'Beranda',
     rak: 'Rak',
     ansambel: 'Ansambel',
     teknik: 'Teknik',
@@ -542,7 +540,6 @@ const id: Dictionary = {
 const en: Dictionary = {
   localeName: 'English',
   nav: {
-    beranda: 'Home',
     rak: 'Rack',
     ansambel: 'Ensemble',
     teknik: 'Technique',

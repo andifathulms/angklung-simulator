@@ -655,7 +655,6 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                       }
                       aria-pressed={isAbsent}
                       aria-label={`${isAbsent ? dict.ansambel.bringBack : dict.ansambel.markAbsent} — ${dict.ansambel.player} ${player.playerIndex + 1}`}
-                      title={isAbsent ? dict.ansambel.bringBack : dict.ansambel.markAbsent}
                       className={[
                         // Neutral ink, never cue amber: amber is the conductor's
                         // upcoming signal and nothing else (invariant 12).

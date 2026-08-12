@@ -70,7 +70,7 @@ export function SiteNav({ locale, dict }: { locale: Locale; dict: Dictionary }) 
           </span>
         </Link>
 
-        <nav aria-label={dict.nav.beranda} className="ml-auto hidden items-center gap-1 lg:flex">
+        <nav className="ml-auto hidden items-center gap-1 lg:flex">
           {links.map((link) => (
             <Link
               key={link.href}
