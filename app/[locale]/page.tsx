@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { HeroDemo } from '@/components/home/HeroDemo'
 import { ButtonLink, Card, CardLink, Section, Term } from '@/components/ui'
@@ -29,24 +30,46 @@ export default function HomePage({ params }: { params: { locale: string } }) {
     <div className="space-y-24 sm:space-y-32">
       {/* Hero: the claim on the left, the proof of it on the right. */}
       <section className="grid items-center gap-10 lg:grid-cols-[1fr_1.05fr] lg:gap-14">
-        <div className="space-y-6">
-          <p className="eyebrow">{dict.hero.kicker}</p>
-          <h1 className="text-step-5">
+        {/*
+          * Order of business for a stranger: what is this, what can I do, why
+          * should I care. The identity line used to be the eyebrow — 0.68rem,
+          * uppercase, ink-faint — which made the smallest, faintest text on the
+          * page the only text that said what the page was, while an aphorism
+          * took the largest. The headline still leads, one step quieter; the
+          * subtitle names the object and the interaction at reading weight; the
+          * argument follows.
+          */}
+        <div className="space-y-5">
+          <h1 className="text-step-4">
             {dict.home.title.split(',')[0]},
             <br />
             <span className="text-bamboo">{dict.home.title.split(',').slice(1).join(',').trim()}</span>
           </h1>
-          <p className="max-w-prose text-step-1 leading-relaxed text-ink-muted">
+          <p className="max-w-prose text-step-1 leading-relaxed text-ink">{dict.home.subtitle}</p>
+          <p className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
             {dict.home.premiseBody}
           </p>
-          <div className="flex flex-wrap gap-3 pt-1">
-            <ButtonLink href={localePath(locale, '/ansambel')} tone="secondary" size="md">
+          {/*
+            * One primary action above the fold, and it is the sound button in
+            * the demo alongside. This used to be two buttons pointing away from
+            * the demonstration before the visitor had heard anything — offering
+            * the exits before the payoff. Both destinations are cards further
+            * down; here one quiet link is enough.
+            */}
+          <p className="pt-1">
+            <Link
+              href={localePath(locale, '/ansambel')}
+              className="group inline-flex items-center gap-1.5 text-step-0 text-bamboo transition hover:text-sounding"
+            >
               {dict.hero.explore}
-            </ButtonLink>
-            <ButtonLink href={localePath(locale, '/rak')} tone="ghost" size="md">
-              {dict.nav.rak} →
-            </ButtonLink>
-          </div>
+              <span
+                aria-hidden="true"
+                className="transition-transform duration-300 ease-physical group-hover:translate-x-0.5"
+              >
+                →
+              </span>
+            </Link>
+          </p>
         </div>
 
         <HeroDemo dict={dict} />

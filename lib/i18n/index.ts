@@ -34,7 +34,6 @@ export interface Dictionary {
     readonly silentSwitch: string
   }
   readonly hero: {
-    readonly kicker: string
     readonly try: string
     readonly starting: string
     readonly tapInvite: string
@@ -59,6 +58,7 @@ export interface Dictionary {
   }
   readonly home: {
     readonly title: string
+    readonly subtitle: string
     readonly premise: string
     readonly premiseBody: string
     readonly whyTitle: string
@@ -231,7 +231,6 @@ const id: Dictionary = {
     silentSwitch: 'Tidak terdengar apa-apa? Di iPhone, sakelar senyap ikut membungkam suara halaman web. Geser sakelarnya dan naikkan volume.',
   },
   hero: {
-    kicker: 'Simulator angklung — bunyinya dihitung, bukan direkam',
     try: 'Bunyikan angklungnya',
     starting: 'Menyalakan…',
     tapInvite: 'Ketuk angklung mana pun di atas — atau tekan tombolnya.',
@@ -256,6 +255,8 @@ const id: Dictionary = {
   },
   home: {
     title: 'Satu angklung, satu nada',
+    subtitle:
+      'Simulator angklung yang bisa langsung Anda mainkan di peramban. Bunyinya disintesis dari model fisik tabung bambu — tanpa satu pun rekaman.',
     premise: 'Satu angklung hanya bisa membunyikan satu nada.',
     premiseBody:
       'Maka sebuah lagu bukan soal satu alat musik, melainkan soal satu ruangan berisi orang — masing-masing memegang satu atau dua angklung, masing-masing menunggu giliran nadanya. Angklung itu alat musik yang tersebar. Memainkannya adalah persoalan koordinasi, dan itulah yang disimulasikan di sini.',
@@ -445,7 +446,6 @@ const en: Dictionary = {
     silentSwitch: 'Hearing nothing? On iPhone the silent switch mutes web audio too. Flip the switch and raise the volume.',
   },
   hero: {
-    kicker: 'An angklung simulator — the sound is computed, not recorded',
     try: 'Sound an angklung',
     starting: 'Starting…',
     tapInvite: 'Tap any angklung above — or press the button.',
@@ -470,6 +470,8 @@ const en: Dictionary = {
   },
   home: {
     title: 'One angklung, one note',
+    subtitle:
+      'An angklung simulator you can play right here in the browser. The sound is synthesised from a physical model of a bamboo tube — no recordings at all.',
     premise: 'An angklung can only sound one note.',
     premiseBody:
       'So a song is not one instrument but a room of people, each holding one or two angklung, each waiting for their note to arrive. The instrument is distributed. Playing it is a coordination problem, and that is what this simulates.',
