@@ -464,6 +464,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                   size="sm"
                   onClick={() => setShowWhy((current) => !current)}
                   aria-expanded={showWhy}
+                  aria-controls="kenapa-segini"
                 >
                   {showWhy ? dict.ansambel.hideWhy : dict.ansambel.whyThisNumber}
                 </Button>
@@ -478,7 +479,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
             </div>
 
             {showWhy ? (
-              <div className="rise-in space-y-2 border-t border-stage-line pt-4">
+              <div id="kenapa-segini" className="rise-in space-y-2 border-t border-stage-line pt-4">
                 {describeDriver(result.minimumDriver, dict).map((sentence) => (
                   <p key={sentence} className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
                     {sentence}
@@ -524,7 +525,15 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
             * forbids. So they are counted and named here.
             */}
           {absence.silenced.length > 0 ? (
-            <section className="rise-in space-y-3 rounded-card border border-stage-strong bg-stage-raised/40 p-5 sm:p-6">
+            <section
+              /*
+               * Taking a player out of the room produces this report and nothing
+               * else — no visual change a screen reader could infer. Announced,
+               * because the report is the entire point of the interaction.
+               */
+              aria-live="polite"
+              className="surface-raised rise-in space-y-3 rounded-card border border-stage-strong bg-stage-raised/40 p-5 sm:p-6"
+            >
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h2 className="font-display text-step-2 text-ink">{dict.ansambel.absenceTitle}</h2>
                 <button

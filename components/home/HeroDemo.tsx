@@ -240,6 +240,12 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
         */}
       <div
         key={touched ? 'resolved' : 'pending'}
+        /*
+         * The figures fill in when the melody finishes, which is the whole
+         * demonstration — and it happened silently. Polite, so it waits for the
+         * music rather than interrupting it (WCAG 4.1.3).
+         */
+        aria-live="polite"
         className={
           touched
             ? 'rise-in rounded-card border border-bamboo/30 bg-bamboo/[0.06] p-5 sm:p-6'
