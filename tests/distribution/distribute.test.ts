@@ -10,7 +10,9 @@ import {
   combineEnsemble,
 } from '@/lib/distribute'
 import { MELODIES, getMelody, toTimedChords, toTimedNotes } from '@/lib/melody'
+import { LOCALES, getDictionary } from '@/lib/i18n'
 import { buildSet, getSet } from '@/lib/set'
+import type { Infeasibility } from '@/lib/distribute'
 import type { TimedNote } from '@/lib/melody'
 import { bruteForceMinimumPlayers } from './helpers/brute-force'
 
@@ -148,6 +150,9 @@ describe('minimum ensemble size', () => {
   })
 })
 
+const id = getDictionary('id').ansambel
+const en = getDictionary('en').ansambel
+
 describe('infeasibility is reported, never truncated', () => {
   it('names a note that is outside the set', () => {
     const result = distribute({
@@ -162,7 +167,8 @@ describe('infeasibility is reported, never truncated', () => {
     expect(result.reasons).toEqual([
       { type: 'nada-di-luar-set', pitchId: 'C#4', noteIndexes: [1] },
     ])
-    expect(describeInfeasibility(result.reasons[0]!)).toMatch(/tidak ada dalam set/)
+    expect(describeInfeasibility(result.reasons[0]!, id)).toMatch(/tidak ada dalam set/)
+    expect(describeInfeasibility(result.reasons[0]!, en)).toMatch(/not in this set/)
   })
 
   it('names a note that would need one angklung to sound twice at once', () => {
@@ -176,7 +182,8 @@ describe('infeasibility is reported, never truncated', () => {
     expect(result.type).toBe('infeasible')
     if (result.type !== 'infeasible') return
     expect(result.reasons[0]?.type).toBe('nada-bertumpuk-sendiri')
-    expect(describeInfeasibility(result.reasons[0]!)).toMatch(/angklung kedua/)
+    expect(describeInfeasibility(result.reasons[0]!, id)).toMatch(/angklung kedua/)
+    expect(describeInfeasibility(result.reasons[0]!, en)).toMatch(/second angklung/)
   })
 
   it('reports too few players with the number actually needed', () => {
@@ -189,7 +196,8 @@ describe('infeasibility is reported, never truncated', () => {
     expect(result.type).toBe('infeasible')
     if (result.type !== 'infeasible') return
     expect(result.reasons[0]).toEqual({ type: 'pemain-kurang', needed: 3, available: 2 })
-    expect(describeInfeasibility(result.reasons[0]!)).toMatch(/tidak dipotong/)
+    expect(describeInfeasibility(result.reasons[0]!, id)).toMatch(/tidak dipotong/)
+    expect(describeInfeasibility(result.reasons[0]!, en)).toMatch(/not cut down/)
   })
 
   it('reports every out-of-set note, not just the first', () => {
@@ -565,5 +573,40 @@ describe('one room, two populations', () => {
     const report = reportAbsence(ensemble, [accompanist.playerIndex])
     expect(report.silenced.length).toBe(accompanist.notes.length)
     expect(report.totalNotes).toBe(ensemble.assignments.length)
+  })
+})
+
+describe('an infeasibility is explained in the reader’s own language', () => {
+  const everyReason: readonly Infeasibility[] = [
+    { type: 'nada-di-luar-set', pitchId: 'C#4', noteIndexes: [1, 2] },
+    { type: 'nada-bertumpuk-sendiri', pitchId: 'C4', noteIndexes: [0, 1] },
+    { type: 'pemain-kurang', needed: 8, available: 3 },
+  ]
+
+  it.each(LOCALES)('%s: every reason produces a filled sentence', (locale) => {
+    const copy = getDictionary(locale).ansambel
+    for (const reason of everyReason) {
+      const sentence = describeInfeasibility(reason, copy)
+      expect(sentence.length).toBeGreaterThan(20)
+      // No placeholder survives into what the reader sees.
+      expect(sentence).not.toMatch(/\{[a-zA-Z]+\}/)
+    }
+  })
+
+  it('puts the real numbers into the sentence', () => {
+    const sentence = describeInfeasibility(
+      { type: 'pemain-kurang', needed: 8, available: 3 },
+      getDictionary('en').ansambel,
+    )
+    expect(sentence).toContain('8')
+    expect(sentence).toContain('3')
+  })
+
+  it('does not answer in Indonesian when asked in English', () => {
+    for (const reason of everyReason) {
+      expect(describeInfeasibility(reason, getDictionary('en').ansambel)).not.toBe(
+        describeInfeasibility(reason, getDictionary('id').ansambel),
+      )
+    }
   })
 })

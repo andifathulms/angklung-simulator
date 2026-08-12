@@ -3,6 +3,8 @@
  * away in either locale — kurulung, centok, tengkep, tabung dasar, laras stay as
  * they are and are glossed on first use (invariant 16).
  */
+export { fill } from './fill'
+
 export const LOCALES = ['id', 'en'] as const
 export type Locale = (typeof LOCALES)[number]
 export const DEFAULT_LOCALE: Locale = 'id'
@@ -125,6 +127,9 @@ export interface Dictionary {
     readonly pickPlayer: string
     readonly waiting: string
     readonly infeasible: string
+    readonly infeasibleOutsideSet: string
+    readonly infeasibleSelfOverlap: string
+    readonly infeasibleTooFewPlayers: string
     readonly whyThisNumber: string
     readonly hideWhy: string
     readonly driverOverlap: string
@@ -366,6 +371,12 @@ const id: Dictionary = {
     pickPlayer: 'Pilih pemain',
     waiting: 'menunggu',
     infeasible: 'Tidak bisa dimainkan seperti ini',
+    infeasibleOutsideSet:
+      'Nada {pitchId} tidak ada dalam set ini — {count} nada tidak bisa dimainkan. Ganti set, atau ubah aransemennya.',
+    infeasibleSelfOverlap:
+      'Nada {pitchId} harus berbunyi dua kali sekaligus. Satu angklung hanya bisa berbunyi sekali — dibutuhkan angklung kedua dengan nada yang sama.',
+    infeasibleTooFewPlayers:
+      'Butuh {needed} pemain, tersedia {available}. Lagu ini tidak dipotong agar muat.',
     whyThisNumber: 'Kenapa segini?',
     hideWhy: 'Tutup',
     driverOverlap:
@@ -621,6 +632,12 @@ const en: Dictionary = {
     pickPlayer: 'Choose a player',
     waiting: 'waiting',
     infeasible: 'Cannot be played like this',
+    infeasibleOutsideSet:
+      'The note {pitchId} is not in this set — {count} notes cannot be played. Change the set, or change the arrangement.',
+    infeasibleSelfOverlap:
+      'The note {pitchId} would have to sound twice at once. One angklung sounds once — a second angklung of the same note is needed.',
+    infeasibleTooFewPlayers:
+      'This needs {needed} players and {available} are available. The piece is not cut down to fit.',
     whyThisNumber: 'Why this number?',
     hideWhy: 'Close',
     driverOverlap:
@@ -753,18 +770,6 @@ const en: Dictionary = {
 }
 
 const DICTIONARIES: Record<Locale, Dictionary> = { id, en }
-
-/**
- * Fill `{name}` placeholders in a dictionary string. Copy that has to wrap around
- * a number belongs in the dictionary as one sentence, not as three fragments a
- * component concatenates — Indonesian and English do not put the number in the
- * same place, and concatenation quietly assumes they do.
- */
-export function fill(template: string, values: Readonly<Record<string, string | number>>): string {
-  return template.replace(/\{(\w+)\}/g, (whole, key: string) =>
-    key in values ? String(values[key]) : whole,
-  )
-}
 
 export function getDictionary(locale: Locale): Dictionary {
   return DICTIONARIES[locale]

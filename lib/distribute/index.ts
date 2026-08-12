@@ -1,3 +1,4 @@
+import { fill } from '@/lib/i18n/fill'
 import type { AngklungInSet } from '@/lib/set'
 import type { TimedNote } from '@/lib/melody'
 
@@ -537,15 +538,40 @@ export function partFor(result: DistributionResult, playerIndex: number): Player
   return result.players.find((player) => player.playerIndex === playerIndex) ?? null
 }
 
-/** Human-readable, Indonesian-first. The UI never invents its own wording for these. */
-export function describeInfeasibility(reason: Infeasibility): string {
+/**
+ * The three sentences that explain an infeasibility, as `{placeholder}` templates.
+ *
+ * The wording used to be hardcoded Indonesian here, so an English visitor who
+ * asked for too few players was told `Butuh 8 pemain, tersedia 3`. Invariant 9
+ * exists so that infeasibility is *reported* rather than resolved by truncation,
+ * and a report in a language the reader may not have is most of the way back to
+ * not reporting it.
+ *
+ * The templates are passed in rather than imported, so this file still knows
+ * nothing about locales — the UI supplies the strings, and the mapping from
+ * reason to sentence stays here where the union is.
+ */
+export interface InfeasibilityCopy {
+  readonly infeasibleOutsideSet: string
+  readonly infeasibleSelfOverlap: string
+  readonly infeasibleTooFewPlayers: string
+}
+
+/** Human-readable. The UI never invents its own wording for these. */
+export function describeInfeasibility(reason: Infeasibility, copy: InfeasibilityCopy): string {
   switch (reason.type) {
     case 'nada-di-luar-set':
-      return `Nada ${reason.pitchId} tidak ada dalam set ini — ${reason.noteIndexes.length} nada tidak bisa dimainkan. Ganti set, atau ubah aransemennya.`
+      return fill(copy.infeasibleOutsideSet, {
+        pitchId: reason.pitchId,
+        count: reason.noteIndexes.length,
+      })
     case 'nada-bertumpuk-sendiri':
-      return `Nada ${reason.pitchId} harus berbunyi dua kali sekaligus. Satu angklung hanya bisa berbunyi sekali — dibutuhkan angklung kedua dengan nada yang sama.`
+      return fill(copy.infeasibleSelfOverlap, { pitchId: reason.pitchId })
     case 'pemain-kurang':
-      return `Butuh ${reason.needed} pemain, tersedia ${reason.available}. Lagu ini tidak dipotong agar muat.`
+      return fill(copy.infeasibleTooFewPlayers, {
+        needed: reason.needed,
+        available: reason.available,
+      })
     default: {
       const exhaustive: never = reason
       throw new Error(`Alasan tidak dikenal: ${JSON.stringify(exhaustive)}`)

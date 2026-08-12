@@ -444,7 +444,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           <h2 className="font-display text-step-2 text-cue-light">{dict.ansambel.infeasible}</h2>
           <ul className="space-y-1 text-step-0 text-ink-muted">
             {result.reasons.map((reason, index) => (
-              <li key={index}>{describeInfeasibility(reason)}</li>
+              <li key={index}>{describeInfeasibility(reason, dict.ansambel)}</li>
             ))}
           </ul>
         </section>
