@@ -96,16 +96,27 @@ export function SiteNav({ locale, dict }: { locale: Locale; dict: Dictionary }) 
             <StartAudio dict={dict} />
           </div>
 
-          <div className="flex items-center rounded-full border border-stage-line p-0.5 font-mono text-step--2">
+          {/*
+            * For a visitor who cannot read the page they landed on, this is the
+            * only control that matters — so it is sized like a control and not
+            * like a footnote. It used to be the smallest thing in the header.
+            */}
+          <div
+            className="flex items-center rounded-full border border-stage-line p-0.5 font-mono text-step--1"
+            role="group"
+            aria-label={dict.nav.language}
+          >
             {LOCALES.map((candidate) => (
               <Link
                 key={candidate}
                 href={localePath(candidate, pathname.replace(/^\/[a-z]{2}/, ''))}
+                hrefLang={candidate}
+                aria-current={candidate === locale ? 'true' : undefined}
                 className={cx(
-                  'rounded-full px-2 py-1 transition',
+                  'rounded-full px-2.5 py-1 transition',
                   candidate === locale
                     ? 'bg-bamboo text-ink-inverse'
-                    : 'text-ink-faint hover:text-ink',
+                    : 'text-ink-muted hover:bg-stage-raised hover:text-ink',
                 )}
               >
                 {candidate.toUpperCase()}

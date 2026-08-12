@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AudioProvider } from '@/components/audio/AudioProvider'
+import { HtmlLang } from '@/components/HtmlLang'
 import { MakerSignature } from '@/components/MakerSignature'
 import { SiteNav } from '@/components/SiteNav'
 import { LOCALES, getDictionary, isLocale, localePath } from '@/lib/i18n'
@@ -22,6 +23,7 @@ export default function LocaleLayout({
 
   return (
     <AudioProvider>
+      <HtmlLang locale={locale} />
       <div className="flex min-h-screen flex-col">
         <SiteNav locale={locale} dict={dict} />
 

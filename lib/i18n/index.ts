@@ -21,6 +21,7 @@ export interface Dictionary {
     readonly laras: string
     readonly aransemen: string
     readonly menu: string
+    readonly language: string
   }
   readonly audio: {
     readonly start: string
@@ -215,6 +216,7 @@ const id: Dictionary = {
     laras: 'Laras',
     aransemen: 'Aransemen',
     menu: 'Menu',
+    language: 'Bahasa',
   },
   audio: {
     start: 'Nyalakan suara',
@@ -426,6 +428,7 @@ const en: Dictionary = {
     laras: 'Tuning',
     aransemen: 'Arrangement',
     menu: 'Menu',
+    language: 'Language',
   },
   audio: {
     start: 'Start sound',
