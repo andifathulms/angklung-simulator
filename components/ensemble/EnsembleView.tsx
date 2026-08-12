@@ -9,9 +9,10 @@ import { Button, Card, Field, SegmentedControl, Select, Stat } from '@/component
 import { audioClock, createScheduler, intervalTimer } from '@/lib/audio'
 import type { Scheduler } from '@/lib/audio'
 import { describeInfeasibility, distribute } from '@/lib/distribute'
-import type { NoteAssignment } from '@/lib/distribute'
+import type { MinimumDriver, NoteAssignment } from '@/lib/distribute'
 import { MELODIES, getMelody, melodyDurationSec, toTimedNotes } from '@/lib/melody'
 import { buildSet, getSet } from '@/lib/set'
+import { fill } from '@/lib/i18n'
 import type { Dictionary } from '@/lib/i18n'
 
 type Mode = 'dengar' | 'bagian-anda' | 'semua-bagian'
@@ -22,6 +23,39 @@ const MODES: readonly Mode[] = ['dengar', 'bagian-anda', 'semua-bagian']
 const CUE_LEAD_BEATS = 1
 const COUNT_IN_CHOICES = [0, 2, 4] as const
 
+/**
+ * One or two. Two is the default because a person has two hands, and three is not
+ * offered because three is not a thing a person has — a dial that went higher
+ * would be the app making a claim about bodies that it cannot support.
+ */
+const PER_PLAYER_CHOICES = [2, 1] as const
+
+/** The derivation of the minimum, put into words. Data comes from the solver. */
+function describeDriver(driver: MinimumDriver, dict: Dictionary): readonly string[] {
+  switch (driver.type) {
+    case 'tumpang-tindih': {
+      const sentence = fill(dict.ansambel.driverOverlap, {
+        atSec: driver.peak.atSec.toFixed(1),
+        count: driver.peak.count,
+      })
+      return driver.peak.tied ? [sentence, dict.ansambel.driverOverlapTied] : [sentence]
+    }
+    case 'jumlah-nada':
+      return [
+        fill(dict.ansambel.driverNoteCount, {
+          distinct: driver.distinctPitches,
+          perPlayer: driver.maxAngklungPerPlayer,
+        }),
+      ]
+    case 'penempatan':
+      return [fill(dict.ansambel.driverPacking, { distinct: driver.distinctPitches })]
+    default: {
+      const exhaustive: never = driver
+      throw new Error(`Penyebab tidak dikenal: ${JSON.stringify(exhaustive)}`)
+    }
+  }
+}
+
 export function EnsembleView({ dict }: { dict: Dictionary }) {
   const { play, releaseAll, engine, status } = useAudio()
   const [melodyId, setMelodyId] = useState('bintang-kecil')
@@ -31,6 +65,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   const [positionSec, setPositionSec] = useState<number | null>(null)
   const [bpm, setBpm] = useState<number | null>(null)
   const [countInBeats, setCountInBeats] = useState<number>(4)
+  const [angklungPerPlayer, setAngklungPerPlayer] = useState<number>(2)
+  const [showWhy, setShowWhy] = useState(false)
 
   const schedulerRef = useRef<Scheduler<NoteAssignment | null> | null>(null)
   const frameRef = useRef<number | null>(null)
@@ -44,8 +80,14 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   const durationSec = useMemo(() => melodyDurationSec(melody, tempo), [melody, tempo])
 
   const result = useMemo(
-    () => distribute({ notes, set, ...(playerCount === null ? {} : { playerCount }) }),
-    [notes, set, playerCount],
+    () =>
+      distribute({
+        notes,
+        set,
+        maxAngklungPerPlayer: angklungPerPlayer,
+        ...(playerCount === null ? {} : { playerCount }),
+      }),
+    [notes, set, playerCount, angklungPerPlayer],
   )
 
   const minimumPlayers = result.type === 'feasible' ? result.minimumPlayers : null
@@ -69,7 +111,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   // a distribution it no longer matches.
   useEffect(() => {
     stop()
-  }, [melodyId, playerCount, mode, tempo, countInBeats, stop])
+  }, [melodyId, playerCount, mode, tempo, countInBeats, angklungPerPlayer, stop])
 
   const start = useCallback(() => {
     if (engine === null || result.type !== 'feasible') return
@@ -193,6 +235,33 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           </select>
         </label>
 
+        {/*
+          * The two-hands assumption, which was a constant in the solver and
+          * invisible here. It does the most argumentative work of anything on
+          * the page: one angklung each is how most school ensembles actually
+          * run, and it changes the number of people a song needs.
+          */}
+        <fieldset className="min-w-0">
+          <legend className="eyebrow mb-1.5">{dict.ansambel.perPlayerLabel}</legend>
+          <div className="inline-flex gap-1 rounded-full border border-stage-line bg-stage p-1">
+            {PER_PLAYER_CHOICES.map((count) => (
+              <button
+                key={count}
+                type="button"
+                onClick={() => setAngklungPerPlayer(count)}
+                aria-pressed={angklungPerPlayer === count}
+                className={
+                  angklungPerPlayer === count
+                    ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
+                    : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink'
+                }
+              >
+                {count === 1 ? dict.ansambel.perPlayerOne : dict.ansambel.perPlayerTwo}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+
         <fieldset className="min-w-0">
           <legend className="eyebrow mb-1.5">{dict.ansambel.mode}</legend>
           <div className="inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage p-1">
@@ -279,15 +348,39 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
         </section>
       ) : (
         <>
-          <div className="flex flex-wrap gap-x-10 gap-y-4 rounded-card border border-stage-line bg-stage-raised/60 px-6 py-5">
-            <Stat
-              value={String(minimumPlayers ?? '—')}
-              label={`${dict.ansambel.needs} ${dict.ansambel.player.toLowerCase()}`}
-              tone="sounding"
-            />
-            <Stat value={String(result.players.length)} label={dict.ansambel.playersLabel} />
-            <Stat value={String(melody.notes.length)} label={dict.ansambel.notesCount} />
-            <Stat value={`${Math.round(durationSec)}s`} label={melody.title} />
+          <div className="space-y-4 rounded-card border border-stage-line bg-stage-raised/60 px-6 py-5">
+            <div className="flex flex-wrap items-end gap-x-10 gap-y-4">
+              <Stat
+                value={String(minimumPlayers ?? '—')}
+                label={`${dict.ansambel.needs} ${dict.ansambel.player.toLowerCase()}`}
+                tone="sounding"
+              />
+              <Stat value={String(result.players.length)} label={dict.ansambel.playersLabel} />
+              <Stat value={String(melody.notes.length)} label={dict.ansambel.notesCount} />
+              <Stat value={`${Math.round(durationSec)}s`} label={melody.title} />
+
+              {/* The headline number is the one figure a visitor cannot check.
+                  This is where it stops being an assertion. */}
+              <button
+                type="button"
+                onClick={() => setShowWhy((current) => !current)}
+                aria-expanded={showWhy}
+                className="ml-auto rounded-full border border-stage-strong px-3.5 py-1.5 text-step--1 text-ink-muted transition duration-200 ease-physical hover:border-bamboo hover:text-ink"
+              >
+                {showWhy ? dict.ansambel.hideWhy : dict.ansambel.whyThisNumber}
+              </button>
+            </div>
+
+            {showWhy ? (
+              <div className="rise-in space-y-2 border-t border-stage-line pt-4">
+                {describeDriver(result.minimumDriver, dict).map((sentence) => (
+                  <p key={sentence} className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
+                    {sentence}
+                  </p>
+                ))}
+                <p className="text-step--1 text-ink-faint">{dict.ansambel.perPlayerHint}</p>
+              </div>
+            ) : null}
           </div>
 
           <CueLane upcoming={upcoming} beatSec={beatSec} dict={dict} />
@@ -335,6 +428,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
               durationSec={durationSec}
               positionSec={positionSec}
               yourPlayerIndex={yourPlayerIndex}
+              peakSec={showWhy ? result.peak.atSec : null}
+              peakNoteIndexes={showWhy ? result.peak.noteIndexes : []}
               dict={dict}
             />
           </section>

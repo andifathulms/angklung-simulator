@@ -32,6 +32,41 @@ export type Infeasibility =
       readonly available: number
     }
 
+/**
+ * The busiest instant in the piece: how many notes sound together, when, and
+ * which ones. The count alone was already the floor on ensemble size; the
+ * instant is what makes that floor checkable instead of merely asserted.
+ */
+export interface Peak {
+  readonly count: number
+  readonly atSec: number
+  readonly noteIndexes: readonly number[]
+  /** True when some other instant reaches the same count. The first is reported. */
+  readonly tied: boolean
+}
+
+/**
+ * Why the minimum is the number it is. Three different things can force it, and
+ * conflating them is how "you need eight people" becomes a fact to memorise
+ * rather than a mechanism to understand.
+ *
+ * `tumpang-tindih` — notes sound together, so that many hands must be in the air
+ *   at once. This is the concept the project exists to demonstrate.
+ * `jumlah-nada` — nothing overlaps much, but there are more distinct pitches than
+ *   the ensemble can hold at two angklung each. Hands, not simultaneity.
+ * `penempatan` — neither bound is reached: the pitches cannot be packed into that
+ *   many players without two of them colliding somewhere. The rarest case, and
+ *   the only one that is a property of the whole piece rather than one instant.
+ */
+export type MinimumDriver =
+  | { readonly type: 'tumpang-tindih'; readonly peak: Peak }
+  | {
+      readonly type: 'jumlah-nada'
+      readonly distinctPitches: number
+      readonly maxAngklungPerPlayer: number
+    }
+  | { readonly type: 'penempatan'; readonly distinctPitches: number }
+
 export interface PlayerPart {
   readonly playerIndex: number
   /** The one or two angklung this player holds for the whole piece. */
@@ -53,11 +88,15 @@ export type DistributionResult =
       /** Most angklung sounding at once — the floor on how many people are needed. */
       readonly maxSimultaneous: number
       readonly minimumPlayers: number
+      /** The busiest instant, and why the minimum is what it is. */
+      readonly peak: Peak
+      readonly minimumDriver: MinimumDriver
     }
   | {
       readonly type: 'infeasible'
       readonly reasons: readonly Infeasibility[]
       readonly maxSimultaneous: number
+      readonly peak: Peak
     }
 
 export interface DistributeOptions {
@@ -73,8 +112,26 @@ function overlaps(a: TimedNote, b: TimedNote): boolean {
   return a.startSec < b.startSec + b.durationSec && b.startSec < a.startSec + a.durationSec
 }
 
-/** The largest number of notes sounding at the same instant. */
-export function maxSimultaneousNotes(notes: readonly TimedNote[]): number {
+/** Which notes are sounding at an instant. A note ending exactly here has stopped. */
+function soundingAt(notes: readonly TimedNote[], atSec: number): number[] {
+  return notes
+    .filter((note) => note.startSec <= atSec && atSec < note.startSec + note.durationSec)
+    .map((note) => note.index)
+    .sort((a, b) => a - b)
+}
+
+/**
+ * The busiest instant: how many notes sound together, and where.
+ *
+ * The sweep already knew when the peak occurred and threw it away, returning only
+ * the height. The height is the floor on ensemble size; the instant is the
+ * evidence for it, and without the evidence the number is just a number.
+ *
+ * The first instant reaching the peak is the one reported — deterministically,
+ * since ties are common in a regular melody and picking one arbitrarily would
+ * make the same input answer differently on different runs. `tied` says so.
+ */
+export function peakSimultaneity(notes: readonly TimedNote[]): Peak {
   const edges = notes
     .flatMap((note) => [
       { timeSec: note.startSec, delta: 1 },
@@ -85,18 +142,40 @@ export function maxSimultaneousNotes(notes: readonly TimedNote[]): number {
     .sort((a, b) => a.timeSec - b.timeSec || a.delta - b.delta)
 
   let current = 0
-  let peak = 0
+  let count = 0
+  let atSec = 0
+  let occurrences = 0
+
   for (const edge of edges) {
     current += edge.delta
-    peak = Math.max(peak, current)
+    if (current > count) {
+      count = current
+      atSec = edge.timeSec
+      occurrences = 1
+    } else if (current === count && edge.delta === 1) {
+      // Reached the same height again after dropping away from it.
+      occurrences += 1
+    }
   }
-  return peak
+
+  return {
+    count,
+    atSec,
+    noteIndexes: count === 0 ? [] : soundingAt(notes, atSec),
+    tied: occurrences > 1,
+  }
+}
+
+/** The largest number of notes sounding at the same instant. */
+export function maxSimultaneousNotes(notes: readonly TimedNote[]): number {
+  return peakSimultaneity(notes).count
 }
 
 export function distribute(options: DistributeOptions): DistributionResult {
   const { notes, set } = options
   const maxPerPlayer = options.maxAngklungPerPlayer ?? DEFAULT_MAX_ANGKLUNG_PER_PLAYER
-  const maxSimultaneous = maxSimultaneousNotes(notes)
+  const peak = peakSimultaneity(notes)
+  const maxSimultaneous = peak.count
   const reasons: Infeasibility[] = []
 
   // 1. Every note needs an angklung that exists in the set.
@@ -142,7 +221,7 @@ export function distribute(options: DistributeOptions): DistributionResult {
     }
   }
 
-  if (reasons.length > 0) return { type: 'infeasible', reasons, maxSimultaneous }
+  if (reasons.length > 0) return { type: 'infeasible', reasons, maxSimultaneous, peak }
 
   // 3. Two pitches cannot go to one player if they are ever needed together.
   const pitchIds = [...notesByPitch.keys()]
@@ -174,6 +253,7 @@ export function distribute(options: DistributeOptions): DistributionResult {
         },
       ],
       maxSimultaneous,
+      peak,
     }
   }
 
@@ -203,13 +283,51 @@ export function distribute(options: DistributeOptions): DistributionResult {
   })
   assignments.sort((a, b) => a.note.index - b.note.index)
 
+  /*
+   * The minimum is a property of the piece, not of what was asked for. When a
+   * fixed ensemble size is requested, `grouping` is a valid packing into that
+   * many players and its length is not necessarily the smallest — so the
+   * reported minimum comes from its own search either way. Otherwise asking for
+   * twelve players could make the headline number drift upward, which would be
+   * the one number on the page changing for a reason the visitor cannot see.
+   */
+  const smallest =
+    requested === undefined
+      ? grouping
+      : (searchFromLowerBound(pitchIds, conflicts, maxPerPlayer, lowerBound) ?? grouping)
+  const minimumPlayers = smallest.length
+
   return {
     type: 'feasible',
     players,
     assignments,
     maxSimultaneous,
-    minimumPlayers: grouping.length,
+    minimumPlayers,
+    peak,
+    minimumDriver: driverFor(minimumPlayers, peak, pitchIds.length, maxPerPlayer),
   }
+}
+
+/**
+ * Which of the three bounds actually forced the minimum.
+ *
+ * Overlap is checked first and reported when it alone is enough, because it is
+ * the honest answer whenever it is true — the notes really do sound together and
+ * really do need that many hands. The other two are what remain when they don't.
+ */
+function driverFor(
+  minimumPlayers: number,
+  peak: Peak,
+  distinctPitches: number,
+  maxAngklungPerPlayer: number,
+): MinimumDriver {
+  if (peak.count >= minimumPlayers && peak.count > 0) {
+    return { type: 'tumpang-tindih', peak }
+  }
+  if (Math.ceil(distinctPitches / maxAngklungPerPlayer) >= minimumPlayers) {
+    return { type: 'jumlah-nada', distinctPitches, maxAngklungPerPlayer }
+  }
+  return { type: 'penempatan', distinctPitches }
 }
 
 function buildConflictGraph(

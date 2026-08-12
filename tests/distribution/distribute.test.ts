@@ -5,6 +5,7 @@ import {
   distribute,
   maxSimultaneousNotes,
   partFor,
+  peakSimultaneity,
 } from '@/lib/distribute'
 import { MELODIES, getMelody, toTimedNotes } from '@/lib/melody'
 import { buildSet, getSet } from '@/lib/set'
@@ -237,5 +238,132 @@ describe('a fixed ensemble', () => {
     })
     if (result.type !== 'feasible') throw new Error('seharusnya bisa dimainkan')
     expect(result.minimumPlayers).toBe(2)
+  })
+})
+
+describe('the busiest instant', () => {
+  it('reports where the peak is, not just how high', () => {
+    const peak = peakSimultaneity(
+      notes([
+        ['C4', 0, 1],
+        ['D4', 2, 1],
+        ['E4', 2, 1],
+        ['G4', 2, 1],
+      ]),
+    )
+    expect(peak.count).toBe(3)
+    expect(peak.atSec).toBe(2)
+    expect(peak.noteIndexes).toEqual([1, 2, 3])
+    expect(peak.tied).toBe(false)
+  })
+
+  it('reports the first of several equally busy instants, and says they tie', () => {
+    const peak = peakSimultaneity(
+      notes([
+        ['C4', 0, 1],
+        ['E4', 0, 1],
+        ['D4', 4, 1],
+        ['G4', 4, 1],
+      ]),
+    )
+    expect(peak.count).toBe(2)
+    expect(peak.atSec).toBe(0)
+    expect(peak.noteIndexes).toEqual([0, 1])
+    expect(peak.tied).toBe(true)
+  })
+
+  it('does not count a note that ends exactly as the next begins', () => {
+    const peak = peakSimultaneity(
+      notes([
+        ['C4', 0, 1],
+        ['D4', 1, 1],
+      ]),
+    )
+    expect(peak.count).toBe(1)
+    expect(peak.noteIndexes).toHaveLength(1)
+  })
+
+  it('agrees with the height the sweep already reported', () => {
+    for (const melody of MELODIES) {
+      const timed = toTimedNotes(melody)
+      expect(peakSimultaneity(timed).count).toBe(maxSimultaneousNotes(timed))
+    }
+  })
+
+  it('holds an empty melody at zero', () => {
+    const peak = peakSimultaneity([])
+    expect(peak.count).toBe(0)
+    expect(peak.noteIndexes).toEqual([])
+  })
+})
+
+describe('why the minimum is the number it is', () => {
+  it('blames overlap when notes genuinely sound together', () => {
+    const result = distribute({
+      notes: notes([
+        ['C4', 0, 2],
+        ['E4', 0, 2],
+        ['G4', 0, 2],
+      ]),
+      set: diatonis,
+    })
+    if (result.type !== 'feasible') throw new Error('seharusnya bisa dimainkan')
+    expect(result.minimumPlayers).toBe(3)
+    expect(result.minimumDriver.type).toBe('tumpang-tindih')
+    if (result.minimumDriver.type !== 'tumpang-tindih') return
+    expect(result.minimumDriver.peak.count).toBe(3)
+    expect(result.minimumDriver.peak.atSec).toBe(0)
+  })
+
+  it('blames the count of notes when nothing overlaps at all', () => {
+    // Six distinct pitches, strictly one after another. No instant needs two
+    // hands; six angklung at two per player still needs three people.
+    const result = distribute({
+      notes: notes([
+        ['C4', 0, 1],
+        ['D4', 1, 1],
+        ['E4', 2, 1],
+        ['F4', 3, 1],
+        ['G4', 4, 1],
+        ['A4', 5, 1],
+      ]),
+      set: diatonis,
+    })
+    if (result.type !== 'feasible') throw new Error('seharusnya bisa dimainkan')
+    expect(result.maxSimultaneous).toBe(1)
+    expect(result.minimumPlayers).toBe(3)
+    expect(result.minimumDriver.type).toBe('jumlah-nada')
+    if (result.minimumDriver.type !== 'jumlah-nada') return
+    expect(result.minimumDriver.distinctPitches).toBe(6)
+    expect(result.minimumDriver.maxAngklungPerPlayer).toBe(2)
+  })
+
+  it('names a driver for every melody that ships', () => {
+    for (const melody of MELODIES) {
+      const result = distribute({
+        notes: toTimedNotes(melody),
+        set: buildSet(getSet(melody.setId)),
+      })
+      if (result.type !== 'feasible') throw new Error(`${melody.id} seharusnya bisa dimainkan`)
+      expect(['tumpang-tindih', 'jumlah-nada', 'penempatan']).toContain(
+        result.minimumDriver.type,
+      )
+    }
+  })
+})
+
+describe('the minimum is a property of the piece', () => {
+  it('does not drift when a larger ensemble is requested', () => {
+    const melody = getMelody('bintang-kecil')
+    const timed = toTimedNotes(melody)
+    const alone = distribute({ notes: timed, set: diatonis })
+    if (alone.type !== 'feasible') throw new Error('seharusnya bisa dimainkan')
+
+    for (const playerCount of [alone.minimumPlayers, alone.minimumPlayers + 3, 16]) {
+      const sized = distribute({ notes: timed, set: diatonis, playerCount })
+      if (sized.type !== 'feasible') throw new Error('seharusnya bisa dimainkan')
+      expect(sized.minimumPlayers).toBe(alone.minimumPlayers)
+      expect(sized.players).toHaveLength(playerCount)
+    }
   })
 })

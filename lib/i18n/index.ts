@@ -125,6 +125,16 @@ export interface Dictionary {
     readonly pickPlayer: string
     readonly waiting: string
     readonly infeasible: string
+    readonly whyThisNumber: string
+    readonly hideWhy: string
+    readonly driverOverlap: string
+    readonly driverOverlapTied: string
+    readonly driverNoteCount: string
+    readonly driverPacking: string
+    readonly perPlayerLabel: string
+    readonly perPlayerOne: string
+    readonly perPlayerTwo: string
+    readonly perPlayerHint: string
   }
   readonly teknik: {
     readonly title: string
@@ -334,6 +344,20 @@ const id: Dictionary = {
     pickPlayer: 'Pilih pemain',
     waiting: 'menunggu',
     infeasible: 'Tidak bisa dimainkan seperti ini',
+    whyThisNumber: 'Kenapa segini?',
+    hideWhy: 'Tutup',
+    driverOverlap:
+      'Pada detik {atSec}, {count} nada berbunyi bersamaan. Sebanyak itu tangan harus berada di udara pada saat yang sama — dan di situlah satu orang kehabisan tangan.',
+    driverOverlapTied: 'Saat sesibuk itu terjadi lebih dari sekali; yang ditandai adalah yang pertama.',
+    driverNoteCount:
+      'Tidak ada nada yang bertumpuk di lagu ini. Yang menentukan justru jumlahnya: ada {distinct} nada berbeda, dan satu orang paling banyak memegang {perPlayer} angklung.',
+    driverPacking:
+      '{distinct} nada berbeda tidak bisa dibagi ke lebih sedikit orang tanpa ada dua nada yang bentrok di suatu tempat.',
+    perPlayerLabel: 'Angklung per orang',
+    perPlayerOne: 'satu',
+    perPlayerTwo: 'dua',
+    perPlayerHint:
+      'Dua tangan, dua angklung — itu batas yang dipakai di sini. Di banyak kelas tiap anak memegang satu, dan jumlah orang yang dibutuhkan pun berubah.',
   },
   teknik: {
     title: 'Laboratorium teknik',
@@ -548,6 +572,20 @@ const en: Dictionary = {
     pickPlayer: 'Choose a player',
     waiting: 'waiting',
     infeasible: 'Cannot be played like this',
+    whyThisNumber: 'Why this number?',
+    hideWhy: 'Close',
+    driverOverlap:
+      'At {atSec} seconds, {count} notes sound together. That many hands have to be in the air at the same instant — which is exactly where one person runs out of hands.',
+    driverOverlapTied: 'That busiest moment happens more than once; the first is the one marked.',
+    driverNoteCount:
+      'Nothing overlaps in this piece. What decides it is the count: {distinct} distinct notes, and one person holds at most {perPlayer} angklung.',
+    driverPacking:
+      '{distinct} distinct notes cannot be split between fewer people without two of them colliding somewhere.',
+    perPlayerLabel: 'Angklung per person',
+    perPlayerOne: 'one',
+    perPlayerTwo: 'two',
+    perPlayerHint:
+      'Two hands, two angklung — that is the limit used here. In many classrooms each child holds exactly one, and the number of people needed changes with it.',
   },
   teknik: {
     title: 'Technique lab',
@@ -639,6 +677,18 @@ const en: Dictionary = {
 }
 
 const DICTIONARIES: Record<Locale, Dictionary> = { id, en }
+
+/**
+ * Fill `{name}` placeholders in a dictionary string. Copy that has to wrap around
+ * a number belongs in the dictionary as one sentence, not as three fragments a
+ * component concatenates — Indonesian and English do not put the number in the
+ * same place, and concatenation quietly assumes they do.
+ */
+export function fill(template: string, values: Readonly<Record<string, string | number>>): string {
+  return template.replace(/\{(\w+)\}/g, (whole, key: string) =>
+    key in values ? String(values[key]) : whole,
+  )
+}
 
 export function getDictionary(locale: Locale): Dictionary {
   return DICTIONARIES[locale]

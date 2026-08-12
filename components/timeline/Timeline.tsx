@@ -16,6 +16,9 @@ export interface TimelineProps {
   readonly durationSec: number
   readonly positionSec: number | null
   readonly yourPlayerIndex: number | null
+  /** The instant that forces the ensemble size, when the visitor asks to see it. */
+  readonly peakSec?: number | null
+  readonly peakNoteIndexes?: readonly number[]
   readonly dict: Dictionary
 }
 
@@ -24,9 +27,12 @@ export function Timeline({
   durationSec,
   positionSec,
   yourPlayerIndex,
+  peakSec = null,
+  peakNoteIndexes = [],
   dict,
 }: TimelineProps) {
   const width = Math.max(320, durationSec * PX_PER_SEC + 24)
+  const atPeak = new Set(peakNoteIndexes)
 
   return (
     <div className="overflow-x-auto">
@@ -41,6 +47,22 @@ export function Timeline({
             />
           ))}
         </div>
+
+        {/*
+          * The forcing instant, drawn in plain ink and dashed.
+          *
+          * Not cue amber, not sounding, not jade: those four colours carry one
+          * meaning each (invariant 12) and this is none of them. It is an
+          * annotation about the structure of the piece rather than a signal
+          * about the state of an instrument, so it gets the neutral.
+          */}
+        {peakSec !== null ? (
+          <div
+            className="pointer-events-none absolute top-0 z-10 h-full border-l border-dashed border-ink/70"
+            style={{ left: peakSec * PX_PER_SEC }}
+            aria-hidden="true"
+          />
+        ) : null}
 
         {positionSec !== null && positionSec >= 0 ? (
           <div
@@ -69,6 +91,7 @@ export function Timeline({
                     className={[
                       'absolute top-1.5 rounded-sm',
                       isYours ? 'bg-yourPart' : 'bg-bamboo/70',
+                      atPeak.has(note.index) ? 'ring-1 ring-ink' : '',
                     ].join(' ')}
                     style={{
                       left: note.startSec * PX_PER_SEC,
