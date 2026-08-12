@@ -168,7 +168,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
           </p>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-3">
+        <div className="grid gap-x-5 gap-y-4 lg:grid-cols-3 lg:grid-rows-[auto_auto_auto_auto]">
           {TUNINGS.map((tuning) => {
             const definition = tuned(tuning)
             const isPlaying = playingId === tuning.id
@@ -177,7 +177,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
             return (
               <article
                 key={tuning.id}
-                className="flex flex-col gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5"
+                className="grid grid-cols-1 content-start gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5 lg:row-span-4 lg:grid-rows-subgrid lg:gap-y-4"
               >
                 <header className="space-y-2">
                   <h3 className="font-display text-step-2 text-sounding">{tuning.name}</h3>
@@ -187,7 +187,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                 <Button
                   tone="primary"
                   size="sm"
-                  className="self-start"
+                  className="self-start justify-self-start"
                   disabled={status !== 'siap'}
                   onClick={() => (isPlaying ? stop() : playPhrase(tuning))}
                 >
@@ -246,7 +246,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                 ) : null}
               </div>
 
-              <footer className="mt-auto space-y-1 border-t border-stage-line pt-3 text-step--2 leading-relaxed text-ink-faint">
+              <footer className="space-y-1 border-t border-stage-line pt-3 text-step--2 leading-relaxed text-ink-faint">
                 <p className="font-mono uppercase tracking-widest">{dict.laras.source}</p>
                 <p>{tuning.source.title}</p>
                 <p>{tuning.source.note}</p>
