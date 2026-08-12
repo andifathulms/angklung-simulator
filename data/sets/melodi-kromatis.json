@@ -1,0 +1,39 @@
+{
+  "id": "melodi-kromatis",
+  "name": "Set melodi kromatis — dua oktaf",
+  "laras": "padaeng",
+  "kind": "melodi",
+  "description": "Dua oktaf kromatis, C4–C6. Set inilah yang membuat angklung bisa memainkan lagu apa pun bersama alat musik Barat — dan yang membuat sebuah lagu butuh banyak pemain.",
+  "numberingNote": "Nomor berjalan dari tabung terendah ke tertinggi. Nomor inilah yang diberi aba-aba dengan jari oleh pemimpin ansambel, jadi nomor adalah identitas angklung — bukan nama nadanya.",
+  "source": {
+    "title": "Angklung padaeng, Daeng Soetigna (1938): rangkaian diatonis-kromatis dengan penomoran melodi",
+    "note": "Rentang dan jumlah angklung berbeda antar perangkat; dua oktaf adalah ukuran ansambel sekolah yang lazim, bukan ukuran baku."
+  },
+  "entries": [
+    { "degree": "C", "octave": 4 },
+    { "degree": "C#", "octave": 4 },
+    { "degree": "D", "octave": 4 },
+    { "degree": "D#", "octave": 4 },
+    { "degree": "E", "octave": 4 },
+    { "degree": "F", "octave": 4 },
+    { "degree": "F#", "octave": 4 },
+    { "degree": "G", "octave": 4 },
+    { "degree": "G#", "octave": 4 },
+    { "degree": "A", "octave": 4 },
+    { "degree": "A#", "octave": 4 },
+    { "degree": "B", "octave": 4 },
+    { "degree": "C", "octave": 5 },
+    { "degree": "C#", "octave": 5 },
+    { "degree": "D", "octave": 5 },
+    { "degree": "D#", "octave": 5 },
+    { "degree": "E", "octave": 5 },
+    { "degree": "F", "octave": 5 },
+    { "degree": "F#", "octave": 5 },
+    { "degree": "G", "octave": 5 },
+    { "degree": "G#", "octave": 5 },
+    { "degree": "A", "octave": 5 },
+    { "degree": "A#", "octave": 5 },
+    { "degree": "B", "octave": 5 },
+    { "degree": "C", "octave": 6 }
+  ]
+}

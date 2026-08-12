@@ -1,0 +1,96 @@
+{
+  "id": "latihan-pelog-degung",
+  "title": "Latihan Pelog Degung",
+  "subtitle": "ciptaan sendiri — frasa pembanding laras",
+  "setId": "pelog-degung-pentatonis",
+  "laras": "pelog-degung",
+  "provenance": "ciptaan-sendiri",
+  "source": {
+    "title": "Ciptaan sendiri, ditulis untuk simulator ini",
+    "note": "Frasa yang sama persis dengan Latihan Salendro, agar yang berbeda hanya larasnya."
+  },
+  "bpm": 92,
+  "beatsPerBar": 4,
+  "notes": [
+    {
+      "pitchId": "da4",
+      "startBeat": 0,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "mi4",
+      "startBeat": 1,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "na4",
+      "startBeat": 2,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "ti4",
+      "startBeat": 3,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "la4",
+      "startBeat": 4,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "da5",
+      "startBeat": 5,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "la4",
+      "startBeat": 6,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "ti4",
+      "startBeat": 8,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "na4",
+      "startBeat": 9,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "mi4",
+      "startBeat": 10,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "da4",
+      "startBeat": 11,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "na4",
+      "startBeat": 12,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "ti4",
+      "startBeat": 13,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "la4",
+      "startBeat": 14,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "da5",
+      "startBeat": 15,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "da4",
+      "startBeat": 16,
+      "durationBeats": 2
+    }
+  ]
+}

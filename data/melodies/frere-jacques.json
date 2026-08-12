@@ -1,0 +1,176 @@
+{
+  "id": "frere-jacques",
+  "title": "Frère Jacques",
+  "subtitle": "kanon rakyat Perancis",
+  "setId": "melodi-kromatis",
+  "laras": "padaeng",
+  "provenance": "domain-publik",
+  "source": {
+    "title": "\"Frère Jacques\", lagu rakyat Perancis tanpa pencipta tercatat — domain publik",
+    "note": "Ditranspos ke oktaf atas agar nada terendahnya tetap masuk dalam set melodi kromatis C4–C6."
+  },
+  "bpm": 108,
+  "beatsPerBar": 4,
+  "notes": [
+    {
+      "pitchId": "C5",
+      "startBeat": 0,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D5",
+      "startBeat": 1,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E5",
+      "startBeat": 2,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 3,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 4,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D5",
+      "startBeat": 5,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E5",
+      "startBeat": 6,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 7,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E5",
+      "startBeat": 8,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F5",
+      "startBeat": 9,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G5",
+      "startBeat": 10,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "E5",
+      "startBeat": 12,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F5",
+      "startBeat": 13,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G5",
+      "startBeat": 14,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "G5",
+      "startBeat": 16,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "A5",
+      "startBeat": 16.5,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "G5",
+      "startBeat": 17,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "F5",
+      "startBeat": 17.5,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "E5",
+      "startBeat": 18,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 19,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G5",
+      "startBeat": 20,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "A5",
+      "startBeat": 20.5,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "G5",
+      "startBeat": 21,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "F5",
+      "startBeat": 21.5,
+      "durationBeats": 0.5
+    },
+    {
+      "pitchId": "E5",
+      "startBeat": 22,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 23,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 24,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 25,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 26,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 28,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 29,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C5",
+      "startBeat": 30,
+      "durationBeats": 2
+    }
+  ]
+}

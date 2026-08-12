@@ -1,0 +1,24 @@
+{
+  "id": "salendro-pentatonis",
+  "name": "Set salendro — dua oktaf pentatonis",
+  "laras": "salendro",
+  "kind": "melodi",
+  "description": "Sepuluh angklung dalam laras salendro. Perangkat seperti ini tidak bisa begitu saja bergabung dengan ansambel padaeng — dan itulah sebabnya laras diatonis-kromatis 1938 penting.",
+  "numberingNote": "Nomor berjalan dari tabung terendah ke tertinggi.",
+  "source": {
+    "title": "Laras salendro sebagaimana didokumentasikan pada data/tunings/salendro.json",
+    "note": "Rentang dua oktaf dipilih agar sebanding dengan set padaeng pada halaman perbandingan laras; bukan ukuran perangkat baku."
+  },
+  "entries": [
+    { "degree": "da", "octave": 4 },
+    { "degree": "mi", "octave": 4 },
+    { "degree": "na", "octave": 4 },
+    { "degree": "ti", "octave": 4 },
+    { "degree": "la", "octave": 4 },
+    { "degree": "da", "octave": 5 },
+    { "degree": "mi", "octave": 5 },
+    { "degree": "na", "octave": 5 },
+    { "degree": "ti", "octave": 5 },
+    { "degree": "la", "octave": 5 }
+  ]
+}

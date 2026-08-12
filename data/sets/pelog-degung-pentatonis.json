@@ -1,0 +1,24 @@
+{
+  "id": "pelog-degung-pentatonis",
+  "name": "Set pelog degung — dua oktaf pentatonis",
+  "laras": "pelog-degung",
+  "kind": "melodi",
+  "description": "Sepuluh angklung dalam laras pelog degung. Langkah lebar dan sempitnya berselang, dan itulah warna degung yang tidak bisa ditiru oleh tangga nada diatonis.",
+  "numberingNote": "Nomor berjalan dari tabung terendah ke tertinggi.",
+  "source": {
+    "title": "Laras pelog degung sebagaimana didokumentasikan pada data/tunings/pelog-degung.json",
+    "note": "Rentang dua oktaf dipilih agar sebanding dengan set padaeng pada halaman perbandingan laras; bukan ukuran perangkat baku."
+  },
+  "entries": [
+    { "degree": "da", "octave": 4 },
+    { "degree": "mi", "octave": 4 },
+    { "degree": "na", "octave": 4 },
+    { "degree": "ti", "octave": 4 },
+    { "degree": "la", "octave": 4 },
+    { "degree": "da", "octave": 5 },
+    { "degree": "mi", "octave": 5 },
+    { "degree": "na", "octave": 5 },
+    { "degree": "ti", "octave": 5 },
+    { "degree": "la", "octave": 5 }
+  ]
+}

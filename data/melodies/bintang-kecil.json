@@ -1,0 +1,226 @@
+{
+  "id": "bintang-kecil",
+  "title": "Bintang Kecil",
+  "subtitle": "melodi \"Ah! vous dirai-je, maman\"",
+  "setId": "melodi-diatonis",
+  "laras": "padaeng",
+  "provenance": "domain-publik",
+  "source": {
+    "title": "\"Ah! vous dirai-je, maman\", melodi Perancis terbit 1761 — domain publik",
+    "note": "Melodi yang sama dipakai di Indonesia untuk \"Bintang Kecil\". Yang dimuat di sini hanya melodinya, tanpa lirik."
+  },
+  "bpm": 96,
+  "beatsPerBar": 4,
+  "notes": [
+    {
+      "pitchId": "C4",
+      "startBeat": 0,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C4",
+      "startBeat": 1,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 2,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 3,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "A4",
+      "startBeat": 4,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "A4",
+      "startBeat": 5,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 6,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 8,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 9,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 10,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 11,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D4",
+      "startBeat": 12,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D4",
+      "startBeat": 13,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C4",
+      "startBeat": 14,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 16,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 17,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 18,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 19,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 20,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 21,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D4",
+      "startBeat": 22,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 24,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 25,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 26,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 27,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 28,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 29,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D4",
+      "startBeat": 30,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "C4",
+      "startBeat": 32,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C4",
+      "startBeat": 33,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 34,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 35,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "A4",
+      "startBeat": 36,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "A4",
+      "startBeat": 37,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "G4",
+      "startBeat": 38,
+      "durationBeats": 2
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 40,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "F4",
+      "startBeat": 41,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 42,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "E4",
+      "startBeat": 43,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D4",
+      "startBeat": 44,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "D4",
+      "startBeat": 45,
+      "durationBeats": 1
+    },
+    {
+      "pitchId": "C4",
+      "startBeat": 46,
+      "durationBeats": 2
+    }
+  ]
+}

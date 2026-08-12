@@ -1,0 +1,22 @@
+{
+  "id": "melodi-diatonis",
+  "name": "Set melodi diatonis — satu oktaf",
+  "laras": "padaeng",
+  "kind": "melodi",
+  "description": "Delapan angklung, C4–C5. Ukuran kelas kecil: cukup untuk satu lagu sederhana, dan cukup untuk merasakan bahwa satu orang tidak bisa memainkannya sendiri.",
+  "numberingNote": "Nomor berjalan dari tabung terendah ke tertinggi, sama seperti set kromatis.",
+  "source": {
+    "title": "Angklung padaeng, Daeng Soetigna (1938); subset diatonis untuk pengajaran",
+    "note": "Satu oktaf diatonis adalah pilihan pengajaran yang lazim, bukan perangkat baku."
+  },
+  "entries": [
+    { "degree": "C", "octave": 4 },
+    { "degree": "D", "octave": 4 },
+    { "degree": "E", "octave": 4 },
+    { "degree": "F", "octave": 4 },
+    { "degree": "G", "octave": 4 },
+    { "degree": "A", "octave": 4 },
+    { "degree": "B", "octave": 4 },
+    { "degree": "C", "octave": 5 }
+  ]
+}

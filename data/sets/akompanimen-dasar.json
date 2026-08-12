@@ -1,0 +1,20 @@
+{
+  "id": "akompanimen-dasar",
+  "name": "Set akompanimen — enam akor",
+  "laras": "padaeng",
+  "kind": "akompanimen",
+  "description": "Angklung akompanimen bukan satu nada, melainkan satu akor. Empat tabung berbunyi bersama; kelingking pemain menahan satu tabung dan akornya berubah.",
+  "numberingNote": "Angklung akompanimen dikenali dari nama akornya, bukan dari nomor melodi — tetapi tetap diberi nomor agar aba-aba tangan bekerja sama seperti pada angklung melodi.",
+  "source": {
+    "title": "Angklung akompanimen padaeng: empat tabung berbunyi septim dominan; satu tabung ditengkep menyisakan trinada mayor (PRD §2)",
+    "note": "Susunan akor dikutip; kualitas minor disertakan karena mekanismenya sama, bukan karena sumber yang sama mendokumentasikannya."
+  },
+  "entries": [
+    { "degree": "C", "octave": 3, "kualitas": "mayor" },
+    { "degree": "D", "octave": 3, "kualitas": "minor" },
+    { "degree": "E", "octave": 3, "kualitas": "minor" },
+    { "degree": "F", "octave": 3, "kualitas": "mayor" },
+    { "degree": "G", "octave": 3, "kualitas": "mayor" },
+    { "degree": "A", "octave": 3, "kualitas": "minor" }
+  ]
+}
