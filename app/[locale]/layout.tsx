@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { AudioProvider } from '@/components/audio/AudioProvider'
+import { MakerSignature } from '@/components/MakerSignature'
 import { SiteNav } from '@/components/SiteNav'
 import { LOCALES, getDictionary, isLocale, localePath } from '@/lib/i18n'
 
@@ -64,23 +65,34 @@ export default function LocaleLayout({
                   <p className="eyebrow">{dict.footer.respect}</p>
                   <p className="text-step--1 leading-relaxed text-ink-faint">{dict.home.ritual}</p>
                 </div>
-                <div className="flex flex-wrap gap-x-5 gap-y-2 text-step--1">
-                  <Link
-                    className="text-ink-faint transition hover:text-ink"
-                    href={localePath(locale, '/diagnostik')}
-                  >
-                    {dict.diagnostik.title}
-                  </Link>
-                  <a
-                    className="text-ink-faint transition hover:text-ink"
-                    href="https://github.com/andifathulms/angklung-simulator"
-                    rel="noreferrer noopener"
-                    target="_blank"
-                  >
-                    {dict.footer.source} ↗
-                  </a>
-                </div>
               </div>
+            </div>
+
+            {/*
+             * One seam, then the bottom bar. The project's own links sit on the
+             * left and the maker's mark on the right — kept apart because one is
+             * about the work and the other is personal credit, and merging them
+             * would make a signature look like an attribution.
+             */}
+            <div className="mt-10 flex flex-col gap-5 border-t border-stage-line pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-x-5 gap-y-2 text-step--1">
+                <Link
+                  className="text-ink-faint transition hover:text-ink"
+                  href={localePath(locale, '/diagnostik')}
+                >
+                  {dict.diagnostik.title}
+                </Link>
+                <a
+                  className="text-ink-faint transition hover:text-ink"
+                  href="https://github.com/andifathulms/angklung-simulator"
+                  rel="noreferrer noopener"
+                  target="_blank"
+                >
+                  {dict.footer.source} ↗
+                </a>
+              </div>
+
+              <MakerSignature />
             </div>
           </div>
         </footer>
