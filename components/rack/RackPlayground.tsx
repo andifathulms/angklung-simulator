@@ -77,6 +77,9 @@ export function RackPlayground({ dict }: { dict: Dictionary }) {
           ) : null}
           <p className="text-ink-muted">{dict.rak.howto}</p>
           <p>{dict.rak.keyboardHint}</p>
+          {/* Where the model stops being the instrument, said where the holding
+              happens rather than in a document nobody on this page will read. */}
+          <p className="leading-relaxed">{dict.rak.holdCaveat}</p>
         </div>
         <p className="leading-relaxed">{definition.numberingNote}</p>
       </div>

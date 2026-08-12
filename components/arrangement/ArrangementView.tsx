@@ -136,6 +136,12 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
                 {dict.ansambel.needs} {result.minimumPlayers} {dict.ansambel.player.toLowerCase()} ·{' '}
                 {notes.length} {dict.ansambel.notesCount}
               </p>
+              {/* This page reports the same figure as the ensemble view and
+                  rests on the same assumption, so it states it too rather than
+                  leaving the caveat on the other page. */}
+              <p className="max-w-readable border-l-2 border-stage-strong pl-3 text-step--1 leading-relaxed text-ink-faint">
+                {dict.ansambel.wholePieceCaveat}
+              </p>
               <ol className="grid gap-1 sm:grid-cols-2">
                 {result.players.map((player) => (
                   <li

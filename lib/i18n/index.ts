@@ -115,6 +115,7 @@ export interface Dictionary {
     readonly keyboardHint: string
     readonly nomor: string
     readonly warming: string
+    readonly holdCaveat: string
     readonly stateYourPart: string
     readonly stateCued: string
   }
@@ -414,6 +415,8 @@ const id: Dictionary = {
     keyboardHint: 'Dengan papan ketik: Tab untuk berpindah, spasi atau Enter untuk membunyikan, Shift untuk tengkep.',
     nomor: 'Nomor',
     warming: 'Menyiapkan bunyi angklung…',
+    holdCaveat:
+      'Penyederhanaan: goyangan sungguhan tidak punya panjang tertentu, jadi kurulung dan tengkep di sini dibunyikan enam detik lalu diredam begitu Anda melepas. Menahan lebih lama dari itu tidak menambah bunyi baru.',
     stateYourPart: 'bagian Anda',
     stateCued: 'sedang diaba-abakan',
   },
@@ -744,6 +747,8 @@ const en: Dictionary = {
     keyboardHint: 'By keyboard: Tab to move, space or Enter to sound, Shift for tengkep.',
     nomor: 'Number',
     warming: 'Preparing the instrument…',
+    holdCaveat:
+      'A simplification: a real shake has no set length, so kurulung and tengkep sound here for six seconds and fade as soon as you release. Holding longer than that adds nothing new.',
     stateYourPart: 'your part',
     stateCued: 'cued now',
   },
