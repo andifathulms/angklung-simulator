@@ -71,8 +71,17 @@ export interface Dictionary {
     readonly playersLabel: string
     readonly minimum: string
     readonly needs: string
+    readonly listen: string
     readonly yourPart: string
     readonly everyPart: string
+    readonly listenHint: string
+    readonly yourPartHint: string
+    readonly everyPartHint: string
+    readonly mode: string
+    readonly tempo: string
+    readonly countIn: string
+    readonly cueLane: string
+    readonly nextCue: string
     readonly play: string
     readonly stop: string
     readonly player: string
@@ -187,8 +196,19 @@ const id: Dictionary = {
     playersLabel: 'Jumlah pemain',
     minimum: 'paling sedikit',
     needs: 'Lagu ini butuh',
+    listen: 'Dengarkan',
     yourPart: 'Mainkan bagian Anda',
     everyPart: 'Mainkan semua bagian',
+    listenHint: 'Seluruh ansambel dimainkan mesin. Perhatikan berapa banyak baris yang menganggur setiap saat.',
+    yourPartHint:
+      'Mesin memainkan semua pemain lain. Bagian Anda dikosongkan — Anda yang harus masuk tepat waktu.',
+    everyPartHint:
+      'Mesin tidak memainkan apa pun. Silakan coba mainkan seluruh lagu sendirian.',
+    mode: 'Cara main',
+    tempo: 'Tempo',
+    countIn: 'Aba-aba masuk',
+    cueLane: 'Jalur aba-aba',
+    nextCue: 'Nomor berikutnya',
     play: 'Mainkan',
     stop: 'Berhenti',
     player: 'Pemain',
@@ -306,8 +326,18 @@ const en: Dictionary = {
     playersLabel: 'Players',
     minimum: 'at least',
     needs: 'This piece needs',
+    listen: 'Listen',
     yourPart: 'Play your part',
     everyPart: 'Play every part',
+    listenHint: 'The whole ensemble plays itself. Watch how many rows are idle at any moment.',
+    yourPartHint:
+      'Every other player is played for you. Your part is left silent — coming in on time is your job.',
+    everyPartHint: 'Nothing is played for you. Try to play the whole piece yourself.',
+    mode: 'Mode',
+    tempo: 'Tempo',
+    countIn: 'Count-in',
+    cueLane: 'Cue lane',
+    nextCue: 'Next number',
     play: 'Play',
     stop: 'Stop',
     player: 'Player',
