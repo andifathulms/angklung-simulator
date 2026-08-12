@@ -1,0 +1,367 @@
+/**
+ * Indonesian first, English secondary. Sundanese terminology is never translated
+ * away in either locale — kurulung, centok, tengkep, tabung dasar, laras stay as
+ * they are and are glossed on first use (invariant 16).
+ */
+export const LOCALES = ['id', 'en'] as const
+export type Locale = (typeof LOCALES)[number]
+export const DEFAULT_LOCALE: Locale = 'id'
+
+export function isLocale(value: string): value is Locale {
+  return (LOCALES as readonly string[]).includes(value)
+}
+
+export interface Dictionary {
+  readonly localeName: string
+  readonly nav: {
+    readonly beranda: string
+    readonly rak: string
+    readonly ansambel: string
+    readonly teknik: string
+    readonly laras: string
+    readonly aransemen: string
+  }
+  readonly audio: {
+    readonly start: string
+    readonly starting: string
+    readonly ready: string
+    readonly hint: string
+    readonly failed: string
+    readonly voices: string
+  }
+  readonly home: {
+    readonly title: string
+    readonly premise: string
+    readonly premiseBody: string
+    readonly whyTitle: string
+    readonly whyBody: string
+    readonly techniquesTitle: string
+    readonly tengkepTitle: string
+    readonly tengkepBody: string
+    readonly startHere: string
+    readonly creditsTitle: string
+    readonly creditsBody: string
+    readonly disclaimer: string
+    readonly ritual: string
+    readonly visit: string
+  }
+  readonly teknikNames: {
+    readonly kurulung: string
+    readonly centok: string
+    readonly tengkep: string
+  }
+  readonly teknikDesc: {
+    readonly kurulung: string
+    readonly centok: string
+    readonly tengkep: string
+  }
+  readonly rak: {
+    readonly title: string
+    readonly lede: string
+    readonly howto: string
+    readonly setLabel: string
+    readonly techniqueLabel: string
+    readonly keyboardHint: string
+    readonly nomor: string
+  }
+  readonly ansambel: {
+    readonly title: string
+    readonly lede: string
+    readonly melodyLabel: string
+    readonly playersLabel: string
+    readonly minimum: string
+    readonly needs: string
+    readonly yourPart: string
+    readonly everyPart: string
+    readonly play: string
+    readonly stop: string
+    readonly player: string
+    readonly holds: string
+    readonly holdsNothing: string
+    readonly rests: string
+    readonly notesCount: string
+    readonly cannotAlone: string
+    readonly pickPlayer: string
+    readonly waiting: string
+    readonly infeasible: string
+  }
+  readonly teknik: {
+    readonly title: string
+    readonly lede: string
+    readonly shakeRate: string
+    readonly shakeRateCited: string
+    readonly hardness: string
+    readonly hold: string
+    readonly strikes: string
+    readonly strikeTrain: string
+    readonly render: string
+    readonly sounding: string
+    readonly muted: string
+  }
+  readonly laras: {
+    readonly title: string
+    readonly lede: string
+    readonly samePhrase: string
+    readonly cents: string
+    readonly edit: string
+    readonly reset: string
+    readonly notAuthority: string
+    readonly source: string
+  }
+  readonly aransemen: {
+    readonly title: string
+    readonly lede: string
+    readonly input: string
+    readonly inputHint: string
+    readonly solve: string
+    readonly result: string
+    readonly feasible: string
+    readonly notFeasible: string
+    readonly nothingDropped: string
+  }
+}
+
+const id: Dictionary = {
+  localeName: 'Bahasa Indonesia',
+  nav: {
+    beranda: 'Beranda',
+    rak: 'Rak',
+    ansambel: 'Ansambel',
+    teknik: 'Teknik',
+    laras: 'Laras',
+    aransemen: 'Aransemen',
+  },
+  audio: {
+    start: 'Nyalakan suara',
+    starting: 'Menyalakan…',
+    ready: 'Suara menyala',
+    hint: 'Suara hanya bisa dinyalakan lewat sentuhan Anda — begitu aturan peramban, terutama di iOS.',
+    failed: 'Suara tidak bisa dinyalakan di peramban ini.',
+    voices: 'suara aktif',
+  },
+  home: {
+    title: 'Satu angklung, satu nada',
+    premise: 'Satu angklung hanya bisa membunyikan satu nada.',
+    premiseBody:
+      'Maka sebuah lagu bukan soal satu alat musik, melainkan soal satu ruangan berisi orang — masing-masing memegang satu atau dua angklung, masing-masing menunggu giliran nadanya. Angklung itu alat musik yang tersebar. Memainkannya adalah persoalan koordinasi, dan itulah yang disimulasikan di sini.',
+    whyTitle: 'Kenapa bukan papan suara',
+    whyBody:
+      'Hampir semua aplikasi angklung adalah papan suara: ketuk gambar bambu, keluar nada. Itu menirukan bunyinya dan melewatkan alat musiknya. Di sini bunyinya disintesis dari model fisik tabung bambu — tanpa satu pun rekaman — dan sebaran nadanya ke banyak pemain justru menjadi isi utamanya.',
+    techniquesTitle: 'Tiga teknik, satu model',
+    tengkepTitle: 'Yang paling menarik: tengkep',
+    tengkepBody:
+      'Pada angklung melodi, tengkep membungkam tabung oktaf sehingga terdengar satu nada murni, bukan dua seperti biasanya. Pada angklung akompanimen mayor, tanpa tengkep empat tabung berbunyi sebagai akor septim dominan; satu tabung ditahan kelingking dan yang tersisa adalah trinada mayor. Jadi kelingking pemain adalah sakelar kualitas akor.',
+    startHere: 'Mulai dari rak',
+    creditsTitle: 'Orang-orangnya',
+    creditsBody:
+      'Daeng Soetigna menciptakan angklung padaeng yang diatonis-kromatis pada 1938, khusus agar angklung bisa bermain bersama alat musik Barat. Udjo Ngalagena mengembangkan teknik permainan di atas laras salendro dan pelog degung.',
+    disclaimer:
+      'Ini proyek pribadi untuk belajar, bukan otoritas. Laras dan teknik berbeda-beda antar tradisi dan antar guru; angka yang dipakai di sini disertai sumber dan bisa Anda ubah.',
+    ritual:
+      'Angklung buhun hidup dalam ritual pertanian padi dan penghormatan kepada Nyai Sri Pohaci. Konteks itu disebut di sini dengan hormat, dan tidak disimulasikan.',
+    visit: 'Saung Angklung Udjo dan sanggar-sanggar setempat adalah tempat mempelajari yang sebenarnya.',
+  },
+  teknikNames: { kurulung: 'Kurulung', centok: 'Centok', tengkep: 'Tengkep' },
+  teknikDesc: {
+    kurulung:
+      'Getar. Rangka dipegang, tabung dasar digoyang kiri-kanan selama nada berlangsung. Anjuran 2–3 goyangan per detik.',
+    centok:
+      'Sentak. Tabung dasar ditarik cepat ke telapak tangan. Berbunyi sekali saja — pendek, seperti pizzicato.',
+    tengkep:
+      'Seperti kurulung, tetapi satu tabung ditahan kelingking sehingga tidak ikut bergetar. Lebih lembut, lebih sedikit nada atas.',
+  },
+  rak: {
+    title: 'Rak',
+    lede: 'Angklung tergantung berurutan, panjang tabungnya benar-benar bertingkat menurut nada. Nomornya adalah nomor yang diberi aba-aba dengan tangan.',
+    howto: 'Klik untuk centok. Tahan untuk kurulung. Tahan sambil menekan Shift untuk tengkep.',
+    setLabel: 'Set angklung',
+    techniqueLabel: 'Teknik saat diklik',
+    keyboardHint: 'Dengan papan ketik: Tab untuk berpindah, spasi atau Enter untuk membunyikan, Shift untuk tengkep.',
+    nomor: 'Nomor',
+  },
+  ansambel: {
+    title: 'Ansambel',
+    lede: 'Satu melodi dibagikan ke beberapa pemain. Perhatikan diamnya: bagi pemain angklung, menunggu adalah sebagian besar pekerjaan.',
+    melodyLabel: 'Melodi',
+    playersLabel: 'Jumlah pemain',
+    minimum: 'paling sedikit',
+    needs: 'Lagu ini butuh',
+    yourPart: 'Mainkan bagian Anda',
+    everyPart: 'Mainkan semua bagian',
+    play: 'Mainkan',
+    stop: 'Berhenti',
+    player: 'Pemain',
+    holds: 'memegang',
+    holdsNothing: 'tidak memegang angklung',
+    rests: 'diam',
+    notesCount: 'nada',
+    cannotAlone:
+      'Coba tekan semuanya sendiri. Anda akan gagal, dan kegagalannya itulah jawabannya.',
+    pickPlayer: 'Pilih pemain',
+    waiting: 'menunggu',
+    infeasible: 'Tidak bisa dimainkan seperti ini',
+  },
+  teknik: {
+    title: 'Laboratorium teknik',
+    lede: 'Satu angklung, sendirian, dengan pola pukulannya terbuka. Yang Anda lihat adalah yang didengar mesin suaranya.',
+    shakeRate: 'Laju goyangan',
+    shakeRateCited: 'Rentang terdokumentasi: 2–3 Hz. Di luar itu bukan lagi kurulung yang diajarkan.',
+    hardness: 'Kekerasan pukulan',
+    hold: 'Tahan tabung (tengkep)',
+    strikes: 'pukulan',
+    strikeTrain: 'Deret pukulan',
+    render: 'Hasil bunyi',
+    sounding: 'berbunyi',
+    muted: 'ditahan',
+  },
+  laras: {
+    title: 'Laras',
+    lede: 'Frasa yang sama, tiga laras. Cara tercepat mendengar kenapa temuan 1938 itu penting — dan kenapa perangkat berlaras satu tidak bisa begitu saja bergabung dengan yang lain.',
+    samePhrase: 'Frasa yang dimainkan sama persis; yang berbeda hanya larasnya.',
+    cents: 'sen',
+    edit: 'Ubah nilai sen',
+    reset: 'Kembalikan',
+    notAuthority:
+      'Salendro dan pelog degung tidak punya standar baku dan berbeda antar perangkat. Angka di sini satu set terdokumentasi, bukan satu-satunya yang benar.',
+    source: 'Sumber',
+  },
+  aransemen: {
+    title: 'Aransemen',
+    lede: 'Masukkan melodi, pilih set dan jumlah pemain, lihat pembagiannya — dan lihat apa yang tidak bisa dimainkan.',
+    input: 'Melodi',
+    inputHint:
+      'Satu nada per baris: nama nada, ketukan mulai, panjang ketukan. Contoh: C4 0 1',
+    solve: 'Bagikan',
+    result: 'Hasil',
+    feasible: 'Bisa dimainkan',
+    notFeasible: 'Belum bisa dimainkan',
+    nothingDropped: 'Tidak ada satu nada pun yang dibuang agar muat.',
+  },
+}
+
+const en: Dictionary = {
+  localeName: 'English',
+  nav: {
+    beranda: 'Home',
+    rak: 'Rack',
+    ansambel: 'Ensemble',
+    teknik: 'Technique',
+    laras: 'Tuning',
+    aransemen: 'Arrangement',
+  },
+  audio: {
+    start: 'Start sound',
+    starting: 'Starting…',
+    ready: 'Sound is on',
+    hint: 'Sound can only start from your own tap — browsers require it, iOS especially.',
+    failed: 'Sound could not start in this browser.',
+    voices: 'voices sounding',
+  },
+  home: {
+    title: 'One angklung, one note',
+    premise: 'An angklung can only sound one note.',
+    premiseBody:
+      'So a song is not one instrument but a room of people, each holding one or two angklung, each waiting for their note to arrive. The instrument is distributed. Playing it is a coordination problem, and that is what this simulates.',
+    whyTitle: 'Why not a soundboard',
+    whyBody:
+      'Almost every angklung app is a soundboard: tap a picture of bamboo, hear a note. That models the sound and misses the instrument. Here the sound is synthesised from a physical model of a bamboo tube — no recordings at all — and the way the notes spread across players is the point.',
+    techniquesTitle: 'Three techniques, one model',
+    tengkepTitle: 'The interesting part: tengkep',
+    tengkepBody:
+      'On an angklung melodi, tengkep silences the octave tube, so you hear one pure note instead of the usual two. On a major angklung akompanimen it does something else: without tengkep four tubes sound a dominant seventh; hold one tube with the little finger and three remain, a major triad. The player’s little finger is a chord-quality switch.',
+    startHere: 'Start at the rack',
+    creditsTitle: 'The people',
+    creditsBody:
+      'Daeng Soetigna created the diatonic-chromatic angklung padaeng in 1938, specifically so angklung could play alongside Western instruments. Udjo Ngalagena developed the playing technique on laras salendro and pelog degung.',
+    disclaimer:
+      'This is a personal educational project, not an authority. Tunings and techniques vary between traditions and between teachers; every figure here carries its source and can be edited.',
+    ritual:
+      'Angklung buhun lives inside rice-cultivation ritual and the veneration of Nyai Sri Pohaci. That context is noted here with respect, and is not simulated.',
+    visit: 'Saung Angklung Udjo and local ensembles are where the instrument is actually learned.',
+  },
+  teknikNames: { kurulung: 'Kurulung', centok: 'Centok', tengkep: 'Tengkep' },
+  teknikDesc: {
+    kurulung:
+      'Getar — the shake. The frame is held and the tabung dasar swung side to side for as long as the note lasts. Recommended 2–3 shakes per second.',
+    centok:
+      'Sentak — the pull. The tabung dasar is pulled sharply into the palm. It sounds once: short, like pizzicato.',
+    tengkep:
+      'Like kurulung, but one tube is held with the little finger so it cannot vibrate. Softer, fewer partials.',
+  },
+  rak: {
+    title: 'The rack',
+    lede: 'Angklung hanging in order, tube lengths genuinely graduated by pitch. The numbers are the numbers a conductor signals by hand.',
+    howto: 'Click for centok. Hold for kurulung. Hold with Shift for tengkep.',
+    setLabel: 'Angklung set',
+    techniqueLabel: 'Technique on click',
+    keyboardHint: 'By keyboard: Tab to move, space or Enter to sound, Shift for tengkep.',
+    nomor: 'Number',
+  },
+  ansambel: {
+    title: 'Ensemble',
+    lede: 'One melody spread across players. Watch the rests: for an angklung player, waiting is most of the job.',
+    melodyLabel: 'Melody',
+    playersLabel: 'Players',
+    minimum: 'at least',
+    needs: 'This piece needs',
+    yourPart: 'Play your part',
+    everyPart: 'Play every part',
+    play: 'Play',
+    stop: 'Stop',
+    player: 'Player',
+    holds: 'holds',
+    holdsNothing: 'holds no angklung',
+    rests: 'resting',
+    notesCount: 'notes',
+    cannotAlone: 'Try to play all of it yourself. You will fail, and the failing is the answer.',
+    pickPlayer: 'Choose a player',
+    waiting: 'waiting',
+    infeasible: 'Cannot be played like this',
+  },
+  teknik: {
+    title: 'Technique lab',
+    lede: 'One angklung, isolated, with its strike pattern exposed. What you see is what the synthesis hears.',
+    shakeRate: 'Shake rate',
+    shakeRateCited: 'Documented range: 2–3 Hz. Outside it, this is no longer the kurulung that is taught.',
+    hardness: 'Strike hardness',
+    hold: 'Hold a tube (tengkep)',
+    strikes: 'strikes',
+    strikeTrain: 'Strike train',
+    render: 'Rendered sound',
+    sounding: 'sounding',
+    muted: 'held',
+  },
+  laras: {
+    title: 'Laras',
+    lede: 'The same phrase, three tunings. The fastest way to hear why the 1938 innovation mattered — and why a set tuned one way cannot simply join an ensemble tuned another.',
+    samePhrase: 'The phrase is identical; only the laras changes.',
+    cents: 'cents',
+    edit: 'Edit the cents',
+    reset: 'Reset',
+    notAuthority:
+      'Salendro and pelog degung have no fixed standard and vary between sets. These are one documented interval set, not the only correct one.',
+    source: 'Source',
+  },
+  aransemen: {
+    title: 'Arrangement',
+    lede: 'Enter a melody, choose a set and a number of players, see the distribution — and see what cannot be played.',
+    input: 'Melody',
+    inputHint: 'One note per line: pitch, start beat, length in beats. For example: C4 0 1',
+    solve: 'Distribute',
+    result: 'Result',
+    feasible: 'Playable',
+    notFeasible: 'Not playable yet',
+    nothingDropped: 'Not one note was dropped to make it fit.',
+  },
+}
+
+const DICTIONARIES: Record<Locale, Dictionary> = { id, en }
+
+export function getDictionary(locale: Locale): Dictionary {
+  return DICTIONARIES[locale]
+}
+
+/** Prefix a path with the locale, for links inside the app. */
+export function localePath(locale: Locale, path = ''): string {
+  return `/${locale}${path}`
+}
