@@ -154,6 +154,18 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
         <div className="space-y-2">
           <h2 className="font-display text-step-3">{dict.laras.oneAtATime}</h2>
           <p className="max-w-3xl text-step-0 text-ink-muted">{dict.laras.samePhrase}</p>
+          {/*
+            * What a cent is, before the page asks anyone to edit one.
+            *
+            * This page invites a visitor to type numbers into a field labelled
+            * "sen"/"cents" and hear the tuning change, and the unit was never
+            * defined anywhere on the site — so the invitation was only open to
+            * people who already knew. Stated here rather than in a glossary,
+            * because here is where the first cents value appears.
+            */}
+          <p className="max-w-readable text-step--1 leading-relaxed text-ink-faint">
+            {dict.laras.centsExplained}
+          </p>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-3">

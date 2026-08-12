@@ -239,6 +239,7 @@ export interface Dictionary {
     readonly oneAtATime: string
     readonly samePhrase: string
     readonly cents: string
+    readonly centsExplained: string
     readonly edit: string
     readonly reset: string
     readonly notAuthority: string
@@ -550,6 +551,8 @@ const id: Dictionary = {
     oneAtATime: 'Satu per satu',
     samePhrase: 'Frasa yang dimainkan sama persis; yang berbeda hanya larasnya.',
     cents: 'sen',
+    centsExplained:
+      'Sen adalah satuan jarak nada, bukan frekuensi. Satu oktaf dibagi 1200 sen, jadi satu langkah setengah nada pada piano adalah 100 sen. Satuan ini dipakai di sini karena telinga menangkap perbandingan, bukan selisih: 100 sen terdengar sama besarnya di nada rendah maupun tinggi, sedangkan selisih dalam Hz tidak.',
     edit: 'Ubah nilai sen',
     reset: 'Kembalikan',
     notAuthority:
@@ -865,6 +868,8 @@ const en: Dictionary = {
     oneAtATime: 'One at a time',
     samePhrase: 'The phrase is identical; only the laras changes.',
     cents: 'cents',
+    centsExplained:
+      'A cent is a unit of musical distance, not of frequency. An octave is divided into 1200 cents, so one piano key to the next is 100 cents. The unit is used here because the ear hears ratios rather than differences: 100 cents sounds like the same step low or high, where a difference in Hz does not.',
     edit: 'Edit the cents',
     reset: 'Reset',
     notAuthority:
