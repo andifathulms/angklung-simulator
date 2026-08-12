@@ -51,14 +51,26 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
 
   useEffect(() => stop, [stop])
 
-  /** Interaction one: sound arrives, with no vocabulary required first. */
-  const soundOne = useCallback(async () => {
-    if (status !== 'siap') await start()
-    setTouched(true)
-    const entry = set[4]
-    if (entry === undefined) return
-    play({ angklung: entry.spec, techniqueType: 'kurulung', durationSec: 1.1, gain: 0.6 })
-  }, [play, set, start, status])
+  /**
+   * Sound one angklung of the set.
+   *
+   * Reached from a pointer and from the keyboard, and it has to be both: a
+   * `<button>` activated with Enter or Space fires `click`, never `pointerdown`,
+   * so wiring only `onPointerDown` — which is what this did — left eight
+   * focusable controls on the landing page that visibly took focus and then made
+   * no sound. AngklungButton has always handled both; this was a copy of it that
+   * dropped the keyboard half.
+   */
+  const soundOne = useCallback(
+    async (index: number) => {
+      if (status !== 'siap') await start()
+      setTouched(true)
+      const entry = set[index]
+      if (entry === undefined) return
+      play({ angklung: entry.spec, techniqueType: 'kurulung', durationSec: 1.1, gain: 0.6 })
+    },
+    [play, set, start, status],
+  )
 
   /** Interaction two: the whole song, and the count of people it takes. */
   const playMelody = useCallback(() => {
@@ -125,24 +137,24 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
         {/* The instrument, drawn to scale. Tube length goes as 1/f, so this is the
             physical logic of the set and not a decorative ramp. */}
         <div className="flex items-start justify-center gap-[2px] sm:gap-2">
-          {set.map((entry) => {
+          {set.map((entry, index) => {
             const sounding = lit.has(entry.spec.nomor)
             return (
               <button
                 key={entry.spec.id}
                 type="button"
+                // Pointer first, because latency on a percussion instrument is
+                // the whole feel of it; keys separately, because a button
+                // activated from the keyboard never emits a pointer event.
                 onPointerDown={(event) => {
                   event.preventDefault()
-                  void (async () => {
-                    if (status !== 'siap') await start()
-                    setTouched(true)
-                    play({
-                      angklung: entry.spec,
-                      techniqueType: 'kurulung',
-                      durationSec: 1.1,
-                      gain: 0.6,
-                    })
-                  })()
+                  void soundOne(index)
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== ' ' && event.key !== 'Enter') return
+                  if (event.repeat) return
+                  event.preventDefault()
+                  void soundOne(index)
                 }}
                 aria-label={`${dict.rak.nomor} ${entry.spec.nomor} — ${entry.spec.label}`}
                 className="group flex min-w-0 flex-1 flex-col items-center gap-2 rounded-lg p-0.5 transition-transform duration-200 ease-physical hover:-translate-y-0.5 sm:p-1"
@@ -179,7 +191,7 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           {!touched ? (
-            <Button tone="primary" size="lg" onClick={() => void soundOne()}>
+            <Button tone="primary" size="lg" onClick={() => void soundOne(4)}>
               <span aria-hidden="true">♪</span>
               {status === 'menyalakan' ? dict.hero.starting : dict.hero.try}
             </Button>
