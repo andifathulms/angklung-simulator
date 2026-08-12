@@ -8,13 +8,25 @@ import type { Dictionary } from '@/lib/i18n'
  * gesture, so there is no autostart path anywhere in the app (invariant 13).
  */
 export function StartAudio({ dict }: { dict: Dictionary }) {
-  const { status, start } = useAudio()
+  const { status, start, contextState, needsSilentSwitchHint } = useAudio()
 
   if (status === 'siap') {
+    // Safari reports 'interrupted' after a call or Siri, and a context in that
+    // state accepts scheduling without making a sound. Say so rather than let the
+    // instrument look broken.
+    const interrupted = contextState !== null && contextState !== 'running'
     return (
-      <p className="font-mono text-xs text-yourPart" role="status">
-        ● {dict.audio.ready}
-      </p>
+      <div className="flex flex-col items-start gap-1">
+        <p
+          className={interrupted ? 'font-mono text-xs text-cue' : 'font-mono text-xs text-yourPart'}
+          role="status"
+        >
+          ● {interrupted ? dict.audio.interrupted : dict.audio.ready}
+        </p>
+        {needsSilentSwitchHint ? (
+          <p className="max-w-xs text-[11px] text-bamboo/50">{dict.audio.silentSwitch}</p>
+        ) : null}
+      </div>
     )
   }
 

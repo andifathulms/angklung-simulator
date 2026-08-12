@@ -28,6 +28,8 @@ export interface Dictionary {
     readonly hint: string
     readonly failed: string
     readonly voices: string
+    readonly interrupted: string
+    readonly silentSwitch: string
   }
   readonly home: {
     readonly title: string
@@ -65,6 +67,7 @@ export interface Dictionary {
     readonly techniqueLabel: string
     readonly keyboardHint: string
     readonly nomor: string
+    readonly warming: string
   }
   readonly ansambel: {
     readonly title: string
@@ -161,6 +164,8 @@ const id: Dictionary = {
     hint: 'Suara hanya bisa dinyalakan lewat sentuhan Anda — begitu aturan peramban, terutama di iOS.',
     failed: 'Suara tidak bisa dinyalakan di peramban ini.',
     voices: 'suara aktif',
+    interrupted: 'Suara terhenti — panggilan masuk, Siri, atau halaman sempat ditinggalkan. Sentuh layar untuk menyalakannya lagi.',
+    silentSwitch: 'Tidak terdengar apa-apa? Di iPhone, sakelar senyap ikut membungkam suara halaman web. Geser sakelarnya dan naikkan volume.',
   },
   home: {
     title: 'Satu angklung, satu nada',
@@ -205,6 +210,7 @@ const id: Dictionary = {
     techniqueLabel: 'Teknik saat diklik',
     keyboardHint: 'Dengan papan ketik: Tab untuk berpindah, spasi atau Enter untuk membunyikan, Shift untuk tengkep.',
     nomor: 'Nomor',
+    warming: 'Menyiapkan bunyi angklung…',
   },
   ansambel: {
     title: 'Ansambel',
@@ -306,6 +312,8 @@ const en: Dictionary = {
     hint: 'Sound can only start from your own tap — browsers require it, iOS especially.',
     failed: 'Sound could not start in this browser.',
     voices: 'voices sounding',
+    interrupted: 'Sound was interrupted — a call, Siri, or the page losing focus. Touch the screen to bring it back.',
+    silentSwitch: 'Hearing nothing? On iPhone the silent switch mutes web audio too. Flip the switch and raise the volume.',
   },
   home: {
     title: 'One angklung, one note',
@@ -350,6 +358,7 @@ const en: Dictionary = {
     techniqueLabel: 'Technique on click',
     keyboardHint: 'By keyboard: Tab to move, space or Enter to sound, Shift for tengkep.',
     nomor: 'Number',
+    warming: 'Preparing the instrument…',
   },
   ansambel: {
     title: 'Ensemble',

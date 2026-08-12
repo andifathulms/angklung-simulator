@@ -1,7 +1,8 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Rack } from './Rack'
+import { useAudio } from '@/components/audio/AudioProvider'
 import { SETS, buildSet, getSet } from '@/lib/set'
 import type { TechniqueType } from '@/lib/synth'
 import type { Dictionary } from '@/lib/i18n'
@@ -9,11 +10,19 @@ import type { Dictionary } from '@/lib/i18n'
 const TECHNIQUES: readonly TechniqueType[] = ['kurulung', 'centok', 'tengkep']
 
 export function RackPlayground({ dict }: { dict: Dictionary }) {
+  const { status, warm, warmProgress } = useAudio()
   const [setId, setSetId] = useState('melodi-kromatis')
   const [technique, setTechnique] = useState<TechniqueType>('kurulung')
 
   const set = useMemo(() => buildSet(getSet(setId)), [setId])
   const definition = getSet(setId)
+
+  // Pre-render the rack once the engine is up, so the first press is a note and
+  // not a render. On a phone that difference is the whole feel of the instrument.
+  useEffect(() => {
+    if (status !== 'siap') return
+    warm(set.map((entry) => entry.spec))
+  }, [set, status, warm])
 
   return (
     <div className="space-y-6">
@@ -62,6 +71,11 @@ export function RackPlayground({ dict }: { dict: Dictionary }) {
       <Rack set={set} technique={technique} numberLabel={dict.rak.nomor} />
 
       <div className="space-y-1 text-xs text-bamboo/50">
+        {warmProgress !== null ? (
+          <p className="font-mono text-bamboo/40" role="status">
+            {dict.rak.warming} {Math.round(warmProgress * 100)}%
+          </p>
+        ) : null}
         <p>{dict.rak.howto}</p>
         <p>{dict.rak.keyboardHint}</p>
         <p className="font-mono">{definition.numberingNote}</p>

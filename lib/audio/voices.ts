@@ -51,8 +51,13 @@ export interface VoiceHandle {
 
 export interface VoicePool {
   play(request: VoiceRequest): VoiceHandle
-  /** Pre-render an instrument's buffers, so the first press is not the slow one. */
-  warm(angklung: AngklungSpec, hardness?: number): void
+  /**
+   * Pre-render one instrument-and-technique buffer, so the first press is not the
+   * slow one. Deliberately one buffer per call: a held technique renders six
+   * seconds of audio, and warming a whole rack in one go would block the main
+   * thread for seconds on a phone. The caller spreads these across idle time.
+   */
+  warm(angklung: AngklungSpec, techniqueType: TechniqueType, hardness?: number): void
   releaseAll(atSec: number): void
   activeCount(): number
   cachedCount(): number
@@ -180,10 +185,8 @@ export function createVoicePool(
       }
     },
 
-    warm(angklung, hardness = 0.5) {
-      for (const techniqueType of ['centok', 'kurulung', 'tengkep'] as const) {
-        bufferFor({ angklung, techniqueType, shakeRateHz: 2.5, hardness }, 0)
-      }
+    warm(angklung, techniqueType, hardness = 0.5) {
+      bufferFor({ angklung, techniqueType, shakeRateHz: 2.5, hardness }, 0)
     },
 
     releaseAll(atSec) {
