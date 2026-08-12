@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest'
 import {
   KURULUNG_SHAKE_RATE_RANGE_HZ,
   STRIKES_PER_SHAKE,
+  TABUNG_MODES,
   excitationFor,
   excitationTrace,
   render,
 } from '@/lib/synth'
+import type { Mode } from '@/lib/synth'
 import { centok, kurulung, melodi, params, SAMPLE_RATE_HZ, tengkep } from './helpers/fixtures'
 import { detectOnsets } from './helpers/dsp'
 
@@ -97,5 +99,27 @@ describe('determinism', () => {
     const a = render(params(melodi(392), { ...kurulung(1.5), seed: 1 }))
     const b = render(params(melodi(392), { ...kurulung(1.5), seed: 2 }))
     expect(Buffer.from(a.buffer)).not.toEqual(Buffer.from(b.buffer))
+  })
+})
+
+describe('the tunable mode bank', () => {
+  it('defaults to the shipped instrument when no modes are given', () => {
+    const withDefault = render(params(melodi(440), centok()))
+    const withExplicit = render({ ...params(melodi(440), centok()), modes: TABUNG_MODES })
+    expect(Buffer.from(withDefault.buffer)).toEqual(Buffer.from(withExplicit.buffer))
+  })
+
+  it('renders a different instrument when the bank is tuned', () => {
+    // The technique lab hands these straight to the real renderer, so a tuned
+    // bank has to actually reach the audio — otherwise tuning by ear is theatre.
+    const dull: Mode[] = [{ ratio: 1, amplitude: 1, decayT60Sec: 0.4 }]
+    const tuned = render({ ...params(melodi(440), centok()), modes: dull })
+    const stock = render(params(melodi(440), centok()))
+    expect(Buffer.from(tuned.buffer)).not.toEqual(Buffer.from(stock.buffer))
+  })
+
+  it('does not let a tuned bank mutate the shipped one', () => {
+    render({ ...params(melodi(440), centok()), modes: [{ ratio: 1, amplitude: 0.5, decayT60Sec: 1 }] })
+    expect(TABUNG_MODES.map((mode) => mode.ratio)).toEqual([1, 3, 5, 7.83])
   })
 })

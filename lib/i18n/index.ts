@@ -111,6 +111,13 @@ export interface Dictionary {
     readonly render: string
     readonly sounding: string
     readonly muted: string
+    readonly modes: string
+    readonly modesHint: string
+    readonly amplitude: string
+    readonly decay: string
+    readonly octaveWarning: string
+    readonly exportTitle: string
+    readonly exportHint: string
   }
   readonly akor: {
     readonly title: string
@@ -274,6 +281,16 @@ const id: Dictionary = {
     render: 'Hasil bunyi',
     sounding: 'berbunyi',
     muted: 'ditahan',
+    modes: 'Bank modal tabung',
+    modesHint:
+      'Inilah modelnya, bukan tiruannya: tiap baris satu mode resonansi tabung — kelipatan frekuensi dasar, kekuatannya, dan waktu peluruhannya sampai turun 60 dB. Nada dan jumlah pukulan sudah diuji dengan angka; warna bunyi tidak bisa, jadi bagian itu memang harus disetel dengan telinga di sini.',
+    amplitude: 'Kekuatan',
+    decay: 'Peluruhan',
+    octaveWarning:
+      'Kelipatan mendekati 2 akan menabrak tabung oktaf, dan justru ketiadaan bunyi di 2f itulah yang membuat tengkep bisa diukur. Uji tengkep akan gagal.',
+    exportTitle: 'Bawa pulang setelannya',
+    exportHint:
+      'Setelan di halaman ini tidak ikut tersimpan. Salin potongan kode ini ke lib/synth/resonator.ts, lalu jalankan pnpm test:synth — kalau nada atau partialnya meleset, modelnya yang salah, bukan toleransinya.',
   },
   akor: {
     title: 'Angklung akompanimen',
@@ -438,6 +455,16 @@ const en: Dictionary = {
     render: 'Rendered sound',
     sounding: 'sounding',
     muted: 'held',
+    modes: 'Tube mode bank',
+    modesHint:
+      'This is the model itself, not a preview of it: one resonant mode per row — its multiple of the fundamental, its strength, and how long it takes to fall by 60 dB. Pitch and onset counts are settled by measurement; timbre cannot be, which is why this part is tuned by ear here.',
+    amplitude: 'Strength',
+    decay: 'Decay',
+    octaveWarning:
+      'A ratio near 2 collides with the octave tube, and the absence of anything at 2f is what makes tengkep measurable. The tengkep tests will fail.',
+    exportTitle: 'Take the tuning with you',
+    exportHint:
+      'Nothing on this page is saved. Paste this into lib/synth/resonator.ts, then run pnpm test:synth — if pitch or partials miss, the model is wrong, not the tolerance.',
   },
   akor: {
     title: 'Angklung akompanimen',

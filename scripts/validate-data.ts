@@ -103,10 +103,12 @@ for (const path of walk(process.cwd())) {
   if (AUDIO.test(path)) problems.push(`berkas audio ikut terbawa: ${path}`)
 }
 
-// The data files themselves must stay readable and non-empty.
+// The data files themselves must stay readable and non-empty. Only .json is
+// parsed: these directories also carry the prose that explains what may go in them.
 for (const dir of ['data/tunings', 'data/sets', 'data/melodies']) {
   const full = join(process.cwd(), dir)
   for (const name of readdirSync(full)) {
+    if (!name.endsWith('.json')) continue
     const path = join(full, name)
     check(statSync(path).size > 0, `${path}: kosong`)
     try {

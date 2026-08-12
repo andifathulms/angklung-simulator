@@ -13,7 +13,7 @@ import {
 } from '@/lib/audio'
 import type { AudioEngine, ExtendedContextState, VoiceHandle, VoicePool } from '@/lib/audio'
 import { KURULUNG_DEFAULT_SHAKE_RATE_HZ } from '@/lib/synth'
-import type { AngklungSpec, TechniqueType } from '@/lib/synth'
+import type { AngklungSpec, Mode, TechniqueType } from '@/lib/synth'
 
 export type AudioStatus = 'belum-mulai' | 'menyalakan' | 'siap' | 'gagal' | 'tidak-didukung'
 
@@ -32,6 +32,8 @@ export interface PlayOptions {
   readonly gain?: number
   /** Auto-release after this long. Used by the scheduler for notated durations. */
   readonly durationSec?: number
+  /** Tuned mode bank from the technique lab. Omit for the shipped instrument. */
+  readonly modes?: readonly Mode[]
 }
 
 interface AudioContextValue {
@@ -213,6 +215,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         hardness: options.hardness ?? 0.55,
         atSec,
         gain: options.gain,
+        ...(options.modes === undefined ? {} : { modes: options.modes }),
       })
 
       const delaySec = Math.max(0, atSec - engine.context.currentTime)

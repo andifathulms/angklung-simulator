@@ -93,7 +93,7 @@ export function renderTabung(
   fundamentalHz: number,
   gain: number,
   sampleRateHz: number,
-  modes: readonly Mode[] = TABUNG_MODES,
+  modes: readonly Mode[] | undefined = TABUNG_MODES,
 ): void {
   const decayScale = decayScaleFor(fundamentalHz)
   for (const mode of modes) {
@@ -109,7 +109,10 @@ export function renderTabung(
 }
 
 /** Longest ring of a tube — used to size render buffers so tails are not clipped. */
-export function tabungTailSec(fundamentalHz: number, modes: readonly Mode[] = TABUNG_MODES): number {
+export function tabungTailSec(
+  fundamentalHz: number,
+  modes: readonly Mode[] | undefined = TABUNG_MODES,
+): number {
   const scale = decayScaleFor(fundamentalHz)
   return Math.max(...modes.map((mode) => mode.decayT60Sec)) * scale
 }

@@ -1,7 +1,7 @@
 import { soundingTabung } from './angklung'
 import { excitationDurationSec, excitationFor, mutesTube, renderExcitation } from './excitation'
 import { renderTabung, tabungTailSec } from './resonator'
-import type { RenderParams, Strike } from './types'
+import type { Mode, RenderParams, Strike } from './types'
 
 /**
  * params → Float32Array. The whole point of lib/synth: the instrument can be
@@ -14,12 +14,12 @@ const LIMIT_KNEE = 0.95
 
 /** How long a render must be to contain the whole note plus its ring-out. */
 export function suggestedDurationSec(params: Omit<RenderParams, 'durationSec'>): number {
-  const tails = params.angklung.tabung.map((tabung) => tabungTailSec(tabung.hz))
+  const tails = params.angklung.tabung.map((tabung) => tabungTailSec(tabung.hz, params.modes))
   return excitationDurationSec(params.technique) + Math.max(...tails) + 0.05
 }
 
 export function render(params: RenderParams): Float32Array {
-  const { angklung, technique, sampleRateHz, durationSec, gain } = params
+  const { angklung, technique, sampleRateHz, durationSec, gain, modes } = params
   const lengthSamples = Math.max(1, Math.ceil(durationSec * sampleRateHz))
 
   const strikes = excitationFor(technique)
@@ -29,7 +29,7 @@ export function render(params: RenderParams): Float32Array {
   // Tengkep removes the held tube from the sum. There is no filter here and no
   // gain change — the tube's modes are simply never rendered (invariant 4).
   for (const tabung of soundingTabung(angklung, mutesTube(technique))) {
-    renderTabung(excitation, out, tabung.hz, tabung.gain, sampleRateHz)
+    renderTabung(excitation, out, tabung.hz, tabung.gain, sampleRateHz, modes)
   }
 
   applyGain(out, gain)

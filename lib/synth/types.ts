@@ -100,4 +100,11 @@ export interface RenderParams {
   /** Length of the render. Decay tails are truncated here, not faded. */
   readonly durationSec: number
   readonly gain: number
+  /**
+   * Override the tube's modal bank. Omit for TABUNG_MODES, which is what the
+   * instrument ships as. This exists so the technique lab can tune the timbre by
+   * ear against the real renderer — the parameters of the model are exposed, not
+   * a second model (PRD §13).
+   */
+  readonly modes?: readonly Mode[]
 }

@@ -1,5 +1,5 @@
 import { render, suggestedDurationSec } from '@/lib/synth'
-import type { AngklungSpec, Technique, TechniqueType } from '@/lib/synth'
+import type { AngklungSpec, Mode, Technique, TechniqueType } from '@/lib/synth'
 import type { AudioEngine } from './context'
 
 /**
@@ -41,6 +41,8 @@ export interface VoiceRequest {
   readonly gain?: number
   /** Rotates the seeded variant. Same value → same take. */
   readonly variant?: number
+  /** Tuned mode bank from the technique lab. Omit for the shipped instrument. */
+  readonly modes?: readonly Mode[]
 }
 
 export interface VoiceHandle {
@@ -115,6 +117,12 @@ export function createVoicePool(
       request.shakeRateHz.toFixed(2),
       request.hardness.toFixed(2),
       variant,
+      // A tuned mode bank is a different instrument and must not reuse a buffer.
+      request.modes === undefined
+        ? 'stok'
+        : request.modes
+            .map((mode) => `${mode.ratio}:${mode.amplitude}:${mode.decayT60Sec}`)
+            .join(','),
     ].join('|')
 
   const bufferFor = (request: Omit<VoiceRequest, 'atSec' | 'gain'>, variant: number): AudioBuffer => {
@@ -124,7 +132,13 @@ export function createVoicePool(
 
     const seed = hashSeed(key)
     const technique = techniqueFor(request, seed)
-    const base = { angklung: request.angklung, technique, gain: 1, sampleRateHz: engine.context.sampleRate }
+    const base = {
+      angklung: request.angklung,
+      technique,
+      gain: 1,
+      sampleRateHz: engine.context.sampleRate,
+      ...(request.modes === undefined ? {} : { modes: request.modes }),
+    }
     const durationSec = suggestedDurationSec(base)
     const samples = render({ ...base, durationSec })
 

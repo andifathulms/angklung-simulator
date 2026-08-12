@@ -2,11 +2,13 @@
 
 import { useMemo, useState } from 'react'
 import { ExcitationTrace, WaveformTrace } from './ExcitationTrace'
+import { ModeTuner } from './ModeTuner'
 import { AngklungFigure } from '@/components/rack/AngklungFigure'
 import { useAudio } from '@/components/audio/AudioProvider'
 import { buildSet, getSet } from '@/lib/set'
 import {
   KURULUNG_DEFAULT_SHAKE_RATE_HZ,
+  TABUNG_MODES,
   KURULUNG_SHAKE_RATE_RANGE_HZ,
   excitationTrace,
   isCitedShakeRate,
@@ -14,7 +16,7 @@ import {
   soundingTabung,
   strikesPerSecond,
 } from '@/lib/synth'
-import type { Technique, TechniqueType } from '@/lib/synth'
+import type { Mode, Technique, TechniqueType } from '@/lib/synth'
 import type { Dictionary } from '@/lib/i18n'
 
 const TECHNIQUES: readonly TechniqueType[] = ['kurulung', 'centok', 'tengkep']
@@ -28,6 +30,7 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
   const [techniqueType, setTechniqueType] = useState<TechniqueType>('kurulung')
   const [shakeRateHz, setShakeRateHz] = useState(KURULUNG_DEFAULT_SHAKE_RATE_HZ)
   const [hardness, setHardness] = useState(0.5)
+  const [modes, setModes] = useState<readonly Mode[]>(TABUNG_MODES)
 
   const set = useMemo(() => buildSet(getSet('melodi-kromatis')), [])
   const entry = set[9] ?? set[0]
@@ -55,6 +58,7 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
       sampleRateHz: PREVIEW_SAMPLE_RATE_HZ,
       durationSec: LAB_DURATION_SEC,
       gain: 1,
+      modes,
     })
     const stride = Math.floor(buffer.length / PREVIEW_COLUMNS)
     const columns: number[] = []
@@ -68,7 +72,7 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
       maximum = Math.max(maximum, peak)
     }
     return maximum === 0 ? columns : columns.map((peak) => peak / maximum)
-  }, [entry, technique])
+  }, [entry, modes, technique])
 
   if (entry === undefined) return null
 
@@ -151,6 +155,7 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
                 hardness,
                 shakeRateHz,
                 durationSec: LAB_DURATION_SEC - 0.6,
+                modes,
               })
             }
             className="rounded-full bg-sounding px-5 py-2 text-sm font-medium text-stage transition hover:bg-bamboo disabled:opacity-40"
@@ -188,6 +193,8 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
           </ul>
         </div>
       </div>
+
+      <ModeTuner modes={modes} onChange={setModes} dict={dict} />
 
       <ExcitationTrace
         strikes={strikes}
