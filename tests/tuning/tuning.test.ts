@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest'
 import {
+  PENTATONIC_DEGREE_INDEX,
   PADAENG,
   PELOG_DEGUNG,
   SALENDRO,
   TUNINGS,
   centsBetween,
+  compareTunings,
   getTuning,
   parsePitchId,
   pitchId,
   pitchToHz,
+  widestGap,
   withEditedCents,
 } from '@/lib/tuning'
 
@@ -127,5 +130,42 @@ describe('editability', () => {
     const edited = withEditedCents(SALENDRO, new Map([[1, 231]]))
     expect(edited.degrees[1]?.cents).toBe(231)
     expect(SALENDRO.degrees[1]?.cents).toBe(240)
+  })
+})
+
+describe('two laras, compared degree for degree', () => {
+  it('finds the same pitch identical to itself', () => {
+    const same = compareTunings(SALENDRO, SALENDRO)
+    expect(same).toHaveLength(5)
+    for (const entry of same) {
+      expect(entry.centsApart).toBeCloseTo(0, 9)
+      expect(entry.beatHz).toBeCloseTo(0, 9)
+    }
+  })
+
+  it('puts salendro and padaeng genuinely apart', () => {
+    const gaps = compareTunings(PADAENG, SALENDRO)
+    expect(gaps).toHaveLength(5)
+    const worst = widestGap(gaps)
+    expect(worst).not.toBeNull()
+    // The two are not the same instrument. If this ever reads as zero the
+    // comparison has stopped comparing anything.
+    expect(Math.abs(worst?.centsApart ?? 0)).toBeGreaterThan(20)
+  })
+
+  it('derives the beat rate from the two frequencies and nothing else', () => {
+    for (const entry of compareTunings(PADAENG, PELOG_DEGUNG)) {
+      expect(entry.beatHz).toBeCloseTo(Math.abs(entry.hzA - entry.hzB), 9)
+    }
+  })
+
+  it('reads every laras through a five-degree pentatonic slot', () => {
+    for (const tuning of TUNINGS) {
+      const slots = PENTATONIC_DEGREE_INDEX[tuning.laras]
+      expect(slots).toHaveLength(5)
+      for (const degreeIndex of slots) {
+        expect(tuning.degrees[degreeIndex]).toBeDefined()
+      }
+    }
   })
 })

@@ -182,6 +182,15 @@ export interface Dictionary {
     readonly edit: string
     readonly reset: string
     readonly notAuthority: string
+    readonly togetherTitle: string
+    readonly togetherBody: string
+    readonly togetherPlay: string
+    readonly togetherFirst: string
+    readonly togetherSecond: string
+    readonly togetherApart: string
+    readonly togetherSame: string
+    readonly togetherModel: string
+    readonly beats: string
     readonly source: string
   }
   readonly footer: {
@@ -417,6 +426,17 @@ const id: Dictionary = {
     reset: 'Kembalikan',
     notAuthority:
       'Salendro dan pelog degung tidak punya standar baku dan berbeda antar perangkat. Angka di sini satu set terdokumentasi, bukan satu-satunya yang benar.',
+    togetherTitle: 'Dua laras sekaligus',
+    togetherBody:
+      'Sampai di sini keduanya diperdengarkan bergantian, dan bergantian membuat keduanya terdengar sama-sama enak. Bunyikan berbarengan, dan terdengar apa yang sebenarnya terjadi: derajat yang sepadan tidak jatuh di frekuensi yang sama, lalu keduanya beradu. Bukan karena salah satunya keliru — keduanya benar di tempatnya masing-masing — melainkan karena keduanya memang tidak bisa disatukan begitu saja. Inilah persoalan yang dijawab Daeng Soetigna pada 1938.',
+    togetherPlay: 'Bunyikan berbarengan',
+    togetherFirst: 'Laras pertama',
+    togetherSecond: 'Laras kedua',
+    togetherApart: 'Selisih terbesar {cents} sen pada derajat {degree} — sekitar {beats} adu bunyi per detik.',
+    togetherSame: 'Dua laras yang sama tentu berpadu sempurna. Pilih laras yang berbeda untuk mendengar bedanya.',
+    togetherModel:
+      'Angka adu bunyi di sini adalah hitungan dari dua nada model, bukan hasil pengukuran perangkat sungguhan. Kekasaran bunyinya nyata; angkanya milik model.',
+    beats: 'adu bunyi/detik',
     source: 'Sumber',
   },
   footer: {
@@ -653,6 +673,17 @@ const en: Dictionary = {
     reset: 'Reset',
     notAuthority:
       'Salendro and pelog degung have no fixed standard and vary between sets. These are one documented interval set, not the only correct one.',
+    togetherTitle: 'Two laras at once',
+    togetherBody:
+      'Until now these have played one after another, and playing them in turn makes all three sound equally pleasant. Sound two of them together and you hear what is actually going on: the matching degrees do not land on the same frequency, and the two collide. Not because either is wrong — each is right where it belongs — but because they cannot simply be combined. This is the problem Daeng Soetigna answered in 1938.',
+    togetherPlay: 'Play them together',
+    togetherFirst: 'First laras',
+    togetherSecond: 'Second laras',
+    togetherApart: 'Widest gap {cents} cents at degree {degree} — roughly {beats} beats per second.',
+    togetherSame: 'A laras agrees perfectly with itself. Pick two different ones to hear the difference.',
+    togetherModel:
+      'The beat rates here are arithmetic on two modelled pitches, not a measurement of any real set. The roughness is real; the number belongs to the model.',
+    beats: 'beats/sec',
     source: 'Source',
   },
   footer: {

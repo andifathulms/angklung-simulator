@@ -6,6 +6,7 @@ import type { Laras, TuningDefinition } from './types'
 export * from './types'
 export * from './cents'
 export * from './pitch'
+export * from './compare'
 
 export const PADAENG = padaengJson as TuningDefinition
 export const SALENDRO = salendroJson as TuningDefinition
