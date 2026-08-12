@@ -158,14 +158,17 @@ The site credits Daeng Soetigna for the 1938 diatonic-chromatic angklung and Udj
 
 ## Current state
 
-M0–M6 built. 84 tests green; lint and typecheck clean; static export ~100 KB First Load JS per page against the 250 KB budget.
+M0–M6 built and deployed to https://andifathulms.github.io/angklung-simulator/. 88 tests green; lint and typecheck clean; static export ~100 KB First Load JS per page against the 250 KB budget.
 
-- **M0** — modal resonator, three excitation patterns, offline render suite, purity test that reads the source. `bench:voices` clears 64 simultaneous voices at ~18× realtime on a development machine, which is why the voice budget and buffer pooling in `lib/audio` exist.
-- **M1–M6** — rack, ensemble with three modes, conductor cues, technique lab and the accompaniment chord switch, laras comparison with editable cents, arrangement solver with share links.
+**Still outstanding, and it blocks a release touching the audio path: audio startup tested on a real iOS device.** Run `docs/uji-ios.md` — ten checks that only fail on iPhone — and `/diagnostik` on the same device. `missedLookahead` must be 0.
 
-**Not yet done, and required before any release touching the audio path: audio startup tested on a real iOS device.** Nothing else in the deployment checklist is outstanding.
+**Also outstanding, and it needs your ears:** the timbre has never been judged against a real angklung. The lab's mode tuner (`components/lab/ModeTuner.tsx`) drives the real renderer and emits a `TABUNG_MODES` literal to paste into `resonator.ts`. When a synth test then fails, the model is wrong — not the tolerance.
 
-Two things worth knowing before changing them:
+Four things worth knowing before changing them:
 
 - The rack diverges from PRD §5.1's click-for-centok wording. Distinguishing a tap from a hold means delaying every note by the tap threshold, and latency on a percussion instrument is worse than a lost shortcut, so the rack has a technique selector plus press-and-hold. The copy describes what it actually does.
 - Kurulung and tengkep are rendered at a fixed six seconds and faded on release, because a shake has no predetermined length. That approximation lives in `lib/audio/voices.ts` and must stay there — not in the model.
+- Warm-up runs one buffer per idle slot. A rack is dozens of six-second renders; warming in one pass freezes a phone for seconds. Do not "simplify" it into a loop.
+- `TuningSource.caveat` is required and enforced by `data:validate`. It says where a figure stops being verified. The salendro and pelog numbers are structural models, not measurements, and the caveats say so — do not quietly upgrade them to measurements without a source you have actually read.
+
+`data/melodies/README.md` records why no Sundanese repertoire ships and what it would take to add some. That gap is deliberate and worth closing.

@@ -29,6 +29,7 @@ pnpm dev
 | `pnpm test:distribution` | Sifat pembagian + kecocokan dengan brute force |
 | `pnpm bench:voices` | Beban polifoni pada ukuran ansambel penuh |
 | `pnpm data:validate` | Kutipan laras, definisi set angklung, asal-usul melodi |
+| `/diagnostik` | Mengukur beban audio di perangkat yang sedang dipakai |
 | `pnpm build` | Ekspor statis ke `./out` |
 | `pnpm preview` | Melayani `./out` di bawah basePath produksi |
 
@@ -75,4 +76,6 @@ Ini proyek pribadi untuk belajar, bukan otoritas. Laras dan teknik berbeda antar
 
 `main` dibangun dan diterbitkan lewat GitHub Actions ke GitHub Pages. `basePath` harus sama dengan nama repositori, dan `.nojekyll` ditulis ke `out/` oleh `scripts/postbuild.mjs`, yang juga menolak build kalau ada berkas audio ikut terekspor.
 
-Sebelum rilis apa pun yang menyentuh jalur audio, **uji penyalaan suara di perangkat iOS sungguhan**.
+Sebelum rilis apa pun yang menyentuh jalur audio, **uji penyalaan suara di perangkat iOS sungguhan** — daftar periksanya ada di `docs/uji-ios.md`, dan angkanya diambil dari halaman `/diagnostik` di perangkat yang sama.
+
+Situsnya: <https://andifathulms.github.io/angklung-simulator/>
