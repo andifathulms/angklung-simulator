@@ -8,6 +8,7 @@ import {
   peakSimultaneity,
   reportAbsence,
   combineEnsemble,
+  compatibilityWith,
 } from '@/lib/distribute'
 import { MELODIES, getMelody, toTimedChords, toTimedNotes } from '@/lib/melody'
 import { LOCALES, getDictionary } from '@/lib/i18n'
@@ -608,5 +609,66 @@ describe('an infeasibility is explained in the reader’s own language', () => {
         describeInfeasibility(reason, getDictionary('id').ansambel),
       )
     }
+  })
+})
+
+describe('the rule the roster rests on', () => {
+  it('calls two pitches compatible exactly when they never overlap', () => {
+    const timed = notes([
+      ['C4', 0, 1],
+      ['D4', 1, 1],
+      ['E4', 0.5, 1],
+    ])
+    const forC = compatibilityWith(timed, 'C4')
+    const byId = new Map(forC.map((entry) => [entry.pitchId, entry]))
+
+    // D4 starts exactly as C4 ends — one pair of hands can do both.
+    expect(byId.get('D4')?.compatible).toBe(true)
+    expect(byId.get('D4')?.clashAtSec).toBeNull()
+    // E4 starts while C4 is still ringing.
+    expect(byId.get('E4')?.compatible).toBe(false)
+    expect(byId.get('E4')?.clashAtSec).toBe(0.5)
+  })
+
+  it('does not report a pitch against itself', () => {
+    const timed = notes([
+      ['C4', 0, 1],
+      ['C4', 2, 1],
+      ['D4', 4, 1],
+    ])
+    expect(compatibilityWith(timed, 'C4').map((entry) => entry.pitchId)).toEqual(['D4'])
+  })
+
+  it('agrees with the distribution it explains', () => {
+    // Whatever the solver puts in one pair of hands must be mutually compatible
+    // by this rule — otherwise the interface would be explaining a different
+    // algorithm from the one that ran.
+    for (const melody of MELODIES) {
+      const timed = toTimedNotes(melody)
+      const result = distribute({ notes: timed, set: buildSet(getSet(melody.setId)) })
+      if (result.type !== 'feasible') continue
+
+      for (const player of result.players) {
+        const held = player.angklung.map((angklung) => angklung.pitchId)
+        for (const pitchId of held) {
+          const compat = new Map(
+            compatibilityWith(timed, pitchId).map((entry) => [entry.pitchId, entry.compatible]),
+          )
+          for (const other of held) {
+            if (other === pitchId) continue
+            expect(compat.get(other), `${melody.id}: ${pitchId} + ${other}`).toBe(true)
+          }
+        }
+      }
+    }
+  })
+
+  it('reports the first collision, not just any collision', () => {
+    const timed = notes([
+      ['C4', 0, 4],
+      ['D4', 1, 1],
+      ['D4', 3, 1],
+    ])
+    expect(compatibilityWith(timed, 'C4')[0]?.clashAtSec).toBe(1)
   })
 })

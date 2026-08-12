@@ -126,6 +126,13 @@ export interface Dictionary {
     readonly legendPeak: string
     readonly rowSummary: string
     readonly timelineRegion: string
+    readonly pairRuleTitle: string
+    readonly pairRule: string
+    readonly pairRuleSource: string
+    readonly pairCompatible: string
+    readonly pairClash: string
+    readonly pairHolds: string
+    readonly wholePieceCaveat: string
     readonly nextCue: string
     readonly cueAnnounce: string
     readonly cueNone: string
@@ -384,6 +391,15 @@ const id: Dictionary = {
     legendPeak: 'saat tersibuk',
     rowSummary: '{notes} nada, masuk pertama pada detik {first}, diam {rest} persen',
     timelineRegion: 'Garis waktu, bisa digeser',
+    pairRuleTitle: 'Kenapa nomor-nomor itu yang dipegang bersama',
+    pairRule:
+      'Aturannya satu, dan hanya satu: dua angklung boleh dipegang satu orang kalau nadanya tidak pernah berbunyi bersamaan. Kalau pernah bertabrakan sekali saja, keduanya harus dipegang dua orang berbeda.',
+    pairRuleSource: 'Aturan ini yang dijalankan pembagi di lib/distribute — PRD §6.',
+    pairCompatible: 'bisa dipegang bersama {pitchId}',
+    pairClash: 'bentrok dengan {pitchId} pada detik {atSec}',
+    pairHolds: 'Pemain {player} memegang {pitches}',
+    wholePieceCaveat:
+      'Penyederhanaan yang dipakai di sini: satu orang memegang angklung yang sama dari awal sampai akhir lagu. Ansambel sungguhan bisa bertukar di antara bagian, dan kalau bertukar, jumlah orang yang dibutuhkan bisa lebih sedikit dari angka di atas.',
     nextCue: 'Nomor berikutnya',
     cueAnnounce: 'Nomor {nomor}, {beats} ketukan lagi',
     cueNone: 'Belum ada aba-aba',
@@ -661,6 +677,15 @@ const en: Dictionary = {
     legendPeak: 'the busiest instant',
     rowSummary: '{notes} notes, first entry at {first} seconds, waiting {rest} per cent of the piece',
     timelineRegion: 'Timeline, scrollable',
+    pairRuleTitle: 'Why those numbers are held together',
+    pairRule:
+      'There is one rule and only one: two angklung may be held by the same person when their notes never sound at the same time. If they collide even once, they need two different people.',
+    pairRuleSource: 'This is the rule the solver in lib/distribute runs — PRD §6.',
+    pairCompatible: 'can be held with {pitchId}',
+    pairClash: 'collides with {pitchId} at {atSec} seconds',
+    pairHolds: 'Player {player} holds {pitches}',
+    wholePieceCaveat:
+      'A simplification used here: one person holds the same angklung from the beginning of the piece to the end. A real ensemble can swap between sections, and if it does, the number of people needed can be lower than the figure above.',
     nextCue: 'Next number',
     cueAnnounce: 'Number {nomor}, in {beats} beats',
     cueNone: 'No cue yet',

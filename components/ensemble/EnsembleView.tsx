@@ -10,6 +10,7 @@ import { audioClock, createScheduler, intervalTimer } from '@/lib/audio'
 import type { Scheduler } from '@/lib/audio'
 import {
   combineEnsemble,
+  compatibilityWith,
   describeInfeasibility,
   distribute,
   reportAbsence,
@@ -138,6 +139,23 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
   const yourPart =
     ensemble?.players.find((player) => player.playerIndex === yourPlayerIndex) ?? null
+
+  /*
+   * The rule, worked for whichever player is selected. The roster has always
+   * shown which numbers go together and never why, so this takes the first
+   * angklung that player holds and lists every other pitch in the piece as
+   * either shareable or colliding, with the instant of the collision.
+   *
+   * The notes searched are the melody's own, so an accompanist's chords are
+   * compared against chords rather than against the tune.
+   */
+  const pairing = useMemo(() => {
+    const first = yourPart?.angklung[0]
+    if (first === undefined) return null
+    const source =
+      yourPart?.role === 'akompanimen' ? toTimedChords(melody, tempo, notes.length) : notes
+    return { pitchId: first.pitchId, entries: compatibilityWith(source, first.pitchId) }
+  }, [yourPart, melody, tempo, notes])
 
   const stop = useCallback(() => {
     schedulerRef.current?.stop()
@@ -671,6 +689,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
               })}
             </ol>
 
+
             <Timeline
               players={ensemble?.players ?? []}
               durationSec={durationSec}
@@ -682,6 +701,64 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
               dict={dict}
             />
           </section>
+
+          {/*
+            * The rule, next to the roster it produced. The roster showed which
+            * numbers were held together and never why — and that "why" is the
+            * whole algorithm, applied privately in lib/distribute since the
+            * beginning. Stated here with its source, and worked against the
+            * selected player so it comes with an instance rather than only a
+            * claim.
+            */}
+          {pairing !== null ? (
+            <section className="space-y-3 rounded-card border border-stage-line bg-stage-raised/40 p-5">
+              <h3 className="font-display text-step-2 text-ink">
+                {dict.ansambel.pairRuleTitle}
+              </h3>
+              <p className="max-w-readable text-step-0 leading-relaxed text-ink-muted">
+                {dict.ansambel.pairRule}
+              </p>
+
+              <p className="font-mono text-step--1 text-ink">
+                {fill(dict.ansambel.pairHolds, {
+                  player: yourPlayerIndex + 1,
+                  pitches: (yourPart?.angklung ?? [])
+                    .map((angklung) => `${angklung.spec.nomor} (${angklung.pitchId})`)
+                    .join(' · '),
+                })}
+              </p>
+
+              {/* The intermediate value: every other pitch, sorted so the ones
+                  that could have joined this player come first. */}
+              <ul className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+                {[...pairing.entries]
+                  .sort((a, b) => Number(b.compatible) - Number(a.compatible))
+                  .map((entry) => (
+                    <li
+                      key={entry.pitchId}
+                      className={[
+                        'rounded border px-2.5 py-1 font-mono text-step--2',
+                        entry.compatible
+                          ? 'border-yourPart/40 text-yourPart-light'
+                          : 'border-stage-strong text-ink-faint',
+                      ].join(' ')}
+                    >
+                      {entry.compatible
+                        ? fill(dict.ansambel.pairCompatible, { pitchId: entry.pitchId })
+                        : fill(dict.ansambel.pairClash, {
+                            pitchId: entry.pitchId,
+                            atSec: (entry.clashAtSec ?? 0).toFixed(1),
+                          })}
+                    </li>
+                  ))}
+              </ul>
+
+              <p className="text-step--2 text-ink-faint">{dict.ansambel.pairRuleSource}</p>
+              <p className="max-w-readable border-l-2 border-stage-strong pl-3 text-step--1 leading-relaxed text-ink-faint">
+                {dict.ansambel.wholePieceCaveat}
+              </p>
+            </section>
+          ) : null}
 
           {mode !== 'dengar' ? (
             <section className="space-y-3">

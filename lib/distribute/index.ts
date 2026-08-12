@@ -532,6 +532,46 @@ export function reportAbsence(
   }
 }
 
+/**
+ * Whether one pitch could share a pair of hands with another, and if not, where
+ * the two collide.
+ *
+ * This is the rule the whole distribution turns on, stated once (PRD §6): two
+ * angklung can go to one person exactly when their notes never sound at the same
+ * time. `distribute` has always applied it — `buildConflictGraph` below is
+ * nothing else — but it applied it privately, so the interface could show a
+ * roster without ever showing why that roster.
+ *
+ * `clashAtSec` is the evidence: the first instant at which the two are needed
+ * together. A rule with a worked instance beside it is a rule someone can check.
+ */
+export interface PitchCompatibility {
+  readonly pitchId: string
+  readonly compatible: boolean
+  readonly clashAtSec: number | null
+}
+
+export function compatibilityWith(
+  notes: readonly TimedNote[],
+  pitchId: string,
+): readonly PitchCompatibility[] {
+  const mine = notes.filter((note) => note.pitchId === pitchId)
+  const others = [...new Set(notes.map((note) => note.pitchId))].filter((id) => id !== pitchId)
+
+  return others.map((other) => {
+    const theirs = notes.filter((note) => note.pitchId === other)
+    let clashAtSec: number | null = null
+    for (const a of mine) {
+      for (const b of theirs) {
+        if (!overlaps(a, b)) continue
+        const at = Math.max(a.startSec, b.startSec)
+        if (clashAtSec === null || at < clashAtSec) clashAtSec = at
+      }
+    }
+    return { pitchId: other, compatible: clashAtSec === null, clashAtSec }
+  })
+}
+
 /** One player's part, for the play-your-part view. */
 export function partFor(result: DistributionResult, playerIndex: number): PlayerPart | null {
   if (result.type !== 'feasible') return null
