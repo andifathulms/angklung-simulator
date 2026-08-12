@@ -97,7 +97,7 @@ export function SegmentedControl<T extends string>({
       <legend className="eyebrow mb-1.5">{label}</legend>
       <div
         className={cx(
-          'surface-raised inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage-raised p-1',
+          'surface-raised inline-flex flex-wrap justify-center gap-1 rounded-full border border-stage-line bg-stage-raised p-1',
           disabled && 'opacity-45',
         )}
       >

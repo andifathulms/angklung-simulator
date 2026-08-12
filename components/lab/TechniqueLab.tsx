@@ -84,7 +84,14 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
+      {/*
+        * 16rem was a hair too narrow for the technique control: Kurulung,
+        * Centok and Tengkep need about 17rem together, so the third pill wrapped
+        * onto a line of its own and sat hard against the left edge, reading as a
+        * mistake rather than a choice. 19rem fits all three on one row with room
+        * for the Sundanese names to grow.
+        */}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,19rem)_minmax(0,1fr)]">
         <div className="space-y-5">
           <SegmentedControl
             label={dict.rak.techniqueLabel}
