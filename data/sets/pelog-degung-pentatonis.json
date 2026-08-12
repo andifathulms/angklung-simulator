@@ -7,18 +7,49 @@
   "numberingNote": "Nomor berjalan dari tabung terendah ke tertinggi.",
   "source": {
     "title": "Laras pelog degung sebagaimana didokumentasikan pada data/tunings/pelog-degung.json",
-    "note": "Rentang dua oktaf dipilih agar sebanding dengan set padaeng pada halaman perbandingan laras; bukan ukuran perangkat baku."
+    "note": "Rentang dua oktaf dipilih agar sebanding dengan set padaeng pada halaman perbandingan laras; bukan ukuran perangkat baku.",
+    "caveat": "Rentang dua oktaf dipilih agar sebanding dengan set padaeng pada halaman perbandingan laras. Perangkat degung yang nyata tidak harus sepuluh angklung dan tidak harus dua oktaf penuh."
   },
   "entries": [
-    { "degree": "da", "octave": 4 },
-    { "degree": "mi", "octave": 4 },
-    { "degree": "na", "octave": 4 },
-    { "degree": "ti", "octave": 4 },
-    { "degree": "la", "octave": 4 },
-    { "degree": "da", "octave": 5 },
-    { "degree": "mi", "octave": 5 },
-    { "degree": "na", "octave": 5 },
-    { "degree": "ti", "octave": 5 },
-    { "degree": "la", "octave": 5 }
+    {
+      "degree": "da",
+      "octave": 4
+    },
+    {
+      "degree": "mi",
+      "octave": 4
+    },
+    {
+      "degree": "na",
+      "octave": 4
+    },
+    {
+      "degree": "ti",
+      "octave": 4
+    },
+    {
+      "degree": "la",
+      "octave": 4
+    },
+    {
+      "degree": "da",
+      "octave": 5
+    },
+    {
+      "degree": "mi",
+      "octave": 5
+    },
+    {
+      "degree": "na",
+      "octave": 5
+    },
+    {
+      "degree": "ti",
+      "octave": 5
+    },
+    {
+      "degree": "la",
+      "octave": 5
+    }
   ]
 }

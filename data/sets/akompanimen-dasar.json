@@ -7,14 +7,39 @@
   "numberingNote": "Angklung akompanimen dikenali dari nama akornya, bukan dari nomor melodi — tetapi tetap diberi nomor agar aba-aba tangan bekerja sama seperti pada angklung melodi.",
   "source": {
     "title": "Angklung akompanimen padaeng: empat tabung berbunyi septim dominan; satu tabung ditengkep menyisakan trinada mayor (PRD §2)",
-    "note": "Susunan akor dikutip; kualitas minor disertakan karena mekanismenya sama, bukan karena sumber yang sama mendokumentasikannya."
+    "note": "Susunan akor dikutip; kualitas minor disertakan karena mekanismenya sama, bukan karena sumber yang sama mendokumentasikannya.",
+    "caveat": "Susunan septim dominan yang berubah menjadi trinada mayor ketika satu tabung ditengkep dikutip dari PRD proyek ini dan dari keterangan umum tentang angklung akompanimen. Enam akor yang dipilih di sini — I ii iii IV V vi — adalah pilihan proyek ini agar cukup untuk mengiringi lagu sederhana; perangkat nyata bisa berisi akor lain. Kualitas minor disertakan karena mekanismenya sama, bukan karena sumber yang sama mendokumentasikannya."
   },
   "entries": [
-    { "degree": "C", "octave": 3, "kualitas": "mayor" },
-    { "degree": "D", "octave": 3, "kualitas": "minor" },
-    { "degree": "E", "octave": 3, "kualitas": "minor" },
-    { "degree": "F", "octave": 3, "kualitas": "mayor" },
-    { "degree": "G", "octave": 3, "kualitas": "mayor" },
-    { "degree": "A", "octave": 3, "kualitas": "minor" }
+    {
+      "degree": "C",
+      "octave": 3,
+      "kualitas": "mayor"
+    },
+    {
+      "degree": "D",
+      "octave": 3,
+      "kualitas": "minor"
+    },
+    {
+      "degree": "E",
+      "octave": 3,
+      "kualitas": "minor"
+    },
+    {
+      "degree": "F",
+      "octave": 3,
+      "kualitas": "mayor"
+    },
+    {
+      "degree": "G",
+      "octave": 3,
+      "kualitas": "mayor"
+    },
+    {
+      "degree": "A",
+      "octave": 3,
+      "kualitas": "minor"
+    }
   ]
 }

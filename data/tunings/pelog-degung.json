@@ -6,17 +6,37 @@
   "description": "Pentatonis dengan langkah lebar dan sempit yang berselang — inilah warna degung Sunda. Seperti salendro, pelog degung berbeda antar perangkat; angka ini satu set terdokumentasi dan boleh Anda ubah.",
   "descriptionEn": "Pentatonic with alternating wide and narrow steps — the Sundanese degung colour. Like salendro, pelog degung varies between sets; these cents are one documented interval set, editable.",
   "source": {
-    "title": "Jaap Kunst, Music in Java (Martinus Nijhoff, 1949), pelog interval measurements; Sundanese degung as the five-tone subset da–mi–na–ti–la",
-    "note": "Rounded to the nearest 5 cents from the cited measurements. Individual gamelan degung and angklung sets differ audibly from these values, which is the point of shipping them as editable data.",
-    "url": "https://ich.unesco.org/en/RL/indonesian-angklung-00393"
+    "title": "Model struktural pelog: langkah kecil sekitar 133 sen dan langkah rangkap sekitar 267 sen, mendekati pembagian oktaf sembilan nada sama rata (1200/9 = 133,3 sen)",
+    "note": "Lima nada di sini adalah derajat 1-2-3-5-6 dari kerangka pelog tujuh nada, dibulatkan ke kelipatan 133,3 sen. Ini model, bukan pengukuran satu perangkat gamelan tertentu.",
+    "caveat": "Perangkat degung yang nyata menyimpang dari model ini sampai puluhan sen, dan penyimpangan itu — embat — justru bagian dari identitas tiap perangkat, bukan ketidaktepatan. Panduan laras Sunda dari Universitas Pendidikan Indonesia mencatat bahwa struktur interval gamelan selalu sedikit berbeda antar perangkat. Perlakukan angka ini sebagai titik berangkat yang bisa disunting, bukan sebagai laras degung. Satu hal lagi yang belum terjawab: sebagian kepustakaan Sunda menuliskan da-mi-na-ti-la menurun (da nada tertinggi), sebagian lain menaik. Di sini derajat disusun menaik demi kejelasan kode; kalau Anda memakai konvensi menurun, urutannya perlu dibalik.",
+    "urls": [
+      "https://en.wikipedia.org/wiki/Pelog",
+      "https://tuning.ableton.com/sundanese-gamelan/intro-to-sundanese-gamelan/",
+      "https://tuning.ableton.com/sundanese-gamelan/degung-surupan-57/"
+    ]
   },
   "referenceDegreeHz": 261.6255653005986,
   "referenceOctave": 4,
   "degrees": [
-    { "name": "da", "cents": 0 },
-    { "name": "mi", "cents": 120 },
-    { "name": "na", "cents": 270 },
-    { "name": "ti", "cents": 675 },
-    { "name": "la", "cents": 790 }
+    {
+      "name": "da",
+      "cents": 0
+    },
+    {
+      "name": "mi",
+      "cents": 133
+    },
+    {
+      "name": "na",
+      "cents": 267
+    },
+    {
+      "name": "ti",
+      "cents": 667
+    },
+    {
+      "name": "la",
+      "cents": 800
+    }
   ]
 }

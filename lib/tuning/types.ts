@@ -14,7 +14,13 @@ export interface Degree {
 export interface TuningSource {
   readonly title: string
   readonly note: string
-  readonly url?: string
+  /**
+   * What is uncertain, and what this project has and has not actually checked.
+   * Required: a tuning that cannot say where its numbers stop being verified has
+   * no business claiming them (invariant 8).
+   */
+  readonly caveat: string
+  readonly urls?: readonly string[]
 }
 
 export interface TuningDefinition {

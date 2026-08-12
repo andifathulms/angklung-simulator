@@ -18,6 +18,10 @@ function check(condition: boolean, message: string): void {
 for (const tuning of TUNINGS) {
   check(tuning.source.title.trim().length > 20, `laras ${tuning.id}: kutipan sumber terlalu pendek`)
   check(tuning.source.note.trim().length > 20, `laras ${tuning.id}: catatan sumber terlalu pendek`)
+  check(
+    tuning.source.caveat.trim().length > 40,
+    `laras ${tuning.id}: catatan keraguan terlalu pendek — setiap laras harus menyatakan di mana angkanya berhenti terverifikasi`,
+  )
   check(tuning.degrees.length > 0, `laras ${tuning.id}: tidak punya derajat`)
   check(tuning.degrees[0]?.cents === 0, `laras ${tuning.id}: derajat pertama harus 0 sen`)
 
@@ -42,6 +46,7 @@ for (const tuning of TUNINGS) {
 for (const set of SETS) {
   check(set.entries.length > 0, `set ${set.id}: kosong`)
   check(set.source.title.trim().length > 20, `set ${set.id}: kutipan sumber terlalu pendek`)
+  check(set.source.caveat.trim().length > 40, `set ${set.id}: catatan keraguan terlalu pendek`)
   check(set.numberingNote.trim().length > 20, `set ${set.id}: catatan penomoran terlalu pendek`)
   try {
     const built = buildSet(set, getTuning(set.laras))
@@ -63,6 +68,10 @@ for (const melody of MELODIES) {
     `melodi ${melody.id}: provenance harus domain-publik atau ciptaan-sendiri`,
   )
   check(melody.source.title.trim().length > 10, `melodi ${melody.id}: kutipan sumber terlalu pendek`)
+  check(
+    melody.source.caveat.trim().length > 40,
+    `melodi ${melody.id}: catatan keraguan terlalu pendek`,
+  )
   const set = SETS.find((candidate) => candidate.id === melody.setId)
   if (set === undefined) {
     problems.push(`melodi ${melody.id}: set ${melody.setId} tidak ada`)

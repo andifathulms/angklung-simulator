@@ -196,16 +196,20 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                 <p className="font-mono uppercase tracking-widest">{dict.laras.source}</p>
                 <p>{tuning.source.title}</p>
                 <p>{tuning.source.note}</p>
-                {tuning.source.url !== undefined ? (
+                <p className="border-l-2 border-cue/60 pl-2 text-bamboo/60">
+                  {tuning.source.caveat}
+                </p>
+                {(tuning.source.urls ?? []).map((url) => (
                   <a
-                    className="underline underline-offset-2 hover:text-sounding"
-                    href={tuning.source.url}
+                    key={url}
+                    className="block truncate underline underline-offset-2 hover:text-sounding"
+                    href={url}
                     rel="noreferrer noopener"
                     target="_blank"
                   >
-                    {tuning.source.url}
+                    {url}
                   </a>
-                ) : null}
+                ))}
               </footer>
             </article>
           )

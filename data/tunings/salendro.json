@@ -6,17 +6,36 @@
   "description": "Pentatonis dengan lima langkah yang nyaris sama rata. Salendro TIDAK punya standar baku — setiap perangkat berbeda. Angka di sini adalah satu set yang terdokumentasi, bukan 'salendro yang benar', dan boleh Anda ubah.",
   "descriptionEn": "Near-equidistant pentatonic. Salendro has no fixed standard and varies between sets. These cents are one documented interval set, editable, and are not presented as the tuning.",
   "source": {
-    "title": "Jaap Kunst, Music in Java (Martinus Nijhoff, 1949) — slendro described as an approximately equidistant five-tone division of the octave",
-    "note": "Idealised near-equidistant reading: 1200/5 = 240 cents per step. Measured Sundanese sets deviate from this by tens of cents in either direction; treat as a reference point, not an authority.",
-    "url": "https://ich.unesco.org/en/RL/indonesian-angklung-00393"
+    "title": "Salendro sebagai pembagian oktaf lima nada yang nyaris sama rata: 1200/5 = 240 sen per langkah",
+    "note": "Angka 240 sen adalah model struktural yang lazim dikutip, bukan hasil pengukuran perangkat tertentu. Kepustakaan Sunda membedakan salendro padantara — jaraknya nyaris seragam sekitar 240 sen — dari salendro bedantara, yang jarak sempitnya sekitar 200–230 sen dan jarak lebarnya sekitar 250–290 sen. Yang dimuat di sini adalah padantara.",
+    "caveat": "Angka 240 sen sering dikaitkan dengan pengukuran Jaap Kunst, Music in Java (1949). Kaitan itu diambil dari kepustakaan sekunder; bukunya sendiri belum diperiksa langsung untuk proyek ini, jadi jangan kutip proyek ini sebagai sumber Kunst. Satu hal lagi yang belum terjawab: sebagian kepustakaan Sunda menuliskan da-mi-na-ti-la menurun (da nada tertinggi), sebagian lain menaik. Di sini derajat disusun menaik demi kejelasan kode; kalau Anda memakai konvensi menurun, urutannya perlu dibalik.",
+    "urls": [
+      "https://en.wikipedia.org/wiki/Slendro",
+      "https://tuning.ableton.com/sundanese-gamelan/intro-to-sundanese-gamelan/"
+    ]
   },
   "referenceDegreeHz": 261.6255653005986,
   "referenceOctave": 4,
   "degrees": [
-    { "name": "da", "cents": 0 },
-    { "name": "mi", "cents": 240 },
-    { "name": "na", "cents": 480 },
-    { "name": "ti", "cents": 720 },
-    { "name": "la", "cents": 960 }
+    {
+      "name": "da",
+      "cents": 0
+    },
+    {
+      "name": "mi",
+      "cents": 240
+    },
+    {
+      "name": "na",
+      "cents": 480
+    },
+    {
+      "name": "ti",
+      "cents": 720
+    },
+    {
+      "name": "la",
+      "cents": 960
+    }
   ]
 }

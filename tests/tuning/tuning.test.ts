@@ -17,6 +17,20 @@ describe('citations', () => {
   it.each(TUNINGS.map((t) => [t.id, t] as const))('%s carries a source', (_id, tuning) => {
     expect(tuning.source.title.length).toBeGreaterThan(20)
     expect(tuning.source.note.length).toBeGreaterThan(20)
+    // A laras must say where its numbers stop being verified. Without this the
+    // citation is decoration.
+    expect(tuning.source.caveat.length).toBeGreaterThan(40)
+  })
+
+  it('does not claim a source this project has not actually read', () => {
+    // Kunst's Music in Java (1949) is the usual attribution for the 240-cent
+    // slendro figure, and it reaches this project through secondary literature.
+    // Wherever it is named, the caveat must say so.
+    for (const tuning of TUNINGS) {
+      const mentionsKunst = /Kunst/i.test(tuning.source.title + tuning.source.note)
+      if (!mentionsKunst) continue
+      expect(tuning.source.caveat).toMatch(/sekunder|belum diperiksa/)
+    }
   })
 
   it('marks salendro and pelog as one documented set, not the standard', () => {
@@ -35,18 +49,28 @@ describe('cents against the cited sources', () => {
     })
   })
 
-  it('salendro is five near-equidistant steps of 240 cents (Kunst 1949, idealised)', () => {
+  it('salendro is five near-equidistant steps of 240 cents', () => {
     expect(SALENDRO.degrees).toHaveLength(5)
     SALENDRO.degrees.forEach((degree, index) => {
       expect(degree.cents).toBe(index * 240)
     })
   })
 
-  it('pelog degung alternates narrow and wide steps', () => {
+  it('pelog degung sits on the nine-tone framework its source describes', () => {
     const cents = PELOG_DEGUNG.degrees.map((d) => d.cents)
     expect(cents).toHaveLength(5)
+
+    // Pelog is documented as small steps near 133 cents and double steps near
+    // 267 — an approximation of nine equal divisions of the octave. Every degree
+    // must land on a multiple of 1200/9, within rounding.
+    const step = 1200 / 9
+    for (const value of cents) {
+      const nearest = Math.round(value / step) * step
+      expect(Math.abs(value - nearest), `${value} sen`).toBeLessThan(1)
+    }
+
+    // Narrow, narrow, wide, narrow — the degung colour. Not equidistant.
     const steps = cents.slice(1).map((c, i) => c - (cents[i] ?? 0))
-    // Narrow, narrow-ish, wide, narrow — the degung colour. Not equidistant.
     expect(steps[0]).toBeLessThan(200)
     expect(steps[2]).toBeGreaterThan(350)
     expect(Math.max(...steps) - Math.min(...steps)).toBeGreaterThan(200)
