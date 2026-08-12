@@ -112,6 +112,9 @@ export interface Dictionary {
     readonly yourPartHint: string
     readonly everyPartHint: string
     readonly mode: string
+    readonly groupPiece: string
+    readonly groupRoom: string
+    readonly groupTransport: string
     readonly tempo: string
     readonly countIn: string
     readonly cueLane: string
@@ -355,6 +358,9 @@ const id: Dictionary = {
     everyPartHint:
       'Mesin tidak memainkan apa pun. Silakan coba mainkan seluruh lagu sendirian.',
     mode: 'Cara main',
+    groupPiece: 'Lagunya',
+    groupRoom: 'Ruangannya',
+    groupTransport: 'Jalankan',
     tempo: 'Tempo',
     countIn: 'Aba-aba masuk',
     cueLane: 'Jalur aba-aba',
@@ -617,6 +623,9 @@ const en: Dictionary = {
       'Every other player is played for you. Your part is left silent — coming in on time is your job.',
     everyPartHint: 'Nothing is played for you. Try to play the whole piece yourself.',
     mode: 'Mode',
+    groupPiece: 'The piece',
+    groupRoom: 'The room',
+    groupTransport: 'Run it',
     tempo: 'Tempo',
     countIn: 'Count-in',
     cueLane: 'Cue lane',

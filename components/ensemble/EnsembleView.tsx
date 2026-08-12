@@ -275,120 +275,147 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
   return (
     <div className="space-y-8">
-      <Card className="flex flex-wrap items-end gap-x-7 gap-y-5">
-        <Field label={dict.ansambel.melodyLabel}>
-          <Select value={melodyId} onChange={(event) => setMelodyId(event.target.value)}>
-            {MELODIES.map((candidate) => (
-              <option key={candidate.id} value={candidate.id}>
-                {candidate.title}
-              </option>
-            ))}
-          </Select>
-        </Field>
+      {/*
+        * Eight controls used to sit in one flex-wrap row in insertion order, at
+        * equal weight, and on a phone they stacked into an eight-item column
+        * with the play button at the bottom of it. They are not eight peers.
+        * Three describe the piece, three describe the room it needs, and two
+        * are transport — so they are grouped that way and the play button gets
+        * its own row where the column is narrow.
+        */}
+      <Card className="space-y-6">
+        {/* What is being played. */}
+        <div className="flex flex-wrap items-end gap-x-7 gap-y-5">
+          <p className="eyebrow w-full">{dict.ansambel.groupPiece}</p>
 
-        <Field label={dict.ansambel.playersLabel}>
-          <Select
-            value={playerCount === null ? 'min' : String(playerCount)}
-            onChange={(event) =>
-              setPlayerCount(event.target.value === 'min' ? null : Number(event.target.value))
-            }
+          <Field label={dict.ansambel.melodyLabel}>
+            <Select value={melodyId} onChange={(event) => setMelodyId(event.target.value)}>
+              {MELODIES.map((candidate) => (
+                <option key={candidate.id} value={candidate.id}>
+                  {candidate.title}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          {/*
+            * The second population. Off by default so the headline number stays
+            * the one the home page demonstrated — and so that turning it on, and
+            * watching the room grow, is something the visitor does rather than
+            * something they arrive to.
+            */}
+          <SegmentedControl<'tanpa' | 'dengan'>
+            label={dict.ansambel.withAkompanimen}
+            value={withAkompanimen ? 'dengan' : 'tanpa'}
+            onChange={(next) => setWithAkompanimen(next === 'dengan')}
+            disabled={!hasAkompanimen}
+            options={[
+              { value: 'tanpa', label: dict.ansambel.akompanimenOff },
+              { value: 'dengan', label: dict.ansambel.akompanimenOn },
+            ]}
+          />
+        </div>
+
+        <div className="rule-fade" aria-hidden="true" />
+
+        {/* Who is in the room, and what you are doing in it. */}
+        <div className="flex flex-wrap items-end gap-x-7 gap-y-5">
+          <p className="eyebrow w-full">{dict.ansambel.groupRoom}</p>
+
+          <Field label={dict.ansambel.playersLabel}>
+            <Select
+              value={playerCount === null ? 'min' : String(playerCount)}
+              onChange={(event) =>
+                setPlayerCount(event.target.value === 'min' ? null : Number(event.target.value))
+              }
+            >
+              <option value="min">{dict.ansambel.minimum}</option>
+              {Array.from({ length: 16 }, (_, index) => index + 1).map((count) => (
+                <option key={count} value={count}>
+                  {count}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          {/*
+            * The two-hands assumption, which was a constant in the solver and
+            * invisible here. It does the most argumentative work of anything on
+            * the page: one angklung each is how most school ensembles actually
+            * run, and it changes the number of people a song needs.
+            */}
+          <SegmentedControl<'2' | '1'>
+            label={dict.ansambel.perPlayerLabel}
+            value={String(angklungPerPlayer) === '1' ? '1' : '2'}
+            onChange={(next) => setAngklungPerPlayer(Number(next))}
+            options={PER_PLAYER_CHOICES.map((count) => ({
+              value: String(count) as '2' | '1',
+              label: count === 1 ? dict.ansambel.perPlayerOne : dict.ansambel.perPlayerTwo,
+            }))}
+          />
+
+          <SegmentedControl<Mode>
+            label={dict.ansambel.mode}
+            value={mode}
+            onChange={setMode}
+            options={MODES.map((candidate) => ({
+              value: candidate,
+              label:
+                candidate === 'dengar'
+                  ? dict.ansambel.listen
+                  : candidate === 'bagian-anda'
+                    ? dict.ansambel.yourPart
+                    : dict.ansambel.everyPart,
+            }))}
+          />
+        </div>
+
+        <div className="rule-fade" aria-hidden="true" />
+
+        {/* Transport. The play button ends the card wherever the row breaks. */}
+        <div className="flex flex-wrap items-end gap-x-7 gap-y-5">
+          <p className="eyebrow w-full">{dict.ansambel.groupTransport}</p>
+
+          <label className="flex min-w-0 flex-col gap-1.5">
+            <span className="eyebrow">{dict.ansambel.tempo}</span>
+            <span className="flex items-center gap-2">
+              <input
+                type="range"
+                min={40}
+                max={180}
+                step={1}
+                value={tempo}
+                onChange={(event) => setBpm(Number(event.target.value))}
+                className="w-32 accent-bamboo"
+              />
+              <span className="font-mono text-step-0 tabular-nums text-sounding">{tempo}</span>
+            </span>
+          </label>
+
+          <Field label={dict.ansambel.countIn}>
+            <Select
+              value={countInBeats}
+              onChange={(event) => setCountInBeats(Number(event.target.value))}
+            >
+              {COUNT_IN_CHOICES.map((beats) => (
+                <option key={beats} value={beats}>
+                  {beats}
+                </option>
+              ))}
+            </Select>
+          </Field>
+
+          <Button
+            tone="primary"
+            size="md"
+            className="w-full sm:ml-auto sm:w-auto"
+            disabled={status !== 'siap' || ensemble === null}
+            onClick={() => (isPlaying ? stop() : start())}
           >
-            <option value="min">{dict.ansambel.minimum}</option>
-            {Array.from({ length: 16 }, (_, index) => index + 1).map((count) => (
-              <option key={count} value={count}>
-                {count}
-              </option>
-            ))}
-          </Select>
-        </Field>
-
-        {/*
-          * The second population. Off by default so the headline number stays
-          * the one the home page demonstrated — and so that turning it on, and
-          * watching the room grow, is something the visitor does rather than
-          * something they arrive to.
-          */}
-        <SegmentedControl<'tanpa' | 'dengan'>
-          label={dict.ansambel.withAkompanimen}
-          value={withAkompanimen ? 'dengan' : 'tanpa'}
-          onChange={(next) => setWithAkompanimen(next === 'dengan')}
-          disabled={!hasAkompanimen}
-          options={[
-            { value: 'tanpa', label: dict.ansambel.akompanimenOff },
-            { value: 'dengan', label: dict.ansambel.akompanimenOn },
-          ]}
-        />
-
-        {/*
-          * The two-hands assumption, which was a constant in the solver and
-          * invisible here. It does the most argumentative work of anything on
-          * the page: one angklung each is how most school ensembles actually
-          * run, and it changes the number of people a song needs.
-          */}
-        <SegmentedControl<'2' | '1'>
-          label={dict.ansambel.perPlayerLabel}
-          value={String(angklungPerPlayer) === '1' ? '1' : '2'}
-          onChange={(next) => setAngklungPerPlayer(Number(next))}
-          options={PER_PLAYER_CHOICES.map((count) => ({
-            value: String(count) as '2' | '1',
-            label: count === 1 ? dict.ansambel.perPlayerOne : dict.ansambel.perPlayerTwo,
-          }))}
-        />
-
-        <SegmentedControl<Mode>
-          label={dict.ansambel.mode}
-          value={mode}
-          onChange={setMode}
-          options={MODES.map((candidate) => ({
-            value: candidate,
-            label:
-              candidate === 'dengar'
-                ? dict.ansambel.listen
-                : candidate === 'bagian-anda'
-                  ? dict.ansambel.yourPart
-                  : dict.ansambel.everyPart,
-          }))}
-        />
-
-        <label className="flex min-w-0 flex-col gap-1.5">
-          <span className="eyebrow">{dict.ansambel.tempo}</span>
-          <span className="flex items-center gap-2">
-            <input
-              type="range"
-              min={40}
-              max={180}
-              step={1}
-              value={tempo}
-              onChange={(event) => setBpm(Number(event.target.value))}
-              className="w-32 accent-bamboo"
-            />
-            <span className="font-mono text-step-0 tabular-nums text-sounding">{tempo}</span>
-          </span>
-        </label>
-
-        <label className="flex min-w-0 flex-col gap-1.5">
-          <span className="eyebrow">{dict.ansambel.countIn}</span>
-          <Select
-            value={countInBeats}
-            onChange={(event) => setCountInBeats(Number(event.target.value))}
-          >
-            {COUNT_IN_CHOICES.map((beats) => (
-              <option key={beats} value={beats}>
-                {beats}
-              </option>
-            ))}
-          </Select>
-        </label>
-
-        <Button
-          tone="primary"
-          size="md"
-          disabled={status !== 'siap' || ensemble === null}
-          onClick={() => (isPlaying ? stop() : start())}
-        >
-          <span aria-hidden="true">{isPlaying ? '■' : '▶'}</span>
-          {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
-        </Button>
+            <span aria-hidden="true">{isPlaying ? '■' : '▶'}</span>
+            {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
+          </Button>
+        </div>
       </Card>
 
       <p className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
