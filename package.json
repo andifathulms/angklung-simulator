@@ -1,0 +1,38 @@
+{
+  "name": "angklung-simulator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Angklung Ensemble — one angklung is one note, so a song is a coordination problem.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "pnpm data:validate && next build",
+    "preview": "node scripts/preview.mjs",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:synth": "vitest run tests/synth",
+    "test:distribution": "vitest run tests/distribution",
+    "bench:voices": "tsx scripts/bench-voices.ts",
+    "data:validate": "tsx scripts/validate-data.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.10",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "autoprefixer": "10.4.19",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5",
+    "postcss": "8.4.39",
+    "tailwindcss": "3.4.6",
+    "tsx": "4.16.2",
+    "typescript": "5.5.3",
+    "vitest": "1.6.0"
+  },
+  "packageManager": "pnpm@9.15.9"
+}
