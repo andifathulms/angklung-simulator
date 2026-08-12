@@ -111,8 +111,29 @@ export function Timeline({
         })}
       </ul>
 
-      <div aria-hidden="true" className="overflow-x-auto">
-        <div className="relative min-w-max" style={{ width }}>
+      {/*
+        * The chart is wider than the column and scrolls horizontally, which is
+        * permitted for content needing a two-dimensional layout (WCAG 1.4.10) —
+        * but a plain overflow container takes no focus, so there was no way to
+        * reach the right-hand end of a long piece without a mouse or trackpad
+        * (WCAG 2.1.1). It has no focusable children of its own to carry you
+        * there either, unlike the rack.
+        *
+        * tabIndex makes it scrollable with the arrow keys. role="group" is the
+        * one added role in this pass, and it is here because a bare div with a
+        * tabindex announces a focus stop with nothing to explain it — group is
+        * the least the label needs in order to be read at all.
+        *
+        * aria-hidden moves inward onto the marks: it cannot sit on the focusable
+        * element itself without hiding a focus stop, which is its own defect.
+        */}
+      <div
+        tabIndex={0}
+        role="group"
+        aria-label={dict.ansambel.timelineRegion}
+        className="overflow-x-auto"
+      >
+        <div aria-hidden="true" className="relative min-w-max" style={{ width }}>
           {/* One tick per second. The grid is the only thing behind a rest. */}
           <div className="pointer-events-none absolute inset-0" aria-hidden="true">
             {Array.from({ length: Math.ceil(durationSec) + 1 }, (_, second) => (
