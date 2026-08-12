@@ -37,6 +37,7 @@ export interface Dictionary {
     readonly kicker: string
     readonly try: string
     readonly starting: string
+    readonly tapInvite: string
     readonly tapHint: string
     readonly step2Title: string
     readonly playMelody: string
@@ -232,6 +233,7 @@ const id: Dictionary = {
     kicker: 'Simulator angklung — bunyinya dihitung, bukan direkam',
     try: 'Bunyikan angklungnya',
     starting: 'Menyalakan…',
+    tapInvite: 'Ketuk angklung mana pun di atas — atau tekan tombolnya.',
     tapHint: 'Ketuk angklung mana pun. Tahan agar terus berbunyi.',
     step2Title: 'Sekarang mainkan satu lagu',
     playMelody: 'Mainkan “Bintang Kecil”',
@@ -444,6 +446,7 @@ const en: Dictionary = {
     kicker: 'An angklung simulator — the sound is computed, not recorded',
     try: 'Sound an angklung',
     starting: 'Starting…',
+    tapInvite: 'Tap any angklung above — or press the button.',
     tapHint: 'Tap any angklung. Hold it to keep it sounding.',
     step2Title: 'Now play one song',
     playMelody: 'Play “Twinkle, Twinkle”',

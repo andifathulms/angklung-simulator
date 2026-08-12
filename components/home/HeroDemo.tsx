@@ -195,9 +195,22 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
           )}
         </div>
 
-        <p className="mt-3 text-center text-step--1 text-ink-faint">
-          {touched ? dict.hero.tapHint : dict.audio.hint}
+        {/*
+          * The line under the button used to explain the browser's autoplay
+          * policy to someone who had not yet formed the intention to play
+          * anything, and only offered the invitation — "tap any angklung" —
+          * after they had already worked out that the tubes were tappable.
+          * Inverted. The invitation comes first at reading weight; the policy
+          * note drops to label size beneath it, and only until sound is on.
+          */}
+        <p className="mt-3 text-center text-step--1 text-ink-muted">
+          {touched ? dict.hero.tapHint : dict.hero.tapInvite}
         </p>
+        {!touched && status !== 'siap' ? (
+          <p className="mx-auto mt-1.5 max-w-prose text-center text-step--2 text-ink-faint">
+            {dict.audio.hint}
+          </p>
+        ) : null}
       </div>
 
       {/* The answer, revealed only once they have heard the song. Stating it up
