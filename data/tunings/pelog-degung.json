@@ -1,0 +1,22 @@
+{
+  "id": "pelog-degung",
+  "laras": "pelog-degung",
+  "name": "Laras pelog degung (satu set terdokumentasi)",
+  "shortName": "Pelog degung",
+  "description": "Pentatonis dengan langkah lebar dan sempit yang berselang — inilah warna degung Sunda. Seperti salendro, pelog degung berbeda antar perangkat; angka ini satu set terdokumentasi dan boleh Anda ubah.",
+  "descriptionEn": "Pentatonic with alternating wide and narrow steps — the Sundanese degung colour. Like salendro, pelog degung varies between sets; these cents are one documented interval set, editable.",
+  "source": {
+    "title": "Jaap Kunst, Music in Java (Martinus Nijhoff, 1949), pelog interval measurements; Sundanese degung as the five-tone subset da–mi–na–ti–la",
+    "note": "Rounded to the nearest 5 cents from the cited measurements. Individual gamelan degung and angklung sets differ audibly from these values, which is the point of shipping them as editable data.",
+    "url": "https://ich.unesco.org/en/RL/indonesian-angklung-00393"
+  },
+  "referenceDegreeHz": 261.6255653005986,
+  "referenceOctave": 4,
+  "degrees": [
+    { "name": "da", "cents": 0 },
+    { "name": "mi", "cents": 120 },
+    { "name": "na", "cents": 270 },
+    { "name": "ti", "cents": 675 },
+    { "name": "la", "cents": 790 }
+  ]
+}

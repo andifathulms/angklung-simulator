@@ -1,0 +1,29 @@
+{
+  "id": "padaeng",
+  "laras": "padaeng",
+  "name": "Angklung padaeng (diatonis-kromatis)",
+  "shortName": "Padaeng",
+  "description": "Tangga nada diatonis-kromatis dua belas nada sama rata. Dirancang Daeng Soetigna pada 1938 agar angklung dapat bermain bersama alat musik Barat.",
+  "descriptionEn": "Twelve-tone equal temperament. Devised by Daeng Soetigna in 1938 so that angklung could play alongside Western instruments.",
+  "source": {
+    "title": "Daeng Soetigna, angklung padaeng (1938); twelve-tone equal temperament as standardised for Western-compatible tuning",
+    "note": "Equal temperament is a definition, not a measurement: each step is exactly 100 cents by construction.",
+    "url": "https://ich.unesco.org/en/RL/indonesian-angklung-00393"
+  },
+  "referenceDegreeHz": 261.6255653005986,
+  "referenceOctave": 4,
+  "degrees": [
+    { "name": "C", "cents": 0 },
+    { "name": "C#", "cents": 100 },
+    { "name": "D", "cents": 200 },
+    { "name": "D#", "cents": 300 },
+    { "name": "E", "cents": 400 },
+    { "name": "F", "cents": 500 },
+    { "name": "F#", "cents": 600 },
+    { "name": "G", "cents": 700 },
+    { "name": "G#", "cents": 800 },
+    { "name": "A", "cents": 900 },
+    { "name": "A#", "cents": 1000 },
+    { "name": "B", "cents": 1100 }
+  ]
+}

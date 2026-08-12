@@ -1,0 +1,22 @@
+{
+  "id": "salendro",
+  "laras": "salendro",
+  "name": "Laras salendro (satu set terdokumentasi)",
+  "shortName": "Salendro",
+  "description": "Pentatonis dengan lima langkah yang nyaris sama rata. Salendro TIDAK punya standar baku — setiap perangkat berbeda. Angka di sini adalah satu set yang terdokumentasi, bukan 'salendro yang benar', dan boleh Anda ubah.",
+  "descriptionEn": "Near-equidistant pentatonic. Salendro has no fixed standard and varies between sets. These cents are one documented interval set, editable, and are not presented as the tuning.",
+  "source": {
+    "title": "Jaap Kunst, Music in Java (Martinus Nijhoff, 1949) — slendro described as an approximately equidistant five-tone division of the octave",
+    "note": "Idealised near-equidistant reading: 1200/5 = 240 cents per step. Measured Sundanese sets deviate from this by tens of cents in either direction; treat as a reference point, not an authority.",
+    "url": "https://ich.unesco.org/en/RL/indonesian-angklung-00393"
+  },
+  "referenceDegreeHz": 261.6255653005986,
+  "referenceOctave": 4,
+  "degrees": [
+    { "name": "da", "cents": 0 },
+    { "name": "mi", "cents": 240 },
+    { "name": "na", "cents": 480 },
+    { "name": "ti", "cents": 720 },
+    { "name": "la", "cents": 960 }
+  ]
+}
