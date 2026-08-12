@@ -3,6 +3,13 @@ import { AkompanimenLab } from '@/components/lab/AkompanimenLab'
 import { TechniqueLab } from '@/components/lab/TechniqueLab'
 import { PageHeader, Section } from '@/components/ui'
 import { LOCALES, getDictionary, isLocale } from '@/lib/i18n'
+import { sectionMetadata } from '@/lib/seo'
+
+/** Title and description come from the dictionary this page already renders. */
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {}
+  return sectionMetadata(params.locale, 'teknik')
+}
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))

@@ -4,7 +4,23 @@ import { HeroDemo } from '@/components/home/HeroDemo'
 import { WorkedExample } from '@/components/home/WorkedExample'
 import { ButtonLink, Card, CardLink, Section, Term } from '@/components/ui'
 import { LOCALES, getDictionary, isLocale, localePath } from '@/lib/i18n'
+import { pageMetadata } from '@/lib/seo'
 import { KURULUNG_SHAKE_RATE_RANGE_HZ } from '@/lib/synth'
+
+/**
+ * The home page's own title and description, from the same strings it renders:
+ * the headline above the fold and the sentence under it.
+ */
+export function generateMetadata({ params }: { params: { locale: string } }) {
+  if (!isLocale(params.locale)) return {}
+  const dict = getDictionary(params.locale)
+  return pageMetadata({
+    locale: params.locale,
+    path: '',
+    title: `Angklung Simulator — ${dict.home.title.toLowerCase()}`,
+    description: dict.home.subtitle,
+  })
+}
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
