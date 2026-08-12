@@ -222,18 +222,33 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
 
       {results.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
+          <h2
+            id="hasil-diagnostik"
+            className="font-mono text-step--2 uppercase tracking-widest text-ink-faint"
+          >
             {dict.diagnostik.verdict}
           </h2>
           <div className="overflow-x-auto">
-            <table className="min-w-max font-mono text-step--1">
+            <table aria-labelledby="hasil-diagnostik" className="min-w-max font-mono text-step--1">
               <thead className="text-ink-faint">
                 <tr>
-                  <th className="px-3 py-1 text-left">{dict.diagnostik.voices}</th>
-                  <th className="px-3 py-1 text-right">{dict.diagnostik.medianLate}</th>
-                  <th className="px-3 py-1 text-right">{dict.diagnostik.worstLate}</th>
-                  <th className="px-3 py-1 text-right">{dict.diagnostik.missed}</th>
-                  <th className="px-3 py-1 text-left">{dict.diagnostik.verdict}</th>
+                  {/* scope="col" so each cell is announced with the column it
+                      belongs to rather than as a bare number. */}
+                  <th scope="col" className="px-3 py-1 text-left">
+                    {dict.diagnostik.voices}
+                  </th>
+                  <th scope="col" className="px-3 py-1 text-right">
+                    {dict.diagnostik.medianLate}
+                  </th>
+                  <th scope="col" className="px-3 py-1 text-right">
+                    {dict.diagnostik.worstLate}
+                  </th>
+                  <th scope="col" className="px-3 py-1 text-right">
+                    {dict.diagnostik.missed}
+                  </th>
+                  <th scope="col" className="px-3 py-1 text-left">
+                    {dict.diagnostik.verdict}
+                  </th>
                 </tr>
               </thead>
               <tbody>
