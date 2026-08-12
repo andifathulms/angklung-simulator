@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { AkompanimenLab } from '@/components/lab/AkompanimenLab'
 import { TechniqueLab } from '@/components/lab/TechniqueLab'
+import { PageHeader, Section } from '@/components/ui'
 import { LOCALES, getDictionary, isLocale } from '@/lib/i18n'
 
 export function generateStaticParams() {
@@ -12,19 +13,16 @@ export default function TechniquePage({ params }: { params: { locale: string } }
   const dict = getDictionary(params.locale)
 
   return (
-    <div className="space-y-14">
-      <header className="max-w-3xl space-y-3">
-        <h1 className="font-display text-4xl text-sounding">{dict.teknik.title}</h1>
-        <p className="leading-relaxed text-bamboo/75">{dict.teknik.lede}</p>
-      </header>
+    <div className="space-y-16">
+      <PageHeader eyebrow={dict.nav.teknik} title={dict.teknik.title} lede={dict.teknik.lede} />
 
       <TechniqueLab dict={dict} />
 
-      <section className="space-y-4 border-t border-rattan/40 pt-10">
-        <h2 className="font-display text-3xl text-sounding">{dict.home.tengkepTitle}</h2>
-        <p className="max-w-3xl leading-relaxed text-bamboo/75">{dict.home.tengkepBody}</p>
+      <div className="rule-fade" aria-hidden="true" />
+
+      <Section title={dict.akor.title} description={dict.home.tengkepBody}>
         <AkompanimenLab dict={dict} />
-      </section>
+      </Section>
     </div>
   )
 }

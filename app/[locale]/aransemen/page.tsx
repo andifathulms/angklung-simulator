@@ -1,21 +1,19 @@
 import { notFound } from 'next/navigation'
 import { ArrangementView } from '@/components/arrangement/ArrangementView'
+import { PageHeader } from '@/components/ui'
 import { LOCALES, getDictionary, isLocale } from '@/lib/i18n'
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }))
 }
 
-export default function ArrangementPage({ params }: { params: { locale: string } }) {
+export default function Page({ params }: { params: { locale: string } }) {
   if (!isLocale(params.locale)) notFound()
   const dict = getDictionary(params.locale)
 
   return (
-    <div className="space-y-8">
-      <header className="max-w-3xl space-y-3">
-        <h1 className="font-display text-4xl text-sounding">{dict.aransemen.title}</h1>
-        <p className="leading-relaxed text-bamboo/75">{dict.aransemen.lede}</p>
-      </header>
+    <div className="space-y-10">
+      <PageHeader eyebrow={dict.nav.aransemen} title={dict.aransemen.title} lede={dict.aransemen.lede} />
       <ArrangementView dict={dict} />
     </div>
   )

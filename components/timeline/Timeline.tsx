@@ -36,7 +36,7 @@ export function Timeline({
           {Array.from({ length: Math.ceil(durationSec) + 1 }, (_, second) => (
             <div
               key={second}
-              className="absolute top-0 h-full border-l border-rattan/25"
+              className="absolute top-0 h-full border-l border-stage-line/70"
               style={{ left: second * PX_PER_SEC }}
             />
           ))}
@@ -56,7 +56,7 @@ export function Timeline({
             return (
               <li
                 key={player.playerIndex}
-                className="relative border-b border-rattan/20"
+                className="relative border-b border-stage-line/60"
                 style={{ height: ROW_HEIGHT }}
               >
                 <span className="sr-only">

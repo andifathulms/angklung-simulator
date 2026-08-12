@@ -16,13 +16,13 @@ export interface CueLaneProps {
 
 export function CueLane({ upcoming, beatSec, dict }: CueLaneProps) {
   return (
-    <div className="rounded-lg border border-rattan/50 bg-rattan/5 p-4">
-      <p className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+    <div className="rounded-lg border border-stage-line bg-stage-raised/70 p-4">
+      <p className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
         {dict.ansambel.cueLane}
       </p>
       <ol className="mt-3 flex min-h-[3.5rem] items-baseline gap-4">
         {upcoming.length === 0 ? (
-          <li className="font-mono text-sm text-bamboo/35">—</li>
+          <li className="font-mono text-step-0 text-ink-faint">—</li>
         ) : (
           upcoming.map(({ assignment, inSec }, index) => {
             // Within one beat, the conductor's hand is already up.
@@ -32,11 +32,11 @@ export function CueLane({ upcoming, beatSec, dict }: CueLaneProps) {
                 key={`${assignment.note.index}-${index}`}
                 className={[
                   'font-mono tabular-nums transition-colors',
-                  imminent ? 'text-4xl text-cue' : 'text-2xl text-bamboo/45',
+                  imminent ? 'text-step-4 text-cue-light' : 'text-step-2 text-ink-faint',
                 ].join(' ')}
               >
                 {assignment.angklung.spec.nomor}
-                <span className="ml-1 text-[11px] text-bamboo/40">{inSec.toFixed(1)}s</span>
+                <span className="ml-1 text-[0.68rem] text-ink-faint">{inSec.toFixed(1)}s</span>
               </li>
             )
           })

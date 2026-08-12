@@ -81,7 +81,7 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
           type="button"
           disabled={status !== 'siap' || running}
           onClick={() => void run()}
-          className="rounded-full bg-sounding px-5 py-2 text-sm font-medium text-stage transition hover:bg-bamboo disabled:opacity-40"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
         >
           {running ? dict.diagnostik.running : dict.diagnostik.run}
         </button>
@@ -91,22 +91,22 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
             onClick={() => {
               void navigator.clipboard?.writeText(asText()).then(() => setCopied(true))
             }}
-            className="rounded border border-rattan px-3 py-1.5 text-sm text-bamboo/70 hover:text-sounding"
+            className="rounded-full border border-stage-strong bg-stage-raised px-3.5 py-2 text-step--1 text-ink transition hover:border-bamboo hover:bg-stage-hover"
           >
             {copied ? dict.diagnostik.copied : dict.diagnostik.copy}
           </button>
         ) : null}
-        <span className="font-mono text-xs text-bamboo/40">{now().toFixed(1)}s</span>
+        <span className="font-mono text-step--1 text-ink-faint">{now().toFixed(1)}s</span>
       </div>
 
-      <p className="max-w-3xl text-xs text-bamboo/50">{dict.diagnostik.silentOk}</p>
+      <p className="max-w-3xl text-step--1 text-ink-faint">{dict.diagnostik.silentOk}</p>
 
       {device !== null ? (
         <section className="space-y-2">
-          <h2 className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+          <h2 className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
             {dict.diagnostik.device}
           </h2>
-          <dl className="grid gap-x-6 gap-y-1 font-mono text-xs text-bamboo/75 sm:grid-cols-2">
+          <dl className="grid gap-x-6 gap-y-1 font-mono text-step--1 text-ink-muted sm:grid-cols-2">
             <Row label="sampleRate" value={`${device.sampleRateHz} Hz`} />
             <Row
               label="baseLatency"
@@ -127,7 +127,7 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
             <Row label="cores" value={String(device.hardwareConcurrency ?? '—')} />
           </dl>
           {cost !== null ? (
-            <p className="font-mono text-xs text-sounding">
+            <p className="font-mono text-step--1 text-sounding">
               {dict.diagnostik.renderCost}: {cost.renderMs.toFixed(1)} ms →{' '}
               {cost.durationSec.toFixed(2)}s ({cost.realtimeFactor.toFixed(0)}× realtime)
             </p>
@@ -137,12 +137,12 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
 
       {results.length > 0 ? (
         <section className="space-y-3">
-          <h2 className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+          <h2 className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
             {dict.diagnostik.verdict}
           </h2>
           <div className="overflow-x-auto">
-            <table className="min-w-max font-mono text-xs">
-              <thead className="text-bamboo/45">
+            <table className="min-w-max font-mono text-step--1">
+              <thead className="text-ink-faint">
                 <tr>
                   <th className="px-3 py-1 text-left">{dict.diagnostik.voices}</th>
                   <th className="px-3 py-1 text-right">{dict.diagnostik.medianLate}</th>
@@ -155,25 +155,25 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
                 {results.map((result) => {
                   const verdict = verdictFor(result)
                   return (
-                    <tr key={result.voices} className="border-t border-rattan/30">
-                      <td className="px-3 py-1 text-bamboo/80">{result.voices}</td>
-                      <td className="px-3 py-1 text-right text-bamboo/70">
+                    <tr key={result.voices} className="border-t border-stage-line">
+                      <td className="px-3 py-1 text-ink-muted">{result.voices}</td>
+                      <td className="px-3 py-1 text-right text-ink-muted">
                         {result.medianLateMs.toFixed(1)} ms
                       </td>
-                      <td className="px-3 py-1 text-right text-bamboo/70">
+                      <td className="px-3 py-1 text-right text-ink-muted">
                         {result.worstLateMs.toFixed(1)} ms
                       </td>
-                      <td className="px-3 py-1 text-right text-bamboo/70">
+                      <td className="px-3 py-1 text-right text-ink-muted">
                         {result.missedLookahead}/{result.ticks}
                       </td>
                       <td
                         className={[
                           'px-3 py-1',
                           verdict === 'lolos'
-                            ? 'text-yourPart'
+                            ? 'text-yourPart-light'
                             : verdict === 'ketat'
                               ? 'text-bamboo'
-                              : 'text-cue',
+                              : 'text-cue-light',
                         ].join(' ')}
                       >
                         {verdict}
@@ -184,7 +184,7 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
               </tbody>
             </table>
           </div>
-          <p className="max-w-3xl text-xs leading-relaxed text-bamboo/55">
+          <p className="max-w-3xl text-step--1 leading-relaxed text-ink-faint">
             {dict.diagnostik.explain}
           </p>
         </section>
@@ -195,8 +195,8 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-rattan/20 py-0.5">
-      <dt className="text-bamboo/45">{label}</dt>
+    <div className="flex justify-between gap-4 border-b border-stage-line/60 py-0.5">
+      <dt className="text-ink-faint">{label}</dt>
       <dd className="tabular-nums">{value}</dd>
     </div>
   )

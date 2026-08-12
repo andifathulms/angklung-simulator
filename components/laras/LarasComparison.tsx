@@ -114,7 +114,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
 
   return (
     <div className="space-y-6">
-      <p className="max-w-3xl text-sm text-bamboo/70">{dict.laras.samePhrase}</p>
+      <p className="max-w-3xl text-step-0 text-ink-muted">{dict.laras.samePhrase}</p>
 
       <div className="grid gap-5 lg:grid-cols-3">
         {TUNINGS.map((tuning) => {
@@ -125,24 +125,24 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
           return (
             <article
               key={tuning.id}
-              className="flex flex-col gap-4 rounded-lg border border-rattan/60 bg-rattan/5 p-5"
+              className="flex flex-col gap-4 rounded-lg border border-stage-line bg-stage-raised/70 p-5"
             >
               <header className="space-y-2">
-                <h2 className="font-display text-2xl text-sounding">{tuning.name}</h2>
-                <p className="text-xs leading-relaxed text-bamboo/65">{tuning.description}</p>
+                <h2 className="font-display text-step-2 text-sounding">{tuning.name}</h2>
+                <p className="text-step--1 leading-relaxed text-ink-muted">{tuning.description}</p>
               </header>
 
               <button
                 type="button"
                 disabled={status !== 'siap'}
                 onClick={() => (isPlaying ? stop() : playPhrase(tuning))}
-                className="self-start rounded-full bg-sounding px-4 py-1.5 text-sm font-medium text-stage transition hover:bg-bamboo disabled:opacity-40"
+                className="inline-flex self-start items-center justify-center gap-2 rounded-full bg-sounding px-4 py-2 text-step--1 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
               >
                 {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
               </button>
 
               <div className="space-y-1">
-                <p className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+                <p className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
                   {dict.laras.edit}
                 </p>
                 <ul className="space-y-1">
@@ -150,8 +150,8 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                     const degree = definition.degrees[degreeIndex]
                     if (degree === undefined) return null
                     return (
-                      <li key={degreeIndex} className="flex items-center gap-2 font-mono text-xs">
-                        <span className="w-10 text-bamboo/70">{degree.name}</span>
+                      <li key={degreeIndex} className="flex items-center gap-2 font-mono text-step--1">
+                        <span className="w-10 text-ink-muted">{degree.name}</span>
                         <input
                           type="number"
                           step={1}
@@ -165,10 +165,10 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                               },
                             }))
                           }
-                          className="w-20 rounded border border-rattan bg-stage px-2 py-1 text-right tabular-nums text-sounding"
+                          className="w-20 rounded-lg border border-stage-line bg-stage px-2 py-1 text-right tabular-nums text-ink transition hover:border-stage-strong focus:border-bamboo"
                         />
-                        <span className="text-bamboo/45">{dict.laras.cents}</span>
-                        <span className="tabular-nums text-bamboo/35">
+                        <span className="text-ink-faint">{dict.laras.cents}</span>
+                        <span className="tabular-nums text-ink-faint">
                           {pitchToHz(definition, { degreeIndex, octave: 4 }).toFixed(1)} Hz
                         </span>
                       </li>
@@ -185,18 +185,18 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                         return next
                       })
                     }
-                    className="text-xs text-bamboo/50 underline underline-offset-4 hover:text-sounding"
+                    className="text-step--1 text-ink-faint underline underline-offset-4 hover:text-sounding"
                   >
                     {dict.laras.reset}
                   </button>
                 ) : null}
               </div>
 
-              <footer className="mt-auto space-y-1 border-t border-rattan/40 pt-3 text-[11px] leading-relaxed text-bamboo/45">
+              <footer className="mt-auto space-y-1 border-t border-stage-line pt-3 text-[0.68rem] leading-relaxed text-ink-faint">
                 <p className="font-mono uppercase tracking-widest">{dict.laras.source}</p>
                 <p>{tuning.source.title}</p>
                 <p>{tuning.source.note}</p>
-                <p className="border-l-2 border-cue/60 pl-2 text-bamboo/60">
+                <p className="border-l-2 border-cue/60 pl-2 text-ink-muted">
                   {tuning.source.caveat}
                 </p>
                 {(tuning.source.urls ?? []).map((url) => (
@@ -216,7 +216,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
         })}
       </div>
 
-      <p className="max-w-3xl rounded border border-cue/40 bg-cue/5 p-4 text-sm leading-relaxed text-bamboo/75">
+      <p className="max-w-3xl rounded border border-cue/40 bg-cue/5 p-4 text-step-0 leading-relaxed text-ink-muted">
         {dict.laras.notAuthority}
       </p>
     </div>

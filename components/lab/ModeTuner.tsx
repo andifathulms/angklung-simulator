@@ -57,46 +57,46 @@ export function ModeTuner({ modes, onChange, dict }: ModeTunerProps) {
   return (
     <section className="space-y-4">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <h3 className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+        <h3 className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
           {dict.teknik.modes}
         </h3>
         {!isStock ? (
           <button
             type="button"
             onClick={() => onChange(TABUNG_MODES)}
-            className="text-xs text-bamboo/50 underline underline-offset-4 hover:text-sounding"
+            className="text-step--1 text-ink-faint underline underline-offset-4 hover:text-sounding"
           >
             {dict.laras.reset}
           </button>
         ) : null}
       </div>
 
-      <p className="max-w-3xl text-xs leading-relaxed text-bamboo/55">{dict.teknik.modesHint}</p>
+      <p className="max-w-3xl text-step--1 leading-relaxed text-ink-faint">{dict.teknik.modesHint}</p>
 
       <ul className="space-y-3">
         {modes.map((mode, index) => (
           <li
             key={index}
-            className="grid gap-3 border-b border-rattan/25 pb-3 sm:grid-cols-[7rem_1fr_1fr]"
+            className="grid gap-3 border-b border-stage-line/70 pb-3 sm:grid-cols-[7rem_1fr_1fr]"
           >
-            <div className="font-mono text-xs">
+            <div className="font-mono text-step--1">
               <label className="flex items-center gap-2">
-                <span className="text-bamboo/45">×</span>
+                <span className="text-ink-faint">×</span>
                 <input
                   type="number"
                   step={0.01}
                   min={0.5}
                   value={mode.ratio}
                   onChange={(event) => update(index, { ratio: Number(event.target.value) })}
-                  className="w-20 rounded border border-rattan bg-stage px-2 py-1 text-right tabular-nums text-sounding"
+                  className="w-20 rounded-lg border border-stage-line bg-stage px-2 py-1 text-right tabular-nums text-ink transition hover:border-stage-strong focus:border-bamboo"
                 />
               </label>
               {collidesWithOctave(mode.ratio) ? (
-                <p className="mt-1 text-[10px] leading-tight text-cue">{dict.teknik.octaveWarning}</p>
+                <p className="mt-1 text-[0.64rem] leading-tight text-cue-light">{dict.teknik.octaveWarning}</p>
               ) : null}
             </div>
 
-            <label className="flex flex-col gap-1 text-[11px] text-bamboo/55">
+            <label className="flex flex-col gap-1 text-[0.68rem] text-ink-faint">
               <span>
                 {dict.teknik.amplitude}{' '}
                 <span className="font-mono tabular-nums text-sounding">
@@ -114,7 +114,7 @@ export function ModeTuner({ modes, onChange, dict }: ModeTunerProps) {
               />
             </label>
 
-            <label className="flex flex-col gap-1 text-[11px] text-bamboo/55">
+            <label className="flex flex-col gap-1 text-[0.68rem] text-ink-faint">
               <span>
                 {dict.teknik.decay}{' '}
                 <span className="font-mono tabular-nums text-sounding">
@@ -137,11 +137,11 @@ export function ModeTuner({ modes, onChange, dict }: ModeTunerProps) {
 
       {!isStock ? (
         <div className="space-y-2">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+          <p className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
             {dict.teknik.exportTitle}
           </p>
-          <p className="max-w-3xl text-xs text-bamboo/55">{dict.teknik.exportHint}</p>
-          <pre className="overflow-x-auto rounded border border-rattan/50 bg-rattan/5 p-3 font-mono text-[11px] leading-relaxed text-sounding">
+          <p className="max-w-3xl text-step--1 text-ink-faint">{dict.teknik.exportHint}</p>
+          <pre className="overflow-x-auto rounded border border-stage-line bg-stage-raised/70 p-3 font-mono text-[0.68rem] leading-relaxed text-sounding">
             {source}
           </pre>
         </div>

@@ -19,16 +19,16 @@ export function ExcitationTrace({
 }) {
   return (
     <figure className="space-y-2">
-      <figcaption className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+      <figcaption className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
         {label} · {strikes.length}
       </figcaption>
       <svg
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-        className="w-full rounded border border-rattan/40 bg-rattan/5"
+        className="w-full rounded border border-stage-line bg-stage-raised/70"
         role="img"
         aria-label={label}
       >
-        <line x1={0} y1={HEIGHT - 8} x2={WIDTH} y2={HEIGHT - 8} className="stroke-rattan" />
+        <line x1={0} y1={HEIGHT - 8} x2={WIDTH} y2={HEIGHT - 8} className="stroke-stage-strong" />
         {Array.from({ length: Math.floor(durationSec) + 1 }, (_, second) => (
           <line
             key={second}
@@ -36,7 +36,7 @@ export function ExcitationTrace({
             y1={HEIGHT - 12}
             x2={(second / durationSec) * WIDTH}
             y2={HEIGHT - 4}
-            className="stroke-rattan"
+            className="stroke-stage-strong"
           />
         ))}
         {strikes.map((strike, index) => {
@@ -73,13 +73,13 @@ export function WaveformTrace({
 
   return (
     <figure className="space-y-2">
-      <figcaption className="font-mono text-[11px] uppercase tracking-widest text-bamboo/45">
+      <figcaption className="font-mono text-[0.68rem] uppercase tracking-widest text-ink-faint">
         {label}
       </figcaption>
       <svg
         viewBox={`0 0 ${peaks.length} ${height}`}
         preserveAspectRatio="none"
-        className="h-24 w-full rounded border border-rattan/40 bg-rattan/5"
+        className="h-24 w-full rounded border border-stage-line bg-stage-raised/70"
         role="img"
         aria-label={label}
       >

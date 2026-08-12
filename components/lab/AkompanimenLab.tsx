@@ -37,12 +37,12 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end gap-4">
-        <label className="flex flex-col gap-1 text-xs text-bamboo/60">
+        <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
           {dict.akor.which}
           <select
             value={index}
             onChange={(event) => setIndex(Number(event.target.value))}
-            className="rounded border border-rattan bg-stage px-3 py-1.5 text-sm text-sounding"
+            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
           >
             {set.map((candidate, candidateIndex) => (
               <option key={candidate.spec.id} value={candidateIndex}>
@@ -58,8 +58,8 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
           aria-pressed={held}
           className={
             held
-              ? 'rounded border border-muted bg-muted/30 px-4 py-1.5 text-sm text-sounding'
-              : 'rounded border border-rattan px-4 py-1.5 text-sm text-bamboo/70 hover:text-sounding'
+              ? 'rounded border border-muted bg-muted/30 px-4 py-1.5 text-step-0 text-sounding'
+              : 'rounded border border-stage-line px-4 py-1.5 text-step-0 text-ink-muted hover:text-sounding'
           }
         >
           {held ? dict.akor.release : dict.akor.hold}
@@ -76,7 +76,7 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
               gain: 0.5,
             })
           }
-          className="rounded-full bg-sounding px-5 py-2 text-sm font-medium text-stage transition hover:bg-bamboo disabled:opacity-40"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
         >
           {dict.ansambel.play}
         </button>
@@ -93,17 +93,17 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
         </div>
 
         <div className="space-y-3">
-          <p className="font-display text-3xl text-sounding">{chordName}</p>
-          <p className="font-mono text-xs text-bamboo/50">
+          <p className="font-display text-step-3 text-sounding">{chordName}</p>
+          <p className="font-mono text-step--1 text-ink-faint">
             {audible.length}/{entry.spec.tabung.length} {dict.akor.tubes}
           </p>
-          <ul className="space-y-1 font-mono text-xs">
+          <ul className="space-y-1 font-mono text-step--1">
             {entry.spec.tabung.map((tabung, tabungIndex) => {
               const muted = held && tabung.mutedByTengkep
               return (
                 <li
                   key={tabungIndex}
-                  className={muted ? 'text-muted line-through' : 'text-bamboo/80'}
+                  className={muted ? 'text-muted line-through' : 'text-ink-muted'}
                 >
                   {tabung.hz.toFixed(1)} Hz · {tabung.intervalCents}{' '}
                   {dict.laras.cents} {dict.akor.interval}

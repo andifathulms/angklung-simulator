@@ -170,6 +170,7 @@ export interface Dictionary {
     readonly source: string
   }
   readonly diagnostik: {
+    readonly eyebrow: string
     readonly title: string
     readonly lede: string
     readonly device: string
@@ -372,6 +373,7 @@ const id: Dictionary = {
     source: 'Kode sumber',
   },
   diagnostik: {
+    eyebrow: 'Uji perangkat',
     title: 'Diagnostik',
     lede: 'Halaman ini mengukur perangkat yang sedang Anda pegang. Tolok ukur di Node mengukur inti sintesisnya; yang menentukan justru apakah utas utama peramban masih sempat berjalan ketika ansambelnya ramai — karena utas itulah yang menjadwalkan nada berikutnya.',
     device: 'Perangkat',
@@ -574,6 +576,7 @@ const en: Dictionary = {
     source: 'Source code',
   },
   diagnostik: {
+    eyebrow: 'Device test',
     title: 'Diagnostics',
     lede: 'This page measures the device in your hand. The Node benchmark measures the synthesis core; what decides the outcome is whether the browser main thread still gets to run while the ensemble is loud — because that thread is what schedules the next note.',
     device: 'Device',

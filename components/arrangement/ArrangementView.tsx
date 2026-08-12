@@ -61,25 +61,25 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
     <div className="space-y-8">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
         <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-xs text-bamboo/60">
+          <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
             {dict.aransemen.input}
             <textarea
               value={text}
               onChange={(event) => setText(event.target.value)}
               spellCheck={false}
               rows={16}
-              className="w-full rounded border border-rattan bg-stage p-3 font-mono text-xs leading-relaxed text-sounding"
+              className="w-full rounded-lg border border-stage-line bg-stage p-3 font-mono text-step--1 leading-relaxed text-ink transition hover:border-stage-strong focus:border-bamboo"
             />
           </label>
-          <p className="text-xs text-bamboo/50">{dict.aransemen.inputHint}</p>
+          <p className="text-step--1 text-ink-faint">{dict.aransemen.inputHint}</p>
 
           <div className="flex flex-wrap items-end gap-4">
-            <label className="flex flex-col gap-1 text-xs text-bamboo/60">
+            <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
               {dict.rak.setLabel}
               <select
                 value={setId}
                 onChange={(event) => setSetId(event.target.value)}
-                className="rounded border border-rattan bg-stage px-3 py-1.5 text-sm text-sounding"
+                className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
               >
                 {SETS.map((candidate) => (
                   <option key={candidate.id} value={candidate.id}>
@@ -89,14 +89,14 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
               </select>
             </label>
 
-            <label className="flex flex-col gap-1 text-xs text-bamboo/60">
+            <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
               {dict.ansambel.playersLabel}
               <select
                 value={playerCount === null ? 'min' : String(playerCount)}
                 onChange={(event) =>
                   setPlayerCount(event.target.value === 'min' ? null : Number(event.target.value))
                 }
-                className="rounded border border-rattan bg-stage px-3 py-1.5 text-sm text-sounding"
+                className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
               >
                 <option value="min">{dict.ansambel.minimum}</option>
                 {Array.from({ length: 24 }, (_, index) => index + 1).map((count) => (
@@ -110,7 +110,7 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
             <button
               type="button"
               onClick={share}
-              className="rounded border border-rattan px-3 py-1.5 text-sm text-bamboo/70 hover:text-sounding"
+              className="rounded-full border border-stage-strong bg-stage-raised px-3.5 py-2 text-step--1 text-ink transition hover:border-bamboo hover:bg-stage-hover"
             >
               {shareState === 'copied' ? '✓' : '🔗'}
             </button>
@@ -119,11 +119,11 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
 
         <div className="space-y-5">
           {parsed.problems.length > 0 ? (
-            <section className="space-y-1 rounded border border-cue/60 bg-cue/10 p-4 text-sm">
-              <h2 className="font-display text-xl text-cue">{dict.aransemen.notFeasible}</h2>
-              <ul className="space-y-1 text-bamboo/80">
+            <section className="space-y-1 rounded border border-cue/60 bg-cue/10 p-4 text-step-0">
+              <h2 className="font-display text-xl text-cue-light">{dict.aransemen.notFeasible}</h2>
+              <ul className="space-y-1 text-ink-muted">
                 {parsed.problems.map((problem) => (
-                  <li key={problem.line} className="font-mono text-xs">
+                  <li key={problem.line} className="font-mono text-step--1">
                     {problem.line}: {problem.message}
                   </li>
                 ))}
@@ -133,18 +133,18 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
 
           {result.type === 'infeasible' ? (
             <section className="space-y-2 rounded-lg border border-cue/60 bg-cue/10 p-5">
-              <h2 className="font-display text-2xl text-cue">{dict.aransemen.notFeasible}</h2>
-              <ul className="space-y-1 text-sm text-bamboo/80">
+              <h2 className="font-display text-step-2 text-cue-light">{dict.aransemen.notFeasible}</h2>
+              <ul className="space-y-1 text-step-0 text-ink-muted">
                 {result.reasons.map((reason, index) => (
                   <li key={index}>{describeInfeasibility(reason)}</li>
                 ))}
               </ul>
-              <p className="pt-2 text-xs text-bamboo/55">{dict.aransemen.nothingDropped}</p>
+              <p className="pt-2 text-step--1 text-ink-faint">{dict.aransemen.nothingDropped}</p>
             </section>
           ) : (
             <section className="space-y-4">
-              <h2 className="font-display text-2xl text-sounding">{dict.aransemen.feasible}</h2>
-              <p className="font-mono text-sm text-bamboo/70">
+              <h2 className="font-display text-step-2 text-sounding">{dict.aransemen.feasible}</h2>
+              <p className="font-mono text-step-0 text-ink-muted">
                 {dict.ansambel.needs} {result.minimumPlayers} {dict.ansambel.player.toLowerCase()} ·{' '}
                 {notes.length} {dict.ansambel.notesCount}
               </p>
@@ -152,7 +152,7 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
                 {result.players.map((player) => (
                   <li
                     key={player.playerIndex}
-                    className="flex items-baseline justify-between gap-3 rounded border border-rattan/50 px-3 py-1.5 font-mono text-xs text-bamboo/75"
+                    className="flex items-baseline justify-between gap-3 rounded border border-stage-line px-3 py-1.5 font-mono text-step--1 text-ink-muted"
                   >
                     <span>
                       {dict.ansambel.player} {player.playerIndex + 1}
@@ -164,7 +164,7 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
                             .map((angklung) => `${angklung.spec.nomor} (${angklung.pitchId})`)
                             .join(' · ')}
                     </span>
-                    <span className="text-bamboo/45">
+                    <span className="text-ink-faint">
                       {player.notes.length} {dict.ansambel.notesCount}
                     </span>
                   </li>
@@ -177,7 +177,7 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
                 yourPlayerIndex={null}
                 dict={dict}
               />
-              <p className="text-xs text-bamboo/55">{dict.aransemen.nothingDropped}</p>
+              <p className="text-step--1 text-ink-faint">{dict.aransemen.nothingDropped}</p>
             </section>
           )}
         </div>

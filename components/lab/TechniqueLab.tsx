@@ -86,7 +86,7 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
       <div className="grid gap-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
         <div className="space-y-5">
           <fieldset className="space-y-2">
-            <legend className="text-xs text-bamboo/60">{dict.rak.techniqueLabel}</legend>
+            <legend className="text-step--1 text-ink-muted">{dict.rak.techniqueLabel}</legend>
             <div className="flex flex-wrap gap-1">
               {TECHNIQUES.map((candidate) => (
                 <button
@@ -96,8 +96,8 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
                   aria-pressed={techniqueType === candidate}
                   className={
                     techniqueType === candidate
-                      ? 'rounded border border-sounding bg-sounding/15 px-3 py-1.5 text-sm text-sounding'
-                      : 'rounded border border-rattan px-3 py-1.5 text-sm text-bamboo/70 hover:text-sounding'
+                      ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
+                      : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink'
                   }
                 >
                   {dict.teknikNames[candidate]}
@@ -106,11 +106,11 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
             </div>
           </fieldset>
 
-          <label className="block space-y-1 text-xs text-bamboo/60">
+          <label className="block space-y-1 text-step--1 text-ink-muted">
             <span>
               {dict.teknik.shakeRate}{' '}
               <span className="font-mono text-sounding">{shakeRateHz.toFixed(1)} Hz</span>{' '}
-              <span className="font-mono text-bamboo/45">
+              <span className="font-mono text-ink-faint">
                 → {strikesPerSecond(shakeRateHz).toFixed(1)} {dict.teknik.strikes}/s
               </span>
             </span>
@@ -124,12 +124,12 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
               onChange={(event) => setShakeRateHz(Number(event.target.value))}
               className="w-full accent-bamboo disabled:opacity-40"
             />
-            <span className={cited ? 'block text-bamboo/45' : 'block text-cue'}>
+            <span className={cited ? 'block text-ink-faint' : 'block text-cue-light'}>
               {dict.teknik.shakeRateCited}
             </span>
           </label>
 
-          <label className="block space-y-1 text-xs text-bamboo/60">
+          <label className="block space-y-1 text-step--1 text-ink-muted">
             <span>
               {dict.teknik.hardness}{' '}
               <span className="font-mono text-sounding">{hardness.toFixed(2)}</span>
@@ -158,7 +158,7 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
                 modes,
               })
             }
-            className="rounded-full bg-sounding px-5 py-2 text-sm font-medium text-stage transition hover:bg-bamboo disabled:opacity-40"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
           >
             {dict.ansambel.play}
           </button>
@@ -177,17 +177,17 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
             />
           </div>
 
-          <ul className="space-y-1 font-mono text-xs">
+          <ul className="space-y-1 font-mono text-step--1">
             {entry.spec.tabung.map((tabung, index) => {
               const held = tengkepHeld && tabung.mutedByTengkep
               return (
-                <li key={index} className={held ? 'text-muted' : 'text-bamboo/75'}>
+                <li key={index} className={held ? 'text-muted' : 'text-ink-muted'}>
                   {tabung.role} · {tabung.hz.toFixed(1)} Hz ·{' '}
                   {held ? dict.teknik.muted : dict.teknik.sounding}
                 </li>
               )
             })}
-            <li className="pt-1 text-bamboo/45">
+            <li className="pt-1 text-ink-faint">
               {audible.length}/{entry.spec.tabung.length}
             </li>
           </ul>
@@ -203,7 +203,7 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
       />
       <WaveformTrace peaks={peaks} label={dict.teknik.render} />
 
-      <p className="font-mono text-xs text-bamboo/45">
+      <p className="font-mono text-step--1 text-ink-faint">
         {KURULUNG_SHAKE_RATE_RANGE_HZ.minHz}–{KURULUNG_SHAKE_RATE_RANGE_HZ.maxHz} Hz
       </p>
     </div>

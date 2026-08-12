@@ -5,6 +5,7 @@ import { Rack } from '@/components/rack/Rack'
 import { CueLane } from '@/components/timeline/CueLane'
 import { Timeline } from '@/components/timeline/Timeline'
 import { useAudio } from '@/components/audio/AudioProvider'
+import { Button, Card, Field, SegmentedControl, Select, Stat } from '@/components/ui'
 import { audioClock, createScheduler, intervalTimer } from '@/lib/audio'
 import type { Scheduler } from '@/lib/audio'
 import { describeInfeasibility, distribute } from '@/lib/distribute'
@@ -158,13 +159,13 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-end gap-6">
-        <label className="flex flex-col gap-1 text-xs text-bamboo/60">
-          {dict.ansambel.melodyLabel}
+      <Card className="flex flex-wrap items-end gap-x-7 gap-y-5">
+        <label className="flex min-w-0 flex-col gap-1.5">
+          <span className="eyebrow">{dict.ansambel.melodyLabel}</span>
           <select
             value={melodyId}
             onChange={(event) => setMelodyId(event.target.value)}
-            className="rounded border border-rattan bg-stage px-3 py-1.5 text-sm text-sounding"
+            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
           >
             {MELODIES.map((candidate) => (
               <option key={candidate.id} value={candidate.id}>
@@ -174,14 +175,14 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           </select>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs text-bamboo/60">
-          {dict.ansambel.playersLabel}
+        <label className="flex min-w-0 flex-col gap-1.5">
+          <span className="eyebrow">{dict.ansambel.playersLabel}</span>
           <select
             value={playerCount === null ? 'min' : String(playerCount)}
             onChange={(event) =>
               setPlayerCount(event.target.value === 'min' ? null : Number(event.target.value))
             }
-            className="rounded border border-rattan bg-stage px-3 py-1.5 text-sm text-sounding"
+            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
           >
             <option value="min">{dict.ansambel.minimum}</option>
             {Array.from({ length: 16 }, (_, index) => index + 1).map((count) => (
@@ -192,9 +193,9 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           </select>
         </label>
 
-        <fieldset className="flex flex-col gap-1 text-xs text-bamboo/60">
-          <legend className="mb-1">{dict.ansambel.mode}</legend>
-          <div className="flex flex-wrap gap-1">
+        <fieldset className="min-w-0">
+          <legend className="eyebrow mb-1.5">{dict.ansambel.mode}</legend>
+          <div className="inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage p-1">
             {MODES.map((candidate) => (
               <button
                 key={candidate}
@@ -203,8 +204,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                 aria-pressed={mode === candidate}
                 className={
                   mode === candidate
-                    ? 'rounded border border-sounding bg-sounding/15 px-3 py-1.5 text-sm text-sounding'
-                    : 'rounded border border-rattan px-3 py-1.5 text-sm text-bamboo/70 hover:text-sounding'
+                    ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
+                    : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink'
                 }
               >
                 {candidate === 'dengar'
@@ -217,8 +218,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           </div>
         </fieldset>
 
-        <label className="flex flex-col gap-1 text-xs text-bamboo/60">
-          {dict.ansambel.tempo}
+        <label className="flex min-w-0 flex-col gap-1.5">
+          <span className="eyebrow">{dict.ansambel.tempo}</span>
           <span className="flex items-center gap-2">
             <input
               type="range"
@@ -229,16 +230,16 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
               onChange={(event) => setBpm(Number(event.target.value))}
               className="w-32 accent-bamboo"
             />
-            <span className="font-mono text-sm tabular-nums text-sounding">{tempo}</span>
+            <span className="font-mono text-step-0 tabular-nums text-sounding">{tempo}</span>
           </span>
         </label>
 
-        <label className="flex flex-col gap-1 text-xs text-bamboo/60">
-          {dict.ansambel.countIn}
+        <label className="flex min-w-0 flex-col gap-1.5">
+          <span className="eyebrow">{dict.ansambel.countIn}</span>
           <select
             value={countInBeats}
             onChange={(event) => setCountInBeats(Number(event.target.value))}
-            className="rounded border border-rattan bg-stage px-3 py-1.5 text-sm text-sounding"
+            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
           >
             {COUNT_IN_CHOICES.map((beats) => (
               <option key={beats} value={beats}>
@@ -252,13 +253,14 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           type="button"
           disabled={status !== 'siap' || result.type !== 'feasible'}
           onClick={() => (isPlaying ? stop() : start())}
-          className="rounded-full bg-sounding px-5 py-2 text-sm font-medium text-stage transition hover:bg-bamboo disabled:opacity-40"
+          className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
         >
+          <span aria-hidden="true">{isPlaying ? '■' : '▶'}</span>
           {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
         </button>
-      </div>
+      </Card>
 
-      <p className="max-w-2xl text-sm leading-relaxed text-bamboo/70">
+      <p className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
         {mode === 'dengar'
           ? dict.ansambel.listenHint
           : mode === 'bagian-anda'
@@ -268,8 +270,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
       {result.type === 'infeasible' ? (
         <section className="space-y-2 rounded-lg border border-cue/60 bg-cue/10 p-5">
-          <h2 className="font-display text-2xl text-cue">{dict.ansambel.infeasible}</h2>
-          <ul className="space-y-1 text-sm text-bamboo/80">
+          <h2 className="font-display text-step-2 text-cue-light">{dict.ansambel.infeasible}</h2>
+          <ul className="space-y-1 text-step-0 text-ink-muted">
             {result.reasons.map((reason, index) => (
               <li key={index}>{describeInfeasibility(reason)}</li>
             ))}
@@ -277,11 +279,16 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
         </section>
       ) : (
         <>
-          <p className="font-mono text-sm text-sounding">
-            {dict.ansambel.needs} {minimumPlayers} {dict.ansambel.player.toLowerCase()} ·{' '}
-            {result.players.length} {dict.ansambel.player.toLowerCase()} · {melody.notes.length}{' '}
-            {dict.ansambel.notesCount}
-          </p>
+          <div className="flex flex-wrap gap-x-10 gap-y-4 rounded-card border border-stage-line bg-stage-raised/60 px-6 py-5">
+            <Stat
+              value={String(minimumPlayers ?? '—')}
+              label={`${dict.ansambel.needs} ${dict.ansambel.player.toLowerCase()}`}
+              tone="sounding"
+            />
+            <Stat value={String(result.players.length)} label={dict.ansambel.playersLabel} />
+            <Stat value={String(melody.notes.length)} label={dict.ansambel.notesCount} />
+            <Stat value={`${Math.round(durationSec)}s`} label={melody.title} />
+          </div>
 
           <CueLane upcoming={upcoming} beatSec={beatSec} dict={dict} />
 
@@ -300,21 +307,21 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                       onClick={() => setYourPlayerIndex(player.playerIndex)}
                       aria-pressed={isYours}
                       className={[
-                        'flex w-full items-baseline justify-between gap-3 rounded border px-3 py-1.5 text-left text-sm transition',
+                        'flex w-full items-baseline justify-between gap-3 rounded-lg border px-3.5 py-2.5 text-left text-step-0 transition duration-200 ease-physical',
                         isYours
-                          ? 'border-yourPart bg-yourPart/10 text-yourPart'
-                          : 'border-rattan/50 text-bamboo/75 hover:border-bamboo/60',
+                          ? 'border-yourPart bg-yourPart/10 text-yourPart-light'
+                          : 'border-stage-line bg-stage-raised/50 text-ink-muted hover:border-bamboo/60 hover:bg-stage-hover',
                       ].join(' ')}
                     >
                       <span className="font-mono">
                         {dict.ansambel.player} {player.playerIndex + 1}
                       </span>
-                      <span className="font-mono text-xs">
+                      <span className="font-mono text-step--1">
                         {player.angklung.length === 0
                           ? dict.ansambel.holdsNothing
                           : player.angklung.map((angklung) => angklung.spec.nomor).join(' · ')}
                       </span>
-                      <span className="font-mono text-xs text-bamboo/45">
+                      <span className="font-mono text-step--1 text-ink-faint">
                         {Math.round(restShare * 100)}% {dict.ansambel.rests}
                       </span>
                     </button>
@@ -334,11 +341,11 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
           {mode !== 'dengar' ? (
             <section className="space-y-3">
-              <h2 className="font-display text-2xl text-sounding">
+              <h2 className="font-display text-step-2 text-sounding">
                 {mode === 'bagian-anda' ? dict.ansambel.yourPart : dict.ansambel.everyPart}
               </h2>
               {mode === 'semua-bagian' ? (
-                <p className="max-w-2xl text-sm text-bamboo/70">{dict.ansambel.cannotAlone}</p>
+                <p className="max-w-2xl text-step-0 text-ink-muted">{dict.ansambel.cannotAlone}</p>
               ) : null}
               <Rack
                 set={

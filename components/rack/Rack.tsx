@@ -33,7 +33,7 @@ export function Rack({
 
   return (
     <div className="overflow-x-auto pb-2">
-      <div className="flex min-w-max items-start gap-2 border-b border-rattan/60 px-1">
+      <div className="flex min-w-max items-start gap-2 border-b border-stage-line px-1">
         {set.map((entry, index) => (
           <AngklungButton
             key={entry.spec.id}

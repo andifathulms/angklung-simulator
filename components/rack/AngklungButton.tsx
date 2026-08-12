@@ -107,14 +107,14 @@ export function AngklungButton({
 
       <span
         className={[
-          'font-mono text-lg tabular-nums transition-colors',
-          isCued ? 'text-cue' : isYourPart ? 'text-yourPart' : 'text-bamboo/70',
+          'font-mono text-step-1 tabular-nums transition-colors',
+          isCued ? 'text-cue-light' : isYourPart ? 'text-yourPart-light' : 'text-ink-muted',
           isSounding ? 'text-sounding' : '',
         ].join(' ')}
       >
         {entry.spec.nomor}
       </span>
-      <span className="font-mono text-[10px] text-bamboo/40 group-hover:text-bamboo/70">
+      <span className="font-mono text-[0.64rem] text-ink-faint group-hover:text-ink-muted">
         {entry.spec.label}
       </span>
     </button>
