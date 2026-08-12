@@ -443,6 +443,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                 value={String(minimumPlayers ?? '—')}
                 label={`${dict.ansambel.needs} ${dict.ansambel.player.toLowerCase()}`}
                 tone="sounding"
+                size="lead"
               />
               <Stat
                 value={String(ensemble?.totalPlayers ?? 0)}

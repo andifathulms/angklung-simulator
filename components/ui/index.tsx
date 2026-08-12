@@ -320,15 +320,25 @@ export function Term({ term, gloss }: { term: string; gloss: string }) {
   )
 }
 
-/** Statistic with its label, for the places where a number is the message. */
+/**
+ * Statistic with its label, for the places where a number is the message.
+ *
+ * `size="lead"` is for the one stat in a group that carries the argument. Every
+ * label used to render through `.eyebrow` — step--2, uppercase, ink-faint —
+ * which is right for "notes" and "duration" and wrong for "this song needs _
+ * people", where the number means nothing without the label and the label was
+ * the least legible text on the page.
+ */
 export function Stat({
   value,
   label,
   tone = 'default',
+  size = 'default',
 }: {
   value: string
   label: string
   tone?: 'default' | 'pending' | 'sounding' | 'yourPart' | 'cue'
+  size?: 'default' | 'lead'
 }) {
   const tones = {
     default: 'text-ink',
@@ -339,10 +349,23 @@ export function Stat({
     yourPart: 'text-yourPart-light',
     cue: 'text-cue-light',
   } as const
+  const lead = size === 'lead'
   return (
-    <div className="flex flex-col gap-0.5">
-      <span className={cx('font-mono text-step-2 tabular-nums', tones[tone])}>{value}</span>
-      <span className="eyebrow">{label}</span>
+    <div className={cx('flex flex-col', lead ? 'gap-1' : 'gap-0.5')}>
+      <span
+        className={cx('font-mono tabular-nums', lead ? 'text-step-3' : 'text-step-2', tones[tone])}
+      >
+        {value}
+      </span>
+      <span
+        className={
+          lead
+            ? 'font-mono text-step--1 uppercase tracking-[0.14em] text-ink-muted'
+            : 'eyebrow'
+        }
+      >
+        {label}
+      </span>
     </div>
   )
 }
