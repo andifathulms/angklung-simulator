@@ -107,6 +107,18 @@ export interface Dictionary {
     readonly sounding: string
     readonly muted: string
   }
+  readonly akor: {
+    readonly title: string
+    readonly septimDominan: string
+    readonly trinadaMayor: string
+    readonly septimMinor: string
+    readonly trinadaMinor: string
+    readonly hold: string
+    readonly release: string
+    readonly tubes: string
+    readonly interval: string
+    readonly which: string
+  }
   readonly laras: {
     readonly title: string
     readonly lede: string
@@ -235,6 +247,18 @@ const id: Dictionary = {
     sounding: 'berbunyi',
     muted: 'ditahan',
   },
+  akor: {
+    title: 'Angklung akompanimen',
+    septimDominan: 'Akor septim dominan',
+    trinadaMayor: 'Trinada mayor',
+    septimMinor: 'Akor septim minor',
+    trinadaMinor: 'Trinada minor',
+    hold: 'Tahan tabung dengan kelingking',
+    release: 'Lepaskan',
+    tubes: 'tabung berbunyi',
+    interval: 'jarak dari nada dasar',
+    which: 'Angklung',
+  },
   laras: {
     title: 'Laras',
     lede: 'Frasa yang sama, tiga laras. Cara tercepat mendengar kenapa temuan 1938 itu penting — dan kenapa perangkat berlaras satu tidak bisa begitu saja bergabung dengan yang lain.',
@@ -362,6 +386,18 @@ const en: Dictionary = {
     render: 'Rendered sound',
     sounding: 'sounding',
     muted: 'held',
+  },
+  akor: {
+    title: 'Angklung akompanimen',
+    septimDominan: 'Dominant seventh chord',
+    trinadaMayor: 'Major triad',
+    septimMinor: 'Minor seventh chord',
+    trinadaMinor: 'Minor triad',
+    hold: 'Hold a tube with the little finger',
+    release: 'Let go',
+    tubes: 'tubes sounding',
+    interval: 'interval above the root',
+    which: 'Angklung',
   },
   laras: {
     title: 'Laras',
