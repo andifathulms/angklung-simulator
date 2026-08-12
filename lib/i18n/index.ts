@@ -173,7 +173,8 @@ const id: Dictionary = {
   rak: {
     title: 'Rak',
     lede: 'Angklung tergantung berurutan, panjang tabungnya benar-benar bertingkat menurut nada. Nomornya adalah nomor yang diberi aba-aba dengan tangan.',
-    howto: 'Klik untuk centok. Tahan untuk kurulung. Tahan sambil menekan Shift untuk tengkep.',
+    howto:
+      'Pilih teknik, lalu tekan angklungnya. Kurulung dan tengkep berbunyi selama ditahan; centok berbunyi sekali. Tahan Shift saat menekan untuk memaksa tengkep.',
     setLabel: 'Set angklung',
     techniqueLabel: 'Teknik saat diklik',
     keyboardHint: 'Dengan papan ketik: Tab untuk berpindah, spasi atau Enter untuk membunyikan, Shift untuk tengkep.',
@@ -291,7 +292,8 @@ const en: Dictionary = {
   rak: {
     title: 'The rack',
     lede: 'Angklung hanging in order, tube lengths genuinely graduated by pitch. The numbers are the numbers a conductor signals by hand.',
-    howto: 'Click for centok. Hold for kurulung. Hold with Shift for tengkep.',
+    howto:
+      'Choose a technique, then press an angklung. Kurulung and tengkep sound for as long as you hold it; centok sounds once. Hold Shift while pressing to force tengkep.',
     setLabel: 'Angklung set',
     techniqueLabel: 'Technique on click',
     keyboardHint: 'By keyboard: Tab to move, space or Enter to sound, Shift for tengkep.',
