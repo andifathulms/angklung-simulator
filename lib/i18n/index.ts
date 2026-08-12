@@ -20,6 +20,7 @@ export interface Dictionary {
     readonly teknik: string
     readonly laras: string
     readonly aransemen: string
+    readonly menu: string
   }
   readonly audio: {
     readonly start: string
@@ -30,6 +31,28 @@ export interface Dictionary {
     readonly voices: string
     readonly interrupted: string
     readonly silentSwitch: string
+  }
+  readonly hero: {
+    readonly kicker: string
+    readonly try: string
+    readonly starting: string
+    readonly tapHint: string
+    readonly step2Title: string
+    readonly playMelody: string
+    readonly stop: string
+    readonly needs: string
+    readonly people: string
+    readonly distinctNotes: string
+    readonly punchline: string
+    readonly explore: string
+    readonly stepsTitle: string
+    readonly step1: string
+    readonly step1Body: string
+    readonly step2: string
+    readonly step2Body: string
+    readonly step3: string
+    readonly step3Body: string
+    readonly whereTitle: string
   }
   readonly home: {
     readonly title: string
@@ -141,6 +164,11 @@ export interface Dictionary {
     readonly notAuthority: string
     readonly source: string
   }
+  readonly footer: {
+    readonly about: string
+    readonly respect: string
+    readonly source: string
+  }
   readonly diagnostik: {
     readonly title: string
     readonly lede: string
@@ -180,6 +208,7 @@ const id: Dictionary = {
     teknik: 'Teknik',
     laras: 'Laras',
     aransemen: 'Aransemen',
+    menu: 'Menu',
   },
   audio: {
     start: 'Nyalakan suara',
@@ -190,6 +219,28 @@ const id: Dictionary = {
     voices: 'suara aktif',
     interrupted: 'Suara terhenti — panggilan masuk, Siri, atau halaman sempat ditinggalkan. Sentuh layar untuk menyalakannya lagi.',
     silentSwitch: 'Tidak terdengar apa-apa? Di iPhone, sakelar senyap ikut membungkam suara halaman web. Geser sakelarnya dan naikkan volume.',
+  },
+  hero: {
+    kicker: 'Simulator angklung — bunyinya dihitung, bukan direkam',
+    try: 'Bunyikan angklungnya',
+    starting: 'Menyalakan…',
+    tapHint: 'Ketuk angklung mana pun. Tahan agar terus berbunyi.',
+    step2Title: 'Sekarang mainkan satu lagu',
+    playMelody: 'Mainkan “Bintang Kecil”',
+    stop: 'Hentikan',
+    needs: 'Lagu ini butuh',
+    people: 'orang',
+    distinctNotes: 'nada berbeda',
+    punchline: 'Anda punya dua tangan. Di situlah angklung berbeda dari alat musik lain — dan itulah yang disimulasikan di sini.',
+    explore: 'Lihat pembagiannya',
+    stepsTitle: 'Cara kerjanya',
+    step1: 'Satu angklung, satu nada',
+    step1Body: 'Goyang angklung, tabung bambunya memukul rangka. Cuma satu nada yang bisa keluar — tidak ada nada kedua di dalamnya.',
+    step2: 'Satu lagu, banyak tangan',
+    step2Body: 'Karena itu satu lagu harus dibagi. Tiap orang memegang satu atau dua angklung dan menunggu giliran nadanya tiba.',
+    step3: 'Satu aba-aba',
+    step3Body: 'Pemimpin ansambel memberi isyarat nomor dengan tangan. Nomor itulah identitas tiap angklung, bukan nama nadanya.',
+    whereTitle: 'Ke mana selanjutnya',
   },
   home: {
     title: 'Satu angklung, satu nada',
@@ -315,6 +366,11 @@ const id: Dictionary = {
       'Salendro dan pelog degung tidak punya standar baku dan berbeda antar perangkat. Angka di sini satu set terdokumentasi, bukan satu-satunya yang benar.',
     source: 'Sumber',
   },
+  footer: {
+    about: 'Tentang proyek ini',
+    respect: 'Batas yang dijaga',
+    source: 'Kode sumber',
+  },
   diagnostik: {
     title: 'Diagnostik',
     lede: 'Halaman ini mengukur perangkat yang sedang Anda pegang. Tolok ukur di Node mengukur inti sintesisnya; yang menentukan justru apakah utas utama peramban masih sempat berjalan ketika ansambelnya ramai — karena utas itulah yang menjadwalkan nada berikutnya.',
@@ -356,6 +412,7 @@ const en: Dictionary = {
     teknik: 'Technique',
     laras: 'Tuning',
     aransemen: 'Arrangement',
+    menu: 'Menu',
   },
   audio: {
     start: 'Start sound',
@@ -366,6 +423,28 @@ const en: Dictionary = {
     voices: 'voices sounding',
     interrupted: 'Sound was interrupted — a call, Siri, or the page losing focus. Touch the screen to bring it back.',
     silentSwitch: 'Hearing nothing? On iPhone the silent switch mutes web audio too. Flip the switch and raise the volume.',
+  },
+  hero: {
+    kicker: 'An angklung simulator — the sound is computed, not recorded',
+    try: 'Sound an angklung',
+    starting: 'Starting…',
+    tapHint: 'Tap any angklung. Hold it to keep it sounding.',
+    step2Title: 'Now play one song',
+    playMelody: 'Play “Twinkle, Twinkle”',
+    stop: 'Stop',
+    needs: 'This song needs',
+    people: 'people',
+    distinctNotes: 'distinct notes',
+    punchline: 'You have two hands. That is where the angklung parts company with every other instrument — and it is the thing this simulates.',
+    explore: 'See how it splits up',
+    stepsTitle: 'How it works',
+    step1: 'One angklung, one note',
+    step1Body: 'Shake it and the bamboo tubes strike the frame. Only one note can come out — there is no second note inside it.',
+    step2: 'One song, many hands',
+    step2Body: 'So a song has to be shared out. Each person holds one or two angklung and waits for their note to arrive.',
+    step3: 'One conductor',
+    step3Body: 'The leader signals numbers by hand. That number is each angklung’s identity — not the name of its note.',
+    whereTitle: 'Where to next',
   },
   home: {
     title: 'One angklung, one note',
@@ -488,6 +567,11 @@ const en: Dictionary = {
     notAuthority:
       'Salendro and pelog degung have no fixed standard and vary between sets. These are one documented interval set, not the only correct one.',
     source: 'Source',
+  },
+  footer: {
+    about: 'About this project',
+    respect: 'A line kept',
+    source: 'Source code',
   },
   diagnostik: {
     title: 'Diagnostics',
