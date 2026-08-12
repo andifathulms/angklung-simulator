@@ -162,24 +162,24 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
       </Card>
 
       <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="button"
+        <Button
+          tone="primary"
+          size="md"
           disabled={status !== 'siap' || running}
           onClick={() => void run()}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
         >
           {running ? dict.diagnostik.running : dict.diagnostik.run}
-        </button>
+        </Button>
         {results.length > 0 && !running ? (
-          <button
-            type="button"
+          <Button
+            tone="secondary"
+            size="sm"
             onClick={() => {
               void navigator.clipboard?.writeText(asText()).then(() => setCopied(true))
             }}
-            className="rounded-full border border-stage-strong bg-stage-raised px-3.5 py-2 text-step--1 text-ink transition hover:border-bamboo hover:bg-stage-hover"
           >
             {copied ? dict.diagnostik.copied : dict.diagnostik.copy}
-          </button>
+          </Button>
         ) : null}
         <span className="font-mono text-step--1 text-ink-faint">{now().toFixed(1)}s</span>
       </div>

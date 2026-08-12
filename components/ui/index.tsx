@@ -69,22 +69,38 @@ export function ButtonLink({
   )
 }
 
-/** A row of mutually exclusive choices. Used wherever a select would hide the options. */
+/**
+ * A row of mutually exclusive choices. Used wherever a select would hide the
+ * options.
+ *
+ * `disabled` exists for a control that is real but inapplicable — an
+ * accompaniment switch on a piece that has no accompaniment part. Greyed and
+ * inert says "not for this piece"; removing it would say "no such thing".
+ */
 export function SegmentedControl<T extends string>({
   value,
   options,
   onChange,
   label,
+  disabled = false,
+  hint,
 }: {
   value: T
   options: readonly { value: T; label: string }[]
   onChange: (value: T) => void
   label: string
+  disabled?: boolean
+  hint?: string
 }) {
   return (
-    <fieldset className="min-w-0">
+    <fieldset className="min-w-0" disabled={disabled}>
       <legend className="eyebrow mb-1.5">{label}</legend>
-      <div className="inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage-raised p-1">
+      <div
+        className={cx(
+          'inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage-raised p-1',
+          disabled && 'opacity-45',
+        )}
+      >
         {options.map((option) => {
           const selected = option.value === value
           return (
@@ -94,7 +110,7 @@ export function SegmentedControl<T extends string>({
               onClick={() => onChange(option.value)}
               aria-pressed={selected}
               className={cx(
-                'rounded-full px-3.5 py-1.5 text-step--1 transition duration-200 ease-physical',
+                'rounded-full px-3.5 py-1.5 text-step--1 transition duration-200 ease-physical disabled:cursor-not-allowed',
                 selected
                   ? 'bg-bamboo text-ink-inverse shadow-raised'
                   : 'text-ink-muted hover:text-ink',
@@ -105,6 +121,9 @@ export function SegmentedControl<T extends string>({
           )
         })}
       </div>
+      {hint !== undefined ? (
+        <p className="mt-1.5 max-w-[22rem] text-step--2 leading-snug text-ink-faint">{hint}</p>
+      ) : null}
     </fieldset>
   )
 }

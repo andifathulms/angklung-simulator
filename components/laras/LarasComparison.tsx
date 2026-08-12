@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useAudio } from '@/components/audio/AudioProvider'
+import { Button, Field, NumberInput, Select } from '@/components/ui'
 import { audioClock, createScheduler, intervalTimer } from '@/lib/audio'
 import type { Scheduler } from '@/lib/audio'
 import { getMelody, toTimedNotes } from '@/lib/melody'
@@ -162,14 +163,15 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                 <p className="text-step--1 leading-relaxed text-ink-muted">{tuning.description}</p>
               </header>
 
-              <button
-                type="button"
+              <Button
+                tone="primary"
+                size="sm"
+                className="self-start"
                 disabled={status !== 'siap'}
                 onClick={() => (isPlaying ? stop() : playPhrase(tuning))}
-                className="inline-flex self-start items-center justify-center gap-2 rounded-full bg-sounding px-4 py-2 text-step--1 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
               >
                 {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
-              </button>
+              </Button>
 
               <div className="space-y-1">
                 <p className="font-mono text-step--2 uppercase tracking-widest text-ink-faint">
@@ -182,10 +184,10 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                     return (
                       <li key={degreeIndex} className="flex items-center gap-2 font-mono text-step--1">
                         <span className="w-10 text-ink-muted">{degree.name}</span>
-                        <input
-                          type="number"
+                        <NumberInput
                           step={1}
                           value={degree.cents}
+                          aria-label={`${degree.name} — ${dict.laras.cents}`}
                           onChange={(event) =>
                             setEdits((current) => ({
                               ...current,
@@ -195,7 +197,7 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                               },
                             }))
                           }
-                          className="w-20 rounded-lg border border-stage-line bg-stage px-2 py-1 text-right tabular-nums text-ink transition hover:border-stage-strong focus:border-bamboo"
+                          className="w-24 px-2 py-1"
                         />
                         <span className="text-ink-faint">{dict.laras.cents}</span>
                         <span className="tabular-nums text-ink-faint">
@@ -206,8 +208,10 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                   })}
                 </ul>
                 {edits[tuning.id] !== undefined ? (
-                  <button
-                    type="button"
+                  <Button
+                    tone="ghost"
+                    size="sm"
+                    className="-ml-3"
                     onClick={() =>
                       setEdits((current) => {
                         const next = { ...current }
@@ -215,10 +219,9 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
                         return next
                       })
                     }
-                    className="text-step--1 text-ink-faint underline underline-offset-4 hover:text-sounding"
                   >
                     {dict.laras.reset}
-                  </button>
+                  </Button>
                 ) : null}
               </div>
 
@@ -264,49 +267,39 @@ export function LarasComparison({ dict }: { dict: Dictionary }) {
           </div>
 
           <div className="flex flex-wrap items-end gap-4">
-            <label className="flex min-w-0 flex-col gap-1.5">
-              <span className="eyebrow">{dict.laras.togetherFirst}</span>
-              <select
-                value={firstLaras}
-                onChange={(event) => setFirstLaras(event.target.value)}
-                className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
-              >
+            <Field label={dict.laras.togetherFirst}>
+              <Select value={firstLaras} onChange={(event) => setFirstLaras(event.target.value)}>
                 {TUNINGS.map((tuning) => (
                   <option key={tuning.id} value={tuning.id}>
                     {tuning.name}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
+            </Field>
 
-            <label className="flex min-w-0 flex-col gap-1.5">
-              <span className="eyebrow">{dict.laras.togetherSecond}</span>
-              <select
-                value={secondLaras}
-                onChange={(event) => setSecondLaras(event.target.value)}
-                className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
-              >
+            <Field label={dict.laras.togetherSecond}>
+              <Select value={secondLaras} onChange={(event) => setSecondLaras(event.target.value)}>
                 {TUNINGS.map((tuning) => (
                   <option key={tuning.id} value={tuning.id}>
                     {tuning.name}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
+            </Field>
 
-            <button
-              type="button"
+            <Button
+              tone="primary"
+              size="md"
               disabled={status !== 'siap'}
               onClick={() =>
                 playingId === TOGETHER_KEY
                   ? stop()
                   : playPhrases([pair.a, pair.b], TOGETHER_KEY)
               }
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
             >
               <span aria-hidden="true">{playingId === TOGETHER_KEY ? '■' : '▶'}</span>
               {playingId === TOGETHER_KEY ? dict.ansambel.stop : dict.laras.togetherPlay}
-            </button>
+            </Button>
           </div>
 
           {pair.a.id === pair.b.id ? (

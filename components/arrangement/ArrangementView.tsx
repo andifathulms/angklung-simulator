@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { Timeline } from '@/components/timeline/Timeline'
+import { Button, Field, Select, TextArea } from '@/components/ui'
 import { describeInfeasibility, distribute } from '@/lib/distribute'
 import { formatMelodyText, parseMelodyText } from '@/lib/melody/parse'
 import { getMelody } from '@/lib/melody'
@@ -61,42 +62,33 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
     <div className="space-y-8">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
         <div className="space-y-4">
-          <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
-            {dict.aransemen.input}
-            <textarea
+          <Field label={dict.aransemen.input} hint={dict.aransemen.inputHint}>
+            <TextArea
               value={text}
               onChange={(event) => setText(event.target.value)}
               spellCheck={false}
               rows={16}
-              className="w-full rounded-lg border border-stage-line bg-stage p-3 font-mono text-step--1 leading-relaxed text-ink transition hover:border-stage-strong focus:border-bamboo"
+              className="w-full"
             />
-          </label>
-          <p className="text-step--1 text-ink-faint">{dict.aransemen.inputHint}</p>
+          </Field>
 
           <div className="flex flex-wrap items-end gap-4">
-            <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
-              {dict.rak.setLabel}
-              <select
-                value={setId}
-                onChange={(event) => setSetId(event.target.value)}
-                className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
-              >
+            <Field label={dict.rak.setLabel}>
+              <Select value={setId} onChange={(event) => setSetId(event.target.value)}>
                 {SETS.map((candidate) => (
                   <option key={candidate.id} value={candidate.id}>
                     {candidate.name}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
+            </Field>
 
-            <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
-              {dict.ansambel.playersLabel}
-              <select
+            <Field label={dict.ansambel.playersLabel}>
+              <Select
                 value={playerCount === null ? 'min' : String(playerCount)}
                 onChange={(event) =>
                   setPlayerCount(event.target.value === 'min' ? null : Number(event.target.value))
                 }
-                className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
               >
                 <option value="min">{dict.ansambel.minimum}</option>
                 {Array.from({ length: 24 }, (_, index) => index + 1).map((count) => (
@@ -104,16 +96,12 @@ export function ArrangementView({ dict }: { dict: Dictionary }) {
                     {count}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
+            </Field>
 
-            <button
-              type="button"
-              onClick={share}
-              className="rounded-full border border-stage-strong bg-stage-raised px-3.5 py-2 text-step--1 text-ink transition hover:border-bamboo hover:bg-stage-hover"
-            >
+            <Button tone="secondary" size="sm" onClick={share}>
               {shareState === 'copied' ? '✓' : '🔗'}
-            </button>
+            </Button>
           </div>
         </div>
 

@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 import { AngklungFigure } from '@/components/rack/AngklungFigure'
 import { useAudio } from '@/components/audio/AudioProvider'
+import { Button, Field, Select } from '@/components/ui'
 import { buildSet, getSet } from '@/lib/set'
 import { soundingTabung } from '@/lib/synth'
 import type { Dictionary } from '@/lib/i18n'
@@ -37,20 +38,15 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end gap-4">
-        <label className="flex flex-col gap-1 text-step--1 text-ink-muted">
-          {dict.akor.which}
-          <select
-            value={index}
-            onChange={(event) => setIndex(Number(event.target.value))}
-            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
-          >
+        <Field label={dict.akor.which}>
+          <Select value={index} onChange={(event) => setIndex(Number(event.target.value))}>
             {set.map((candidate, candidateIndex) => (
               <option key={candidate.spec.id} value={candidateIndex}>
                 {candidate.spec.label}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Field>
 
         <button
           type="button"
@@ -65,8 +61,7 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
           {held ? dict.akor.release : dict.akor.hold}
         </button>
 
-        <button
-          type="button"
+        <Button
           disabled={status !== 'siap'}
           onClick={() =>
             play({
@@ -76,10 +71,11 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
               gain: 0.5,
             })
           }
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
+          tone="primary"
+          size="md"
         >
           {dict.ansambel.play}
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-wrap items-start gap-10">

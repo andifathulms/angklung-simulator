@@ -5,6 +5,7 @@ import { ExcitationTrace, WaveformTrace } from './ExcitationTrace'
 import { ModeTuner } from './ModeTuner'
 import { AngklungFigure } from '@/components/rack/AngklungFigure'
 import { useAudio } from '@/components/audio/AudioProvider'
+import { Button, SegmentedControl } from '@/components/ui'
 import { buildSet, getSet } from '@/lib/set'
 import {
   KURULUNG_DEFAULT_SHAKE_RATE_HZ,
@@ -85,26 +86,15 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)]">
         <div className="space-y-5">
-          <fieldset className="space-y-2">
-            <legend className="text-step--1 text-ink-muted">{dict.rak.techniqueLabel}</legend>
-            <div className="flex flex-wrap gap-1">
-              {TECHNIQUES.map((candidate) => (
-                <button
-                  key={candidate}
-                  type="button"
-                  onClick={() => setTechniqueType(candidate)}
-                  aria-pressed={techniqueType === candidate}
-                  className={
-                    techniqueType === candidate
-                      ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
-                      : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink'
-                  }
-                >
-                  {dict.teknikNames[candidate]}
-                </button>
-              ))}
-            </div>
-          </fieldset>
+          <SegmentedControl
+            label={dict.rak.techniqueLabel}
+            value={techniqueType}
+            onChange={setTechniqueType}
+            options={TECHNIQUES.map((candidate) => ({
+              value: candidate,
+              label: dict.teknikNames[candidate],
+            }))}
+          />
 
           <label className="block space-y-1 text-step--1 text-ink-muted">
             <span>
@@ -145,8 +135,9 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
             />
           </label>
 
-          <button
-            type="button"
+          <Button
+            tone="primary"
+            size="md"
             disabled={status !== 'siap'}
             onClick={() =>
               play({
@@ -158,10 +149,9 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
                 modes,
               })
             }
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
           >
             {dict.ansambel.play}
-          </button>
+          </Button>
         </div>
 
         <div className="flex items-start gap-8">

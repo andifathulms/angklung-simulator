@@ -276,29 +276,22 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   return (
     <div className="space-y-8">
       <Card className="flex flex-wrap items-end gap-x-7 gap-y-5">
-        <label className="flex min-w-0 flex-col gap-1.5">
-          <span className="eyebrow">{dict.ansambel.melodyLabel}</span>
-          <select
-            value={melodyId}
-            onChange={(event) => setMelodyId(event.target.value)}
-            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
-          >
+        <Field label={dict.ansambel.melodyLabel}>
+          <Select value={melodyId} onChange={(event) => setMelodyId(event.target.value)}>
             {MELODIES.map((candidate) => (
               <option key={candidate.id} value={candidate.id}>
                 {candidate.title}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Field>
 
-        <label className="flex min-w-0 flex-col gap-1.5">
-          <span className="eyebrow">{dict.ansambel.playersLabel}</span>
-          <select
+        <Field label={dict.ansambel.playersLabel}>
+          <Select
             value={playerCount === null ? 'min' : String(playerCount)}
             onChange={(event) =>
               setPlayerCount(event.target.value === 'min' ? null : Number(event.target.value))
             }
-            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
           >
             <option value="min">{dict.ansambel.minimum}</option>
             {Array.from({ length: 16 }, (_, index) => index + 1).map((count) => (
@@ -306,8 +299,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                 {count}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </Field>
 
         {/*
           * The second population. Off by default so the headline number stays
@@ -315,27 +308,16 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           * watching the room grow, is something the visitor does rather than
           * something they arrive to.
           */}
-        <fieldset className="min-w-0" disabled={!hasAkompanimen}>
-          <legend className="eyebrow mb-1.5">{dict.ansambel.withAkompanimen}</legend>
-          <div className="inline-flex gap-1 rounded-full border border-stage-line bg-stage p-1 disabled:opacity-40">
-            {[false, true].map((on) => (
-              <button
-                key={String(on)}
-                type="button"
-                onClick={() => setWithAkompanimen(on)}
-                aria-pressed={withAkompanimen === on}
-                disabled={!hasAkompanimen}
-                className={
-                  withAkompanimen === on
-                    ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
-                    : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50'
-                }
-              >
-                {on ? dict.ansambel.akompanimenOn : dict.ansambel.akompanimenOff}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+        <SegmentedControl<'tanpa' | 'dengan'>
+          label={dict.ansambel.withAkompanimen}
+          value={withAkompanimen ? 'dengan' : 'tanpa'}
+          onChange={(next) => setWithAkompanimen(next === 'dengan')}
+          disabled={!hasAkompanimen}
+          options={[
+            { value: 'tanpa', label: dict.ansambel.akompanimenOff },
+            { value: 'dengan', label: dict.ansambel.akompanimenOn },
+          ]}
+        />
 
         {/*
           * The two-hands assumption, which was a constant in the solver and
@@ -343,51 +325,30 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           * the page: one angklung each is how most school ensembles actually
           * run, and it changes the number of people a song needs.
           */}
-        <fieldset className="min-w-0">
-          <legend className="eyebrow mb-1.5">{dict.ansambel.perPlayerLabel}</legend>
-          <div className="inline-flex gap-1 rounded-full border border-stage-line bg-stage p-1">
-            {PER_PLAYER_CHOICES.map((count) => (
-              <button
-                key={count}
-                type="button"
-                onClick={() => setAngklungPerPlayer(count)}
-                aria-pressed={angklungPerPlayer === count}
-                className={
-                  angklungPerPlayer === count
-                    ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
-                    : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink'
-                }
-              >
-                {count === 1 ? dict.ansambel.perPlayerOne : dict.ansambel.perPlayerTwo}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+        <SegmentedControl<'2' | '1'>
+          label={dict.ansambel.perPlayerLabel}
+          value={String(angklungPerPlayer) === '1' ? '1' : '2'}
+          onChange={(next) => setAngklungPerPlayer(Number(next))}
+          options={PER_PLAYER_CHOICES.map((count) => ({
+            value: String(count) as '2' | '1',
+            label: count === 1 ? dict.ansambel.perPlayerOne : dict.ansambel.perPlayerTwo,
+          }))}
+        />
 
-        <fieldset className="min-w-0">
-          <legend className="eyebrow mb-1.5">{dict.ansambel.mode}</legend>
-          <div className="inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage p-1">
-            {MODES.map((candidate) => (
-              <button
-                key={candidate}
-                type="button"
-                onClick={() => setMode(candidate)}
-                aria-pressed={mode === candidate}
-                className={
-                  mode === candidate
-                    ? 'rounded-full bg-bamboo px-3.5 py-1.5 text-step--1 text-ink-inverse shadow-raised'
-                    : 'rounded-full px-3.5 py-1.5 text-step--1 text-ink-muted transition hover:text-ink'
-                }
-              >
-                {candidate === 'dengar'
-                  ? dict.ansambel.listen
-                  : candidate === 'bagian-anda'
-                    ? dict.ansambel.yourPart
-                    : dict.ansambel.everyPart}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+        <SegmentedControl<Mode>
+          label={dict.ansambel.mode}
+          value={mode}
+          onChange={setMode}
+          options={MODES.map((candidate) => ({
+            value: candidate,
+            label:
+              candidate === 'dengar'
+                ? dict.ansambel.listen
+                : candidate === 'bagian-anda'
+                  ? dict.ansambel.yourPart
+                  : dict.ansambel.everyPart,
+          }))}
+        />
 
         <label className="flex min-w-0 flex-col gap-1.5">
           <span className="eyebrow">{dict.ansambel.tempo}</span>
@@ -407,28 +368,27 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
 
         <label className="flex min-w-0 flex-col gap-1.5">
           <span className="eyebrow">{dict.ansambel.countIn}</span>
-          <select
+          <Select
             value={countInBeats}
             onChange={(event) => setCountInBeats(Number(event.target.value))}
-            className="cursor-pointer rounded-lg border border-stage-line bg-stage px-3 py-2 pr-8 text-step-0 text-ink transition hover:border-stage-strong focus:border-bamboo"
           >
             {COUNT_IN_CHOICES.map((beats) => (
               <option key={beats} value={beats}>
                 {beats}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
 
-        <button
-          type="button"
+        <Button
+          tone="primary"
+          size="md"
           disabled={status !== 'siap' || ensemble === null}
           onClick={() => (isPlaying ? stop() : start())}
-          className="inline-flex items-center justify-center gap-2 rounded-full bg-sounding px-5 py-2.5 text-step-0 font-medium text-ink-inverse shadow-raised transition duration-200 ease-physical hover:bg-sounding-glow active:translate-y-px disabled:opacity-40"
         >
           <span aria-hidden="true">{isPlaying ? '■' : '▶'}</span>
           {isPlaying ? dict.ansambel.stop : dict.ansambel.play}
-        </button>
+        </Button>
       </Card>
 
       <p className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
