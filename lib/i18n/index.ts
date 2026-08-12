@@ -125,6 +125,7 @@ export interface Dictionary {
     readonly legendOthers: string
     readonly legendAbsent: string
     readonly legendPeak: string
+    readonly rowSummary: string
     readonly nextCue: string
     readonly cueAnnounce: string
     readonly cueNone: string
@@ -382,6 +383,7 @@ const id: Dictionary = {
     legendOthers: 'pemain lain',
     legendAbsent: 'tidak ada yang memegang',
     legendPeak: 'saat tersibuk',
+    rowSummary: '{notes} nada, masuk pertama pada detik {first}, diam {rest} persen',
     nextCue: 'Nomor berikutnya',
     cueAnnounce: 'Nomor {nomor}, {beats} ketukan lagi',
     cueNone: 'Belum ada aba-aba',
@@ -658,6 +660,7 @@ const en: Dictionary = {
     legendOthers: 'other players',
     legendAbsent: 'nobody holding it',
     legendPeak: 'the busiest instant',
+    rowSummary: '{notes} notes, first entry at {first} seconds, waiting {rest} per cent of the piece',
     nextCue: 'Next number',
     cueAnnounce: 'Number {nomor}, in {beats} beats',
     cueNone: 'No cue yet',

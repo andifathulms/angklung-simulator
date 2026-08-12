@@ -1,5 +1,6 @@
 'use client'
 
+import { fill } from '@/lib/i18n'
 import type { PlayerPart } from '@/lib/distribute'
 import type { Dictionary } from '@/lib/i18n'
 
@@ -79,7 +80,38 @@ export function Timeline({
         ))}
       </ul>
 
-      <div className="overflow-x-auto">
+      {/*
+        * The chart in words, and the chart itself hidden from assistive tech.
+        *
+        * Every note used to be a non-focusable <span title="C4 · 2.00s">, so a
+        * screen reader heard the row's player name and then silence, and a
+        * keyboard user could not reach the tooltips at all (WCAG 1.3.1).
+        *
+        * The fix is not to make sixty-six spans focusable. A note-by-note
+        * reading of a rhythm is worse than no reading; what the chart is *for*
+        * is the shape — how many notes, when you come in, how much of the piece
+        * you spend waiting — and that is three numbers per row, already
+        * computed. So the picture is aria-hidden and the shape is a list.
+        */}
+      <ul className="sr-only">
+        {players.map((player) => {
+          const first = player.notes[0]
+          const sounding = player.notes.reduce((total, note) => total + note.durationSec, 0)
+          return (
+            <li key={player.playerIndex}>
+              {dict.ansambel.player} {player.playerIndex + 1}
+              {missing.has(player.playerIndex) ? ` — ${dict.ansambel.legendAbsent}` : ''} —{' '}
+              {fill(dict.ansambel.rowSummary, {
+                notes: player.notes.length,
+                first: first === undefined ? 0 : first.startSec.toFixed(1),
+                rest: Math.round((1 - sounding / Math.max(durationSec, 0.001)) * 100),
+              })}
+            </li>
+          )
+        })}
+      </ul>
+
+      <div aria-hidden="true" className="overflow-x-auto">
         <div className="relative min-w-max" style={{ width }}>
           {/* One tick per second. The grid is the only thing behind a rest. */}
           <div className="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -132,9 +164,6 @@ export function Timeline({
                   className="relative border-b border-stage-line/60"
                   style={{ height: ROW_HEIGHT }}
                 >
-                  <span className="sr-only">
-                    {dict.ansambel.player} {player.playerIndex + 1}
-                  </span>
                   {player.notes.map((note) => (
                     <span
                       key={`${note.index}-${note.pitchId}`}
