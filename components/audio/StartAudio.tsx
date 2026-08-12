@@ -12,32 +12,39 @@ import type { Dictionary } from '@/lib/i18n'
  * persistent button for something already done is just noise.
  */
 export function StartAudio({ dict }: { dict: Dictionary }) {
-  const { status, start, contextState, needsSilentSwitchHint } = useAudio()
+  const { status, start, resume, contextState, needsSilentSwitchHint } = useAudio()
 
   if (status === 'siap') {
     // Safari reports 'interrupted' after a call or Siri, and a context in that
     // state accepts scheduling without making a sound. Say so rather than let the
     // instrument look broken.
     const interrupted = contextState !== null && contextState !== 'running'
+
+    // Interrupted is not just a status: it is something the visitor can fix, and
+    // a browser suspends the context of any tab you are not looking at — so this
+    // state is common, not exotic, and it has to be a button.
+    if (interrupted) {
+      return (
+        <Button tone="danger" size="sm" onClick={() => void resume()}>
+          <span aria-hidden="true" className="pulse-cue">
+            ●
+          </span>
+          {dict.audio.resume}
+        </Button>
+      )
+    }
+
     return (
       <div className="flex flex-col gap-1">
         <p
-          className={
-            interrupted
-              ? 'flex items-center gap-1.5 font-mono text-step--2 text-cue-light'
-              : 'flex items-center gap-1.5 font-mono text-step--2 text-yourPart-light'
-          }
+          className="flex items-center gap-1.5 font-mono text-step--2 text-yourPart-light"
           role="status"
         >
           <span
             aria-hidden="true"
-            className={
-              interrupted
-                ? 'pulse-cue inline-block h-1.5 w-1.5 rounded-full bg-cue'
-                : 'inline-block h-1.5 w-1.5 rounded-full bg-yourPart'
-            }
+            className="inline-block h-1.5 w-1.5 rounded-full bg-yourPart"
           />
-          {interrupted ? dict.audio.interrupted : dict.audio.ready}
+          {dict.audio.ready}
         </p>
         {needsSilentSwitchHint ? (
           <p className="max-w-[22rem] text-step--2 leading-snug text-ink-faint">

@@ -49,6 +49,8 @@ interface AudioContextValue {
   /** The last thing that went wrong, so a failure is visible instead of silent. */
   readonly lastError: string | null
   start: () => Promise<void>
+  /** Bring a suspended or interrupted context back. Safe to call at any time. */
+  resume: () => Promise<void>
   /**
    * Queue instruments for pre-rendering during idle time. Returns immediately;
    * progress is reported through `warmProgress`.
@@ -134,17 +136,30 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       void resumeAudioEngine(engine).then(sync)
     }
 
+    /*
+     * Capture phase, deliberately.
+     *
+     * A browser suspends the audio context of a tab you are not looking at, and
+     * bubble-phase listeners run *after* the element that was clicked. So the
+     * first press after returning to a backgrounded tab used to schedule its note
+     * into a context that was still suspended, and only then trigger recovery —
+     * one silent press, every time, which reads as "this tab is broken".
+     * Recovering during capture means the context is already coming back before
+     * the press reaches an angklung.
+     */
     document.addEventListener('visibilitychange', recover)
     window.addEventListener('focus', recover)
-    window.addEventListener('pointerdown', recover)
-    window.addEventListener('touchend', recover)
+    window.addEventListener('pointerdown', recover, true)
+    window.addEventListener('touchend', recover, true)
+    window.addEventListener('keydown', recover, true)
     const poll = window.setInterval(sync, 1000)
 
     return () => {
       document.removeEventListener('visibilitychange', recover)
       window.removeEventListener('focus', recover)
-      window.removeEventListener('pointerdown', recover)
-      window.removeEventListener('touchend', recover)
+      window.removeEventListener('pointerdown', recover, true)
+      window.removeEventListener('touchend', recover, true)
+      window.removeEventListener('keydown', recover, true)
       window.clearInterval(poll)
     }
   }, [])
@@ -155,6 +170,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
    * freeze a phone for as long as it took. One buffer per idle slot keeps the
    * interface responsive while the rack quietly becomes instant to play.
    */
+  const resume = useCallback(async () => {
+    const engine = engineRef.current
+    if (engine === null) return
+    await resumeAudioEngine(engine)
+    setState(contextState(engine))
+  }, [])
+
   const warm = useCallback((angklung: readonly AngklungSpec[]) => {
     const queue: { spec: AngklungSpec; techniqueType: TechniqueType }[] = []
     for (const techniqueType of ['centok', 'kurulung', 'tengkep'] as const) {
@@ -210,6 +232,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       const engine = engineRef.current
       const pool = poolRef.current
       if (engine === null || pool === null) return null
+
+      /*
+       * Second line of defence for the same problem: if the context is not
+       * running, ask it back before scheduling. A suspended context has a frozen
+       * clock, so a note queued against it simply never arrives.
+       */
+      if (engine.context.state !== 'running') {
+        void engine.context.resume().then(() => setState(contextState(engine)))
+      }
 
       const atSec = options.atSec ?? engine.context.currentTime + IMMEDIATE_HEADROOM_SEC
       let handle: VoiceHandle
@@ -268,13 +299,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       needsSilentSwitchHint: status === 'siap' && isIos(),
       lastError,
       start,
+      resume,
       warm,
       warmProgress,
       now,
       play,
       releaseAll,
     }),
-    [status, sounding, state, lastError, start, warm, warmProgress, now, play, releaseAll],
+    [status, sounding, state, lastError, start, resume, warm, warmProgress, now, play, releaseAll],
   )
 
   return <AudioContextObject.Provider value={value}>{children}</AudioContextObject.Provider>

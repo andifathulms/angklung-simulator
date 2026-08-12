@@ -31,6 +31,7 @@ export interface Dictionary {
     readonly failed: string
     readonly voices: string
     readonly interrupted: string
+    readonly resume: string
     readonly silentSwitch: string
   }
   readonly hero: {
@@ -227,7 +228,8 @@ const id: Dictionary = {
     hint: 'Suara hanya bisa dinyalakan lewat sentuhan Anda — begitu aturan peramban, terutama di iOS.',
     failed: 'Suara tidak bisa dinyalakan di peramban ini.',
     voices: 'suara aktif',
-    interrupted: 'Suara terhenti — panggilan masuk, Siri, atau halaman sempat ditinggalkan. Sentuh layar untuk menyalakannya lagi.',
+    interrupted: 'Suara terhenti — panggilan masuk, Siri, atau tab ini sempat ditinggalkan. Sentuh layar untuk menyalakannya lagi.',
+    resume: 'Lanjutkan suara',
     silentSwitch: 'Tidak terdengar apa-apa? Di iPhone, sakelar senyap ikut membungkam suara halaman web. Geser sakelarnya dan naikkan volume.',
   },
   hero: {
@@ -442,7 +444,8 @@ const en: Dictionary = {
     hint: 'Sound can only start from your own tap — browsers require it, iOS especially.',
     failed: 'Sound could not start in this browser.',
     voices: 'voices sounding',
-    interrupted: 'Sound was interrupted — a call, Siri, or the page losing focus. Touch the screen to bring it back.',
+    interrupted: 'Sound was interrupted — a call, Siri, or this tab losing focus. Touch the screen to bring it back.',
+    resume: 'Resume sound',
     silentSwitch: 'Hearing nothing? On iPhone the silent switch mutes web audio too. Flip the switch and raise the volume.',
   },
   hero: {
