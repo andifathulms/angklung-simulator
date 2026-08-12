@@ -59,7 +59,13 @@ export function RackPlayground({ dict }: { dict: Dictionary }) {
       </Card>
 
       <div className="rounded-card border border-stage-line bg-stage-raised/50 px-2 py-6 sm:px-4">
-        <Rack set={set} technique={technique} numberLabel={dict.rak.nomor} />
+        <Rack
+          set={set}
+          technique={technique}
+          numberLabel={dict.rak.nomor}
+          yourPartLabel={dict.rak.stateYourPart}
+          cuedLabel={dict.rak.stateCued}
+        />
       </div>
 
       <div className="grid gap-4 text-step--1 text-ink-faint sm:grid-cols-2">

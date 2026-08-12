@@ -15,6 +15,8 @@ export interface RackProps {
   readonly yourPartNumbers?: readonly number[]
   /** Padaeng number the conductor is about to signal. Cue amber, and only that. */
   readonly cuedNumber?: number | null
+  readonly yourPartLabel: string
+  readonly cuedLabel: string
 }
 
 export function Rack({
@@ -24,6 +26,8 @@ export function Rack({
   numberLabel,
   yourPartNumbers = [],
   cuedNumber = null,
+  yourPartLabel,
+  cuedLabel,
 }: RackProps) {
   const lengths = useMemo(
     () => set.map((entry) => relativeTubeLength(entry.spec.rootHz, set)),
@@ -44,6 +48,8 @@ export function Rack({
             numberLabel={numberLabel}
             isYourPart={yours.has(entry.spec.nomor)}
             isCued={cuedNumber === entry.spec.nomor}
+            yourPartLabel={yourPartLabel}
+            cuedLabel={cuedLabel}
           />
         ))}
       </div>

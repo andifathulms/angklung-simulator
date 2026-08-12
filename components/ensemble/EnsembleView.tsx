@@ -691,6 +691,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                 }
                 technique="kurulung"
                 numberLabel={dict.rak.nomor}
+                yourPartLabel={dict.rak.stateYourPart}
+                cuedLabel={dict.rak.stateCued}
                 yourPartNumbers={(yourPart?.angklung ?? []).map((angklung) => angklung.spec.nomor)}
                 cuedNumber={cuedNumber}
               />

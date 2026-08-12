@@ -17,6 +17,9 @@ export interface AngklungButtonProps {
   /** Cue amber marks the conductor's upcoming signal, and means only that. */
   readonly isCued?: boolean
   readonly numberLabel: string
+  /** Words for the two signal states, so they are not carried by colour alone. */
+  readonly yourPartLabel: string
+  readonly cuedLabel: string
 }
 
 export function AngklungButton({
@@ -27,6 +30,8 @@ export function AngklungButton({
   isYourPart = false,
   isCued = false,
   numberLabel,
+  yourPartLabel,
+  cuedLabel,
 }: AngklungButtonProps) {
   const { play, sounding, shakeRateHz, status, now } = useAudio()
   const voiceRef = useRef<VoiceHandle | null>(null)
@@ -89,7 +94,20 @@ export function AngklungButton({
         if (event.key !== ' ' && event.key !== 'Enter') return
         endNote()
       }}
-      aria-label={`${numberLabel} ${entry.spec.nomor}, ${entry.spec.label}`}
+      /*
+       * Jade means the angklung you hold and cue amber means the conductor is
+       * signalling it now (PRD §8) — the two states the design reserves colours
+       * for, and until now the two states nobody who cannot see them was told
+       * about. Both are in the name (WCAG 1.4.1).
+       */
+      aria-label={[
+        `${numberLabel} ${entry.spec.nomor}`,
+        entry.spec.label,
+        isYourPart ? yourPartLabel : null,
+        isCued ? cuedLabel : null,
+      ]
+        .filter(Boolean)
+        .join(', ')}
       aria-pressed={isSounding}
       className="group flex shrink-0 flex-col items-center gap-2 rounded-md px-1 pb-2 pt-1 disabled:cursor-not-allowed disabled:opacity-40"
     >

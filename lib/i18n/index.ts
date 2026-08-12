@@ -97,6 +97,8 @@ export interface Dictionary {
     readonly keyboardHint: string
     readonly nomor: string
     readonly warming: string
+    readonly stateYourPart: string
+    readonly stateCued: string
   }
   readonly ansambel: {
     readonly title: string
@@ -350,6 +352,8 @@ const id: Dictionary = {
     keyboardHint: 'Dengan papan ketik: Tab untuk berpindah, spasi atau Enter untuk membunyikan, Shift untuk tengkep.',
     nomor: 'Nomor',
     warming: 'Menyiapkan bunyi angklung…',
+    stateYourPart: 'bagian Anda',
+    stateCued: 'sedang diaba-abakan',
   },
   ansambel: {
     title: 'Ansambel',
@@ -625,6 +629,8 @@ const en: Dictionary = {
     keyboardHint: 'By keyboard: Tab to move, space or Enter to sound, Shift for tengkep.',
     nomor: 'Number',
     warming: 'Preparing the instrument…',
+    stateYourPart: 'your part',
+    stateCued: 'cued now',
   },
   ansambel: {
     title: 'Ensemble',
