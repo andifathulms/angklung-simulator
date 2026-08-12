@@ -45,6 +45,7 @@ export interface Dictionary {
     readonly needs: string
     readonly people: string
     readonly distinctNotes: string
+    readonly awaiting: string
     readonly punchline: string
     readonly explore: string
     readonly stepsTitle: string
@@ -241,6 +242,7 @@ const id: Dictionary = {
     needs: 'Lagu ini butuh',
     people: 'orang',
     distinctNotes: 'nada berbeda',
+    awaiting: 'Mainkan lagunya, dan angka-angka ini terisi sendiri.',
     punchline: 'Anda punya dua tangan. Di situlah angklung berbeda dari alat musik lain — dan itulah yang disimulasikan di sini.',
     explore: 'Lihat pembagiannya',
     stepsTitle: 'Cara kerjanya',
@@ -454,6 +456,7 @@ const en: Dictionary = {
     needs: 'This song needs',
     people: 'people',
     distinctNotes: 'distinct notes',
+    awaiting: 'Play the song and these fill themselves in.',
     punchline: 'You have two hands. That is where the angklung parts company with every other instrument — and it is the thing this simulates.',
     explore: 'See how it splits up',
     stepsTitle: 'How it works',

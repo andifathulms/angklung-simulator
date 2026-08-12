@@ -309,10 +309,13 @@ export function Stat({
 }: {
   value: string
   label: string
-  tone?: 'default' | 'sounding' | 'yourPart' | 'cue'
+  tone?: 'default' | 'pending' | 'sounding' | 'yourPart' | 'cue'
 }) {
   const tones = {
     default: 'text-ink',
+    // A figure the interface is promising but has not earned yet. Dimmed rather
+    // than hidden, so the label can say what will appear there.
+    pending: 'text-ink-faint',
     sounding: 'text-sounding',
     yourPart: 'text-yourPart-light',
     cue: 'text-cue-light',

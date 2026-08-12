@@ -213,25 +213,49 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
         ) : null}
       </div>
 
-      {/* The answer, revealed only once they have heard the song. Stating it up
-          front would be a claim; stating it after is a demonstration. */}
-      {touched ? (
-        <div className="rise-in rounded-card border border-bamboo/30 bg-bamboo/[0.06] p-5 sm:p-6">
-          <p className="eyebrow">{dict.hero.step2Title}</p>
-          <div className="mt-4 flex flex-wrap items-end gap-8">
-            <Stat
-              value={String(players ?? '—')}
-              label={`${dict.hero.needs} ${dict.hero.people}`}
-              tone="sounding"
-            />
-            <Stat value={String(pitchesUsed(melody).length)} label={dict.hero.distinctNotes} />
-            <Stat value={`${durationSec.toFixed(0)}s`} label={melody.title} />
-          </div>
-          <p className="mt-4 max-w-prose text-step-0 leading-relaxed text-ink-muted">
-            {dict.hero.punchline}
-          </p>
+      {/*
+        * The answer, revealed only once they have heard the song. Stating it up
+        * front would be a claim; stating it after is a demonstration.
+        *
+        * But the panel itself is now here from the start, with its figures held
+        * at em dashes. Withholding the answer is the point; withholding the
+        * question meant a visitor who never tapped never learned there was one,
+        * and that is most visitors. The labels ask it — this song needs _
+        * people — and playing it answers.
+        *
+        * Keyed so the reveal remounts and `rise-in` actually plays, rather than
+        * animating on load as decoration.
+        */}
+      <div
+        key={touched ? 'resolved' : 'pending'}
+        className={
+          touched
+            ? 'rise-in rounded-card border border-bamboo/30 bg-bamboo/[0.06] p-5 sm:p-6'
+            : 'rounded-card border border-stage-line bg-stage-raised/40 p-5 sm:p-6'
+        }
+      >
+        <p className="eyebrow">{dict.hero.step2Title}</p>
+        <div className="mt-4 flex flex-wrap items-end gap-8">
+          <Stat
+            value={touched ? String(players ?? '—') : '—'}
+            label={`${dict.hero.needs} ${dict.hero.people}`}
+            tone={touched ? 'sounding' : 'pending'}
+          />
+          <Stat
+            value={touched ? String(pitchesUsed(melody).length) : '—'}
+            label={dict.hero.distinctNotes}
+            tone={touched ? 'default' : 'pending'}
+          />
+          <Stat
+            value={touched ? `${durationSec.toFixed(0)}s` : '—'}
+            label={melody.title}
+            tone={touched ? 'default' : 'pending'}
+          />
         </div>
-      ) : null}
+        <p className="mt-4 max-w-prose text-step-0 leading-relaxed text-ink-muted">
+          {touched ? dict.hero.punchline : dict.hero.awaiting}
+        </p>
+      </div>
     </div>
   )
 }
