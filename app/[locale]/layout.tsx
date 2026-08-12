@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { AudioProvider } from '@/components/audio/AudioProvider'
 import { HtmlLang } from '@/components/HtmlLang'
 import { MakerSignature } from '@/components/MakerSignature'
+import { RouteFocus } from '@/components/RouteFocus'
 import { SiteNav } from '@/components/SiteNav'
 import { LOCALES, getDictionary, isLocale, localePath } from '@/lib/i18n'
 
@@ -25,9 +26,21 @@ export default function LocaleLayout({
     <AudioProvider>
       <HtmlLang locale={locale} />
       <div className="flex min-h-screen flex-col">
+        <RouteFocus targetId="isi" />
         <SiteNav locale={locale} dict={dict} />
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-12 sm:py-16">{children}</main>
+        {/*
+          * tabIndex={-1} is what lets RouteFocus land here after a client-side
+          * navigation. It adds no tab stop; `main` is not interactive and does
+          * not become so.
+          */}
+        <main
+          id="isi"
+          tabIndex={-1}
+          className="mx-auto w-full max-w-6xl flex-1 px-5 py-12 outline-none sm:py-16"
+        >
+          {children}
+        </main>
 
         <footer className="mt-8 border-t border-stage-line bg-stage-deep/60">
           <div className="mx-auto max-w-6xl px-5 py-12">
