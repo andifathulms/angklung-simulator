@@ -34,6 +34,7 @@ export interface Dictionary {
     readonly interrupted: string
     readonly resume: string
     readonly silentSwitch: string
+    readonly noSound: string
   }
   readonly hero: {
     readonly try: string
@@ -323,6 +324,7 @@ const id: Dictionary = {
     interrupted: 'Suara terhenti — panggilan masuk, Siri, atau tab ini sempat ditinggalkan. Sentuh layar untuk menyalakannya lagi.',
     resume: 'Lanjutkan suara',
     silentSwitch: 'Tidak terdengar apa-apa? Di iPhone, sakelar senyap ikut membungkam suara halaman web. Geser sakelarnya dan naikkan volume.',
+    noSound: 'Tak terdengar?',
   },
   hero: {
     try: 'Bunyikan angklungnya',
@@ -655,6 +657,7 @@ const en: Dictionary = {
     interrupted: 'Sound was interrupted — a call, Siri, or this tab losing focus. Touch the screen to bring it back.',
     resume: 'Resume sound',
     silentSwitch: 'Hearing nothing? On iPhone the silent switch mutes web audio too. Flip the switch and raise the volume.',
+    noSound: 'No sound?',
   },
   hero: {
     try: 'Sound an angklung',

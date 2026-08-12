@@ -1,8 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { useAudio } from './AudioProvider'
 import { Button } from '../ui'
-import type { Dictionary } from '@/lib/i18n'
+import { localePath } from '@/lib/i18n'
+import type { Dictionary, Locale } from '@/lib/i18n'
 
 /**
  * The explicit start control. iOS will not start an AudioContext outside a user
@@ -11,7 +13,7 @@ import type { Dictionary } from '@/lib/i18n'
  * In the header this stays small: once sound is on it is a status dot, because a
  * persistent button for something already done is just noise.
  */
-export function StartAudio({ dict }: { dict: Dictionary }) {
+export function StartAudio({ dict, locale }: { dict: Dictionary; locale: Locale }) {
   const { status, start, resume, contextState, needsSilentSwitchHint } = useAudio()
 
   if (status === 'siap') {
@@ -51,6 +53,22 @@ export function StartAudio({ dict }: { dict: Dictionary }) {
             {dict.audio.silentSwitch}
           </p>
         ) : null}
+
+        {/*
+          * The way out of "everything says it is playing and I hear nothing".
+          *
+          * /diagnostik has always existed and was only ever linked from the
+          * footer, which is the wrong place: someone who cannot hear anything
+          * is looking at the sound indicator, not scrolling to the bottom of
+          * the page. It sits next to the indicator now, and only once sound is
+          * supposedly on — which is exactly when the question gets asked.
+          */}
+        <Link
+          href={localePath(locale, '/diagnostik')}
+          className="font-mono text-step--2 text-ink-faint underline decoration-stage-strong underline-offset-4 transition hover:text-ink hover:decoration-bamboo"
+        >
+          {dict.audio.noSound}
+        </Link>
       </div>
     )
   }

@@ -93,7 +93,7 @@ export function SiteNav({ locale, dict }: { locale: Locale; dict: Dictionary }) 
 
         <div className="ml-auto flex items-center gap-3 lg:ml-0">
           <div className="hidden sm:block">
-            <StartAudio dict={dict} />
+            <StartAudio dict={dict} locale={locale} />
           </div>
 
           {/*
@@ -171,7 +171,7 @@ export function SiteNav({ locale, dict }: { locale: Locale; dict: Dictionary }) 
             ))}
           </nav>
           <div className="mt-3 border-t border-stage-line pt-3 sm:hidden">
-            <StartAudio dict={dict} />
+            <StartAudio dict={dict} locale={locale} />
           </div>
         </div>
       ) : null}
