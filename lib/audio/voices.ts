@@ -81,6 +81,21 @@ export interface VoicePool {
   releaseAll(atSec: number): void
   activeCount(): number
   cachedCount(): number
+  /**
+   * Read back what was actually written into an AudioBuffer on this device.
+   * A peak of zero here means the copy into Web Audio failed even though the
+   * render was fine — which is invisible from the outside and sounds exactly
+   * like every other cause of silence.
+   */
+  inspect(request: Omit<VoiceRequest, 'atSec' | 'gain'>): BufferReport
+}
+
+export interface BufferReport {
+  readonly peak: number
+  readonly lengthSamples: number
+  readonly sampleRateHz: number
+  /** How the samples reached the AudioBuffer, since Safari once lacked the first. */
+  readonly writtenWith: 'copyToChannel' | 'getChannelData'
 }
 
 interface ActiveVoice {
@@ -167,7 +182,7 @@ export function createVoicePool(
     }
 
     const buffer = engine.context.createBuffer(1, samples.length, engine.context.sampleRate)
-    buffer.copyToChannel(samples, 0)
+    writeChannel(buffer, samples)
     buffers.set(key, buffer)
     return buffer
   }
@@ -249,7 +264,37 @@ export function createVoicePool(
 
     activeCount: () => active.length,
     cachedCount: () => buffers.size,
+
+    inspect(request) {
+      const buffer = bufferFor(request, 0)
+      const data = buffer.getChannelData(0)
+      let peak = 0
+      for (let n = 0; n < data.length; n += 1) peak = Math.max(peak, Math.abs(data[n] ?? 0))
+      return {
+        peak,
+        lengthSamples: buffer.length,
+        sampleRateHz: buffer.sampleRate,
+        writtenWith: hasCopyToChannel(buffer) ? 'copyToChannel' : 'getChannelData',
+      }
+    },
   }
+}
+
+function hasCopyToChannel(buffer: AudioBuffer): boolean {
+  return typeof (buffer as { copyToChannel?: unknown }).copyToChannel === 'function'
+}
+
+/**
+ * copyToChannel arrived in Safari 14.1. Writing through getChannelData works
+ * everywhere and is the fallback, because a missing method here throws inside the
+ * first press and the only symptom is silence.
+ */
+function writeChannel(buffer: AudioBuffer, samples: Float32Array): void {
+  if (hasCopyToChannel(buffer)) {
+    buffer.copyToChannel(samples, 0)
+    return
+  }
+  buffer.getChannelData(0).set(samples)
 }
 
 /** Stable seed from the cache key, so a given instrument and take always match. */

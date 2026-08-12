@@ -18,12 +18,13 @@ import type { Dictionary } from '@/lib/i18n'
 const VOICE_STEPS = [8, 16, 24, 32] as const
 
 export function DiagnosticsView({ dict }: { dict: Dictionary }) {
-  const { engine, status, play, releaseAll, now, contextState } = useAudio()
+  const { engine, status, play, releaseAll, now, contextState, pool, lastError } = useAudio()
   const [device, setDevice] = useState<DeviceReport | null>(null)
   const [cost, setCost] = useState<RenderCost | null>(null)
   const [results, setResults] = useState<readonly JitterResult[]>([])
   const [running, setRunning] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [bufferReport, setBufferReport] = useState<string | null>(null)
 
   const set = useMemo(() => buildSet(getSet('melodi-kromatis')), [])
 
@@ -59,6 +60,9 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
   const asText = useCallback(() => {
     const lines = [
       `Angklung Simulator — diagnostik`,
+      `status ${status} · contextState ${contextState ?? '—'}`,
+      bufferReport ?? '',
+      lastError === null ? '' : `ERROR ${lastError}`,
       device === null ? '' : `sampleRate ${device.sampleRateHz} Hz`,
       device?.baseLatencySec === null || device === null
         ? ''
@@ -79,7 +83,7 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
       ),
     ]
     return lines.filter((line) => line !== '').join('\n')
-  }, [cost, device, results])
+  }, [bufferReport, contextState, cost, device, lastError, results, status])
 
   return (
     <div className="space-y-8">
@@ -107,13 +111,28 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
             disabled={status !== 'siap'}
             onClick={() => {
               const first = set[4] ?? set[0]
-              if (first !== undefined) {
-                play({
+              if (first === undefined) return
+              play({ angklung: first.spec, techniqueType: 'centok', hardness: 0.8, gain: 1 })
+
+              // Read back what actually landed in the AudioBuffer on this device.
+              // A peak of zero here means the render was fine and the copy into
+              // Web Audio was not — indistinguishable from any other silence
+              // without this number.
+              try {
+                const report = pool?.inspect({
                   angklung: first.spec,
                   techniqueType: 'centok',
+                  shakeRateHz: 2.5,
                   hardness: 0.8,
-                  gain: 1,
                 })
+                setBufferReport(
+                  report === undefined
+                    ? null
+                    : `buffer peak ${report.peak.toFixed(4)} · ${report.lengthSamples} sampel · ` +
+                      `${report.sampleRateHz} Hz · ${report.writtenWith}`,
+                )
+              } catch (error) {
+                setBufferReport(`inspect: ${(error as Error).message}`)
               }
             }}
           >
@@ -121,12 +140,25 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
           </Button>
           {status !== 'siap' ? (
             <span className="text-step--1 text-cue-light">{dict.diagnostik.bothSilent}</span>
-          ) : (
-            <span className="font-mono text-step--1 text-ink-faint">
-              {contextState ?? '—'} · {engine?.context.sampleRate ?? '—'} Hz
-            </span>
-          )}
+          ) : null}
         </div>
+
+        <dl className="grid gap-x-6 gap-y-1 font-mono text-step--1 text-ink-muted sm:grid-cols-2">
+          <Row label="status" value={status} />
+          <Row label="contextState" value={contextState ?? '—'} />
+          <Row label="sampleRate" value={engine === null ? '—' : `${engine.context.sampleRate} Hz`} />
+          <Row label="baseLatency" value={engine === null ? '—' : formatLatency(engine)} />
+        </dl>
+
+        {bufferReport !== null ? (
+          <p className="font-mono text-step--1 text-sounding">{bufferReport}</p>
+        ) : null}
+
+        {lastError !== null ? (
+          <p className="rounded-lg border border-cue/50 bg-cue/10 p-3 font-mono text-step--1 text-cue-light">
+            {lastError}
+          </p>
+        ) : null}
       </Card>
 
       <div className="flex flex-wrap items-center gap-4">
@@ -244,6 +276,11 @@ export function DiagnosticsView({ dict }: { dict: Dictionary }) {
       ) : null}
     </div>
   )
+}
+
+function formatLatency(engine: { context: AudioContext }): string {
+  const base = engine.context.baseLatency
+  return typeof base === 'number' ? `${(base * 1000).toFixed(1)} ms` : '—'
 }
 
 function Row({ label, value }: { label: string; value: string }) {

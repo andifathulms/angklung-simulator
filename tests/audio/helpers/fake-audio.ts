@@ -59,7 +59,8 @@ export interface FakeBuffer {
   readonly length: number
   readonly sampleRate: number
   readonly channel: Float32Array
-  copyToChannel(source: Float32Array, channel: number): void
+  copyToChannel?(source: Float32Array, channel: number): void
+  getChannelData(channel: number): Float32Array
 }
 
 export interface FakeSource extends FakeNode {
@@ -85,7 +86,7 @@ export interface FakeContext {
   close(): Promise<void>
 }
 
-export function createFakeContext(sampleRate = 48000): FakeContext {
+export function createFakeContext(sampleRate = 48000, withCopyToChannel = true): FakeContext {
   const sources: FakeSource[] = []
   const destination = createNode('destination')
 
@@ -97,14 +98,20 @@ export function createFakeContext(sampleRate = 48000): FakeContext {
     sources,
     createBuffer(channels, length, rate) {
       const channel = new Float32Array(length)
-      return {
+      const buffer: FakeBuffer = {
         length,
         sampleRate: rate,
         channel,
-        copyToChannel(source) {
-          channel.set(source.subarray(0, channel.length))
-        },
+        getChannelData: () => channel,
       }
+      // Safari before 14.1 has no copyToChannel; `withCopyToChannel` lets a test
+      // take it away and prove the fallback still writes the samples.
+      if (withCopyToChannel) {
+        buffer.copyToChannel = (source) => {
+          channel.set(source.subarray(0, channel.length))
+        }
+      }
+      return buffer
     },
     createBufferSource() {
       const source = createNode('source', {

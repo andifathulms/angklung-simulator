@@ -152,3 +152,43 @@ describe('the voice budget', () => {
     expect(stopped.length).toBeGreaterThan(0)
   })
 })
+
+describe('writing samples into Web Audio', () => {
+  it('reports what actually reached the buffer', () => {
+    const { engine } = rig()
+    const pool = createVoicePool(engine)
+    const report = pool.inspect({
+      angklung: spec,
+      techniqueType: 'centok',
+      shakeRateHz: 2.5,
+      hardness: 0.8,
+    })
+
+    expect(report.peak).toBeGreaterThan(0.05)
+    expect(report.peak).toBeLessThanOrEqual(1)
+    expect(report.sampleRateHz).toBe(48000)
+    expect(report.writtenWith).toBe('copyToChannel')
+  })
+
+  it('still writes the samples where copyToChannel does not exist', () => {
+    // Safari gained copyToChannel in 14.1. Without a fallback the first press
+    // throws and the only symptom is silence.
+    const context = createFakeContext(48000, false)
+    const limiter = context.createDynamicsCompressor()
+    const master = context.createGain()
+    master.connect(limiter)
+    limiter.connect(context.destination)
+    const engine = { context, master, limiter } as unknown as AudioEngine
+
+    const pool = createVoicePool(engine)
+    const report = pool.inspect({
+      angklung: spec,
+      techniqueType: 'centok',
+      shakeRateHz: 2.5,
+      hardness: 0.8,
+    })
+
+    expect(report.writtenWith).toBe('getChannelData')
+    expect(report.peak, 'fallback wrote nothing').toBeGreaterThan(0.05)
+  })
+})

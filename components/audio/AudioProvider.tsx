@@ -46,6 +46,8 @@ interface AudioContextValue {
   readonly contextState: ExtendedContextState | null
   /** True where the hardware mute switch silences Web Audio — that is, on iOS. */
   readonly needsSilentSwitchHint: boolean
+  /** The last thing that went wrong, so a failure is visible instead of silent. */
+  readonly lastError: string | null
   start: () => Promise<void>
   /**
    * Queue instruments for pre-rendering during idle time. Returns immediately;
@@ -78,6 +80,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [sounding, setSounding] = useState<Record<string, SoundingInfo>>({})
   const [state, setState] = useState<ExtendedContextState | null>(null)
   const [warmProgress, setWarmProgress] = useState<number | null>(null)
+  const [lastError, setLastError] = useState<string | null>(null)
   const warmQueueRef = useRef<{ spec: AngklungSpec; techniqueType: TechniqueType }[]>([])
   const warmTotalRef = useRef(0)
   const engineRef = useRef<AudioEngine | null>(null)
@@ -105,7 +108,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       poolRef.current = createVoicePool(engine, { maxVoices: DEFAULT_MAX_VOICES })
       setState(contextState(engine))
       setStatus('siap')
-    } catch {
+    } catch (error) {
+      setLastError(`start: ${(error as Error).message}`)
       setStatus('gagal')
     }
   }, [])
@@ -208,15 +212,22 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       if (engine === null || pool === null) return null
 
       const atSec = options.atSec ?? engine.context.currentTime + IMMEDIATE_HEADROOM_SEC
-      const handle = pool.play({
-        angklung: options.angklung,
-        techniqueType: options.techniqueType,
-        shakeRateHz: options.shakeRateHz ?? KURULUNG_DEFAULT_SHAKE_RATE_HZ,
-        hardness: options.hardness ?? 0.55,
-        atSec,
-        gain: options.gain,
-        ...(options.modes === undefined ? {} : { modes: options.modes }),
-      })
+      let handle: VoiceHandle
+      try {
+        handle = pool.play({
+          angklung: options.angklung,
+          techniqueType: options.techniqueType,
+          shakeRateHz: options.shakeRateHz ?? KURULUNG_DEFAULT_SHAKE_RATE_HZ,
+          hardness: options.hardness ?? 0.55,
+          atSec,
+          gain: options.gain,
+          ...(options.modes === undefined ? {} : { modes: options.modes }),
+        })
+      } catch (error) {
+        // A throw in here used to vanish, and the only symptom was silence.
+        setLastError(`play: ${(error as Error).message}`)
+        return null
+      }
 
       const delaySec = Math.max(0, atSec - engine.context.currentTime)
       const visibleSec =
@@ -255,6 +266,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       shakeRateHz: KURULUNG_DEFAULT_SHAKE_RATE_HZ,
       contextState: state,
       needsSilentSwitchHint: status === 'siap' && isIos(),
+      lastError,
       start,
       warm,
       warmProgress,
@@ -262,7 +274,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       play,
       releaseAll,
     }),
-    [status, sounding, state, start, warm, warmProgress, now, play, releaseAll],
+    [status, sounding, state, lastError, start, warm, warmProgress, now, play, releaseAll],
   )
 
   return <AudioContextObject.Provider value={value}>{children}</AudioContextObject.Provider>
