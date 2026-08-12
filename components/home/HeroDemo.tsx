@@ -134,8 +134,16 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
   return (
     <div className="space-y-5">
       <div className="rounded-card border border-stage-line bg-stage-raised/70 p-5 shadow-lifted sm:p-7">
-        {/* The instrument, drawn to scale. Tube length goes as 1/f, so this is the
-            physical logic of the set and not a decorative ramp. */}
+        {/*
+          * The instrument, drawn to scale. Tube length goes as 1/f, so this is
+          * the physical logic of the set and not a decorative ramp — and the
+          * caption below now says so, because the first screen was showing
+          * eight drawings and naming none of them.
+          *
+          * Everything else on this page waits for a press. This one paragraph
+          * teaches the premise to a visitor who never presses anything: one
+          * instrument, one note, and the number is the identity.
+          */}
         <div className="flex items-start justify-center gap-[2px] sm:gap-2">
           {set.map((entry, index) => {
             const sounding = lit.has(entry.spec.nomor)
@@ -188,6 +196,10 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
             )
           })}
         </div>
+
+        <p className="mt-4 text-step--1 leading-relaxed text-ink-muted">
+          {dict.hero.rackCaption}
+        </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           {!touched ? (

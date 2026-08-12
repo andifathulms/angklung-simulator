@@ -38,6 +38,7 @@ export interface Dictionary {
   readonly hero: {
     readonly try: string
     readonly starting: string
+    readonly rackCaption: string
     readonly tapInvite: string
     readonly tapHint: string
     readonly step2Title: string
@@ -325,6 +326,8 @@ const id: Dictionary = {
   hero: {
     try: 'Bunyikan angklungnya',
     starting: 'Menyalakan…',
+    rackCaption:
+      'Delapan angklung, digambar sesuai ukuran aslinya: makin panjang tabungnya, makin rendah nadanya. Masing-masing alat musik yang utuh, dan masing-masing hanya bisa satu nada. Angka di bawahnya adalah identitasnya — itu yang diberi aba-aba oleh pemimpin ansambel, bukan nama nadanya.',
     tapInvite: 'Ketuk angklung mana pun di atas — atau tekan tombolnya.',
     tapHint: 'Ketuk angklung mana pun. Tahan agar terus berbunyi.',
     step2Title: 'Sekarang mainkan satu lagu',
@@ -653,6 +656,8 @@ const en: Dictionary = {
   hero: {
     try: 'Sound an angklung',
     starting: 'Starting…',
+    rackCaption:
+      'Eight angklung, drawn to scale: the longer the tube, the lower the note. Each is a complete instrument, and each can sound exactly one note. The number underneath is its identity — that is what the ensemble leader signals, not the name of the note.',
     tapInvite: 'Tap any angklung above — or press the button.',
     tapHint: 'Tap any angklung. Hold it to keep it sounding.',
     step2Title: 'Now play one song',
