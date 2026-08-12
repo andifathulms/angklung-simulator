@@ -37,6 +37,13 @@ const COUNT_IN_CHOICES = [0, 2, 4] as const
 const PER_PLAYER_CHOICES = [2, 1] as const
 
 /**
+ * One empty array, reused. `peakNoteIndexes={showWhy ? … : []}` allocated a
+ * fresh literal on every render, which defeats the memo on the timeline rows
+ * for the whole time the explanation panel is closed — that is, almost always.
+ */
+const NO_INDEXES: readonly number[] = []
+
+/**
  * How many silenced notes are listed one by one before the rest are summarised.
  * The total is always stated exactly next to the list; only the enumeration is
  * bounded, and it says how much it left out.
@@ -696,7 +703,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
               positionSec={positionSec}
               yourPlayerIndex={yourPlayerIndex}
               peakSec={showWhy ? result.peak.atSec : null}
-              peakNoteIndexes={showWhy ? result.peak.noteIndexes : []}
+              peakNoteIndexes={showWhy ? result.peak.noteIndexes : NO_INDEXES}
               absentPlayers={absentPlayers}
               dict={dict}
             />

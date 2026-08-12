@@ -13,6 +13,15 @@ import { buildSet, getSet, relativeTubeLength } from '@/lib/set'
 import type { Dictionary } from '@/lib/i18n'
 
 /**
+ * Same members, same order? The lit set is produced fresh each frame, so
+ * identity comparison always fails and only a value comparison can tell React
+ * that nothing changed.
+ */
+function sameNumbers(a: readonly number[], b: readonly number[]): boolean {
+  return a.length === b.length && a.every((value, index) => value === b[index])
+}
+
+/**
  * The first thing a visitor meets, and it has one job: PRD §11 asks that someone
  * can hear why one person cannot play a melody alone within two interactions.
  *
@@ -106,22 +115,29 @@ export function HeroDemo({ dict }: { dict: Dictionary }) {
       })),
     )
 
-    // Which angklung are sounding right now, read off the audio clock so the
-    // lights cannot drift away from the notes.
+    /*
+     * Which angklung are sounding right now, read off the audio clock so the
+     * lights cannot drift away from the notes.
+     *
+     * The set of lit numbers only changes when a note starts or ends — roughly
+     * twice a second — but this ran sixty times a second and handed React a
+     * freshly allocated array every time, so thirty-five frames in thirty-six
+     * re-rendered eight SVG angklung to draw exactly what was already on
+     * screen. State is now set only when the set actually differs.
+     */
     const follow = () => {
       const current = schedulerRef.current
       if (current === null) return
       const at = current.positionSec()
       if (at !== null) {
-        setLitNumbers(
-          result.assignments
-            .filter(
-              (assignment) =>
-                at >= assignment.note.startSec &&
-                at < assignment.note.startSec + assignment.note.durationSec,
-            )
-            .map((assignment) => assignment.angklung.spec.nomor),
-        )
+        const next = result.assignments
+          .filter(
+            (assignment) =>
+              at >= assignment.note.startSec &&
+              at < assignment.note.startSec + assignment.note.durationSec,
+          )
+          .map((assignment) => assignment.angklung.spec.nomor)
+        setLitNumbers((previous) => (sameNumbers(previous, next) ? previous : next))
       }
       requestAnimationFrame(follow)
     }

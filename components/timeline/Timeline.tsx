@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { fill } from '@/lib/i18n'
 import type { PlayerPart } from '@/lib/distribute'
 import type { Dictionary } from '@/lib/i18n'
@@ -36,7 +37,6 @@ export function Timeline({
   dict,
 }: TimelineProps) {
   const width = Math.max(320, durationSec * PX_PER_SEC + 24)
-  const atPeak = new Set(peakNoteIndexes)
   const missing = new Set(absentPlayers)
 
   /*
@@ -169,6 +169,42 @@ export function Timeline({
             />
           ) : null}
 
+          <TimelineRows
+            players={players}
+            yourPlayerIndex={yourPlayerIndex}
+            peakNoteIndexes={peakNoteIndexes}
+            absentPlayers={absentPlayers}
+          />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/*
+ * The rows, kept out of the playhead's re-render.
+ *
+ * Timeline re-renders on every animation frame while a piece plays, because
+ * positionSec genuinely moves. The rows do not depend on positionSec at all, so
+ * without this split every frame rebuilt every note span on every player row —
+ * sixty-six of them for a full ensemble — to draw exactly what was already
+ * there. Props here are the stable ones only.
+ */
+const TimelineRows = memo(function TimelineRows({
+  players,
+  yourPlayerIndex,
+  peakNoteIndexes,
+  absentPlayers,
+}: {
+  readonly players: readonly PlayerPart[]
+  readonly yourPlayerIndex: number | null
+  readonly peakNoteIndexes: readonly number[]
+  readonly absentPlayers: readonly number[]
+}) {
+  const atPeak = new Set(peakNoteIndexes)
+  const missing = new Set(absentPlayers)
+
+  return (
           <ol className="relative">
             {players.map((player) => {
               const isYours = player.playerIndex === yourPlayerIndex
@@ -209,8 +245,5 @@ export function Timeline({
               )
             })}
           </ol>
-        </div>
-      </div>
-    </div>
   )
-}
+})

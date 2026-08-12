@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { AngklungSpec } from '@/lib/synth'
 
 /**
@@ -29,7 +30,7 @@ export interface AngklungFigureProps {
   readonly className?: string
 }
 
-export function AngklungFigure({
+function AngklungFigureBase({
   angklung,
   relativeLength,
   sounding,
@@ -108,3 +109,17 @@ export function AngklungFigure({
     </svg>
   )
 }
+
+/*
+ * Memoised because it is redrawn by things it does not depend on.
+ *
+ * Eight of these sit inside the hero and the rack, both of which re-render on
+ * every animation frame while a melody plays — for the playhead, for the lit
+ * set, for the position readout. The figure's props change only when a tube
+ * starts or stops sounding, so without this it redraws eleven SVG elements
+ * sixty times a second to produce an identical picture.
+ *
+ * All five props are primitives or a stable spec object, so the default shallow
+ * comparison is exactly the right one.
+ */
+export const AngklungFigure = memo(AngklungFigureBase)
