@@ -17,10 +17,28 @@ const sans = Instrument_Sans({
   display: 'swap',
 })
 
-/** Recursive in its mono setting, for angklung numbers, timing, and cents. */
+/**
+ * Recursive in its mono setting, for angklung numbers, timing, and cents.
+ *
+ * Only the axes actually used are requested. globals.css sets `MONO 1, CASL 0`
+ * and nothing else, and no `font-mono` anywhere is given a weight modifier — so
+ * CRSV was being shipped, preloaded and never referenced, in the largest single
+ * asset on the site.
+ *
+ * CASL goes too. globals.css sets it to 0, which is Recursive's own default
+ * (Linear), so with the axis absent the declaration is ignored and the letter-
+ * forms are the ones already on screen. This is the one part of the change that
+ * rests on an assumption rather than a measurement — if the mono ever looks
+ * wrong, put 'CASL' back in this array and it is fixed.
+ *
+ * The weight range stays: `weight` and `axes` are mutually exclusive in
+ * next/font, and MONO is the axis that makes Recursive monospace at all. Pinning
+ * the weight would mean giving up the monospacing, which is the only reason this
+ * family is here.
+ */
 const mono = Recursive({
   subsets: ['latin'],
-  axes: ['MONO', 'CASL', 'CRSV'],
+  axes: ['MONO'],
   variable: '--font-mono',
   display: 'swap',
 })
