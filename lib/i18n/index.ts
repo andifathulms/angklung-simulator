@@ -118,6 +118,11 @@ export interface Dictionary {
     readonly tempo: string
     readonly countIn: string
     readonly cueLane: string
+    readonly legend: string
+    readonly legendYours: string
+    readonly legendOthers: string
+    readonly legendAbsent: string
+    readonly legendPeak: string
     readonly nextCue: string
     readonly play: string
     readonly stop: string
@@ -364,6 +369,11 @@ const id: Dictionary = {
     tempo: 'Tempo',
     countIn: 'Aba-aba masuk',
     cueLane: 'Jalur aba-aba',
+    legend: 'Bacaan garis waktu',
+    legendYours: 'bagian Anda',
+    legendOthers: 'pemain lain',
+    legendAbsent: 'tidak ada yang memegang',
+    legendPeak: 'saat tersibuk',
     nextCue: 'Nomor berikutnya',
     play: 'Mainkan',
     stop: 'Berhenti',
@@ -629,6 +639,11 @@ const en: Dictionary = {
     tempo: 'Tempo',
     countIn: 'Count-in',
     cueLane: 'Cue lane',
+    legend: 'Reading the timeline',
+    legendYours: 'your part',
+    legendOthers: 'other players',
+    legendAbsent: 'nobody holding it',
+    legendPeak: 'the busiest instant',
     nextCue: 'Next number',
     play: 'Play',
     stop: 'Stop',
