@@ -224,6 +224,14 @@ export interface Dictionary {
     readonly tubes: string
     readonly interval: string
     readonly which: string
+    readonly degreeRoot: string
+    readonly degreeTertsMayor: string
+    readonly degreeTertsMinor: string
+    readonly degreeKuint: string
+    readonly degreeSeptim: string
+    readonly whyChord: string
+    readonly whyTriad: string
+    readonly removedDegree: string
   }
   readonly laras: {
     readonly title: string
@@ -525,6 +533,16 @@ const id: Dictionary = {
     tubes: 'tabung berbunyi',
     interval: 'jarak dari nada dasar',
     which: 'Angklung',
+    degreeRoot: 'nada dasar',
+    degreeTertsMayor: 'terts mayor',
+    degreeTertsMinor: 'terts minor',
+    degreeKuint: 'kuint murni',
+    degreeSeptim: 'septim minor',
+    whyChord:
+      'Empat tabung ini — nada dasar, terts, kuint, septim — itulah yang membuat susunannya disebut akor septim. Bukan namanya yang menentukan, melainkan keempat jaraknya.',
+    whyTriad:
+      'Kelingking menahan tabung septim. Tiga yang tersisa — nada dasar, terts, kuint — itulah trinada. Tidak ada yang diredam atau disaring: satu tabung memang tidak ikut bergetar, jadi jaraknya hilang dari jumlahnya.',
+    removedDegree: 'Yang hilang: {degree} ({cents} sen)',
   },
   laras: {
     title: 'Laras',
@@ -830,6 +848,16 @@ const en: Dictionary = {
     tubes: 'tubes sounding',
     interval: 'interval above the root',
     which: 'Angklung',
+    degreeRoot: 'root',
+    degreeTertsMayor: 'major third',
+    degreeTertsMinor: 'minor third',
+    degreeKuint: 'perfect fifth',
+    degreeSeptim: 'minor seventh',
+    whyChord:
+      'These four tubes — root, third, fifth, seventh — are what make this a seventh chord. The name does not decide it; those four distances do.',
+    whyTriad:
+      'The little finger holds the seventh tube. The three that remain — root, third, fifth — are the triad. Nothing is damped or filtered: one tube simply does not vibrate, so its interval is absent from the sum.',
+    removedDegree: 'Gone: {degree} ({cents} cents)',
   },
   laras: {
     title: 'Laras',

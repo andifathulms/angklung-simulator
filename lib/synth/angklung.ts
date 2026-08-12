@@ -27,6 +27,31 @@ export const AKOR_INTERVALS_CENTS = {
   minor: { root: 0, terts: 300, kuint: 700, septim: 1000 },
 } as const
 
+/**
+ * Which degree of the chord a tube is, from the cents it sits at.
+ *
+ * The lab could show "996 Hz · 1000 cents" and the heading "dominant seventh"
+ * and nothing in between, so a reader who did not already know intervals saw
+ * four numbers and an assertion. This is the missing step: 400 cents is the
+ * major third, 700 the fifth, 1000 the minor seventh — and those four together
+ * are what the word "dominant seventh" means.
+ *
+ * Derived from AKOR_INTERVALS_CENTS above rather than hardcoded, so the naming
+ * cannot disagree with the chord that is actually rendered.
+ */
+export type AkorDegree = 'root' | 'terts' | 'kuint' | 'septim'
+
+export function akorDegreeAt(
+  kualitas: AkorKualitas,
+  intervalCents: number,
+): AkorDegree | null {
+  const intervals = AKOR_INTERVALS_CENTS[kualitas]
+  const found = (Object.keys(intervals) as AkorDegree[]).find(
+    (degree) => intervals[degree] === intervalCents,
+  )
+  return found ?? null
+}
+
 /** The octave tube sounds under the tabung dasar rather than beside it. */
 const OKTAF_GAIN = 0.55
 const DASAR_GAIN = 1

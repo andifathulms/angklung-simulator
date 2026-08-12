@@ -4,8 +4,10 @@ import { useMemo, useState } from 'react'
 import { AngklungFigure } from '@/components/rack/AngklungFigure'
 import { useAudio } from '@/components/audio/AudioProvider'
 import { Button, Field, Select } from '@/components/ui'
+import { fill } from '@/lib/i18n'
 import { buildSet, getSet } from '@/lib/set'
-import { soundingTabung } from '@/lib/synth'
+import { akorDegreeAt, soundingTabung } from '@/lib/synth'
+import type { AkorDegree, AkorKualitas } from '@/lib/synth'
 import type { Dictionary } from '@/lib/i18n'
 
 /**
@@ -14,6 +16,24 @@ import type { Dictionary } from '@/lib/i18n'
  * one, and three remain. The chord name is a caption on what the tubes are doing —
  * never the thing itself (PRD §5.6).
  */
+/** The degree in words. Minor instruments differ only in the third. */
+function degreeName(degree: AkorDegree, kualitas: AkorKualitas, dict: Dictionary): string {
+  switch (degree) {
+    case 'root':
+      return dict.akor.degreeRoot
+    case 'terts':
+      return kualitas === 'minor' ? dict.akor.degreeTertsMinor : dict.akor.degreeTertsMayor
+    case 'kuint':
+      return dict.akor.degreeKuint
+    case 'septim':
+      return dict.akor.degreeSeptim
+    default: {
+      const exhaustive: never = degree
+      throw new Error(`Derajat akor tidak dikenal: ${String(exhaustive)}`)
+    }
+  }
+}
+
 export function AkompanimenLab({ dict }: { dict: Dictionary }) {
   const { play, status, sounding } = useAudio()
   const [index, setIndex] = useState(0)
@@ -24,6 +44,7 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
   if (entry === undefined) return null
 
   const isMinor = entry.spec.label.includes('minor')
+  const kualitas: AkorKualitas = isMinor ? 'minor' : 'mayor'
   const audible = soundingTabung(entry.spec, held)
   const isSounding = sounding[entry.spec.id] !== undefined
 
@@ -93,20 +114,54 @@ export function AkompanimenLab({ dict }: { dict: Dictionary }) {
           <p className="font-mono text-step--1 text-ink-faint">
             {audible.length}/{entry.spec.tabung.length} {dict.akor.tubes}
           </p>
+          {/*
+            * Each tube named as the degree it is, not only measured.
+            *
+            * This list used to read "698.5 Hz · 1000 cents · distance from
+            * root" under a heading that said "dominant seventh", with nothing
+            * connecting the two. A reader who did not already know intervals
+            * saw four numbers and an assertion. 400 cents is the major third,
+            * 700 the fifth, 1000 the minor seventh — and those four together
+            * are what the phrase means.
+            */}
           <ul className="space-y-1 font-mono text-step--1">
             {entry.spec.tabung.map((tabung, tabungIndex) => {
               const muted = held && tabung.mutedByTengkep
+              const degree = akorDegreeAt(kualitas, tabung.intervalCents)
               return (
                 <li
                   key={tabungIndex}
                   className={muted ? 'text-muted line-through' : 'text-ink-muted'}
                 >
-                  {tabung.hz.toFixed(1)} Hz · {tabung.intervalCents}{' '}
-                  {dict.laras.cents} {dict.akor.interval}
+                  {tabung.hz.toFixed(1)} Hz · {tabung.intervalCents} {dict.laras.cents}
+                  {degree === null ? null : (
+                    <span className="text-ink"> · {degreeName(degree, kualitas, dict)}</span>
+                  )}
                 </li>
               )
             })}
           </ul>
+
+          {/* The sentence that turns four measurements into a chord, and the
+              one that says what the little finger actually removed. */}
+          <p className="max-w-prose text-step-0 leading-relaxed text-ink-muted">
+            {held ? dict.akor.whyTriad : dict.akor.whyChord}
+          </p>
+
+          {held ? (
+            <p className="font-mono text-step--1 text-ink">
+              {(() => {
+                const gone = entry.spec.tabung.find((tabung) => tabung.mutedByTengkep)
+                const degree = gone === undefined ? null : akorDegreeAt(kualitas, gone.intervalCents)
+                return degree === null
+                  ? null
+                  : fill(dict.akor.removedDegree, {
+                      degree: degreeName(degree, kualitas, dict),
+                      cents: gone?.intervalCents ?? 0,
+                    })
+              })()}
+            </p>
+          ) : null}
         </div>
       </div>
     </div>
