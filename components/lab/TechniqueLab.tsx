@@ -184,14 +184,48 @@ export function TechniqueLab({ dict }: { dict: Dictionary }) {
         </div>
       </div>
 
-      <ModeTuner modes={modes} onChange={setModes} dict={dict} />
+      {/*
+        * The three figures below were already here, stacked, with nothing
+        * saying that one causes the next. "Three techniques, one model" is the
+        * project's second claim and it depends entirely on that chain being
+        * visible — a reader could see a strike train and a waveform and never
+        * learn that the first drives the second through the modal bank.
+        *
+        * Each step is now stated immediately above the figure that shows it,
+        * in order, so the page reads as a chain rather than as a gallery.
+        */}
+      <div className="space-y-6">
+        <h3 className="font-display text-step-2 text-ink">{dict.teknik.chainTitle}</h3>
 
-      <ExcitationTrace
-        strikes={strikes}
-        durationSec={LAB_DURATION_SEC}
-        label={dict.teknik.strikeTrain}
-      />
-      <WaveformTrace peaks={peaks} label={dict.teknik.render} />
+        <div className="space-y-2">
+          <p className="max-w-readable text-step-0 leading-relaxed text-ink-muted">
+            {dict.teknik.chainStep1}
+          </p>
+          <ExcitationTrace
+            strikes={strikes}
+            durationSec={LAB_DURATION_SEC}
+            label={dict.teknik.strikeTrain}
+          />
+        </div>
+
+        <div className="space-y-2">
+          <p className="max-w-readable text-step-0 leading-relaxed text-ink-muted">
+            {dict.teknik.chainStep2}
+          </p>
+          <ModeTuner modes={modes} onChange={setModes} dict={dict} />
+        </div>
+
+        <div className="space-y-2">
+          <p className="max-w-readable text-step-0 leading-relaxed text-ink-muted">
+            {dict.teknik.chainStep3}
+          </p>
+          <WaveformTrace peaks={peaks} label={dict.teknik.render} />
+        </div>
+
+        <p className="max-w-readable border-l-2 border-stage-strong pl-4 text-step--1 leading-relaxed text-ink-faint">
+          {dict.teknik.chainCaveat}
+        </p>
+      </div>
 
       <p className="font-mono text-step--1 text-ink-faint">
         {KURULUNG_SHAKE_RATE_RANGE_HZ.minHz}–{KURULUNG_SHAKE_RATE_RANGE_HZ.maxHz} Hz

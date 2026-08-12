@@ -202,6 +202,11 @@ export interface Dictionary {
     readonly hold: string
     readonly strikes: string
     readonly strikeTrain: string
+    readonly chainTitle: string
+    readonly chainStep1: string
+    readonly chainStep2: string
+    readonly chainStep3: string
+    readonly chainCaveat: string
     readonly render: string
     readonly sounding: string
     readonly muted: string
@@ -509,6 +514,15 @@ const id: Dictionary = {
     hold: 'Tahan tabung (tengkep)',
     strikes: 'pukulan',
     strikeTrain: 'Deret pukulan',
+    chainTitle: 'Satu rantai, bukan tiga gambar',
+    chainStep1:
+      '1 · Teknik menjadi deret pukulan. Kurulung menggoyang tabung dasar, dan tiap kali arah goyangan berbalik terjadi satu pukulan — jadi 2–3 goyangan per detik menghasilkan 4–6 pukulan. Centok cuma satu pukulan, lebih keras. Tengkep sama seperti kurulung, hanya satu tabung ditahan.',
+    chainStep2:
+      '2 · Tiap pukulan membunyikan bank modal tabung. Satu tabung bukan satu frekuensi, melainkan beberapa mode yang berbunyi bersama lalu meluruh sendiri-sendiri. Daftar di bawah inilah modelnya, dan bisa Anda ubah.',
+    chainStep3:
+      '3 · Semua tabung yang berbunyi dijumlahkan menjadi gelombang. Di situlah tengkep bekerja: tabung yang ditahan tidak ikut masuk ke penjumlahan, jadi modenya benar-benar tidak ada — bukan dikecilkan, bukan disaring.',
+    chainCaveat:
+      'Yang disederhanakan: satu goyangan sebenarnya tidak punya panjang tertentu, jadi kurulung dan tengkep di sini dirender enam detik lalu diredam saat dilepas. Kalau Anda menahan lebih lama dari itu, yang terdengar adalah perkiraan.',
     render: 'Hasil bunyi',
     sounding: 'berbunyi',
     muted: 'ditahan',
@@ -826,6 +840,15 @@ const en: Dictionary = {
     hold: 'Hold a tube (tengkep)',
     strikes: 'strikes',
     strikeTrain: 'Strike train',
+    chainTitle: 'One chain, not three pictures',
+    chainStep1:
+      '1 · The technique becomes a train of strikes. Kurulung shakes the base tube and every reversal of direction is one strike, so 2–3 shakes per second gives 4–6 strikes. Centok is a single harder strike. Tengkep is kurulung with one tube held.',
+    chainStep2:
+      '2 · Each strike excites the tube\u2019s modal bank. A tube is not one frequency but several modes sounding together and decaying at their own rates. The list below is that model, and you can edit it.',
+    chainStep3:
+      '3 · Every sounding tube is summed into the waveform. This is where tengkep acts: a held tube never enters the sum, so its modes are genuinely absent — not lowered, not filtered.',
+    chainCaveat:
+      'What is simplified: a shake has no predetermined length, so kurulung and tengkep are rendered here at six seconds and faded on release. Hold one longer than that and what you hear is an approximation.',
     render: 'Rendered sound',
     sounding: 'sounding',
     muted: 'held',
