@@ -1,0 +1,326 @@
+import Link from 'next/link'
+import type { ReactNode } from 'react'
+
+/**
+ * Interface primitives. Every page used to hand-roll its own buttons and selects,
+ * which is how six pages end up looking like six projects.
+ */
+
+export function cx(...parts: (string | false | null | undefined)[]): string {
+  return parts.filter(Boolean).join(' ')
+}
+
+/* -------------------------------------------------------------- buttons -- */
+
+type ButtonTone = 'primary' | 'secondary' | 'ghost' | 'danger'
+type ButtonSize = 'sm' | 'md' | 'lg'
+
+const BUTTON_BASE =
+  'inline-flex items-center justify-center gap-2 rounded-full font-medium transition duration-200 ease-physical disabled:cursor-not-allowed disabled:opacity-40 active:translate-y-px'
+
+const BUTTON_TONE: Record<ButtonTone, string> = {
+  primary: 'bg-sounding text-ink-inverse hover:bg-sounding-glow shadow-raised',
+  secondary: 'border border-stage-strong bg-stage-raised text-ink hover:border-bamboo hover:bg-stage-hover',
+  ghost: 'text-ink-muted hover:bg-stage-raised hover:text-ink',
+  danger: 'border border-cue/60 bg-cue/10 text-cue-light hover:bg-cue/20',
+}
+
+const BUTTON_SIZE: Record<ButtonSize, string> = {
+  sm: 'px-3 py-1.5 text-step--1',
+  md: 'px-5 py-2.5 text-step-0',
+  lg: 'px-7 py-3.5 text-step-1',
+}
+
+export function Button({
+  tone = 'secondary',
+  size = 'md',
+  className,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { tone?: ButtonTone; size?: ButtonSize }) {
+  return (
+    <button
+      type="button"
+      className={cx(BUTTON_BASE, BUTTON_TONE[tone], BUTTON_SIZE[size], className)}
+      {...props}
+    />
+  )
+}
+
+export function ButtonLink({
+  href,
+  tone = 'secondary',
+  size = 'md',
+  className,
+  children,
+}: {
+  href: string
+  tone?: ButtonTone
+  size?: ButtonSize
+  className?: string
+  children: ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className={cx(BUTTON_BASE, BUTTON_TONE[tone], BUTTON_SIZE[size], className)}
+    >
+      {children}
+    </Link>
+  )
+}
+
+/** A row of mutually exclusive choices. Used wherever a select would hide the options. */
+export function SegmentedControl<T extends string>({
+  value,
+  options,
+  onChange,
+  label,
+}: {
+  value: T
+  options: readonly { value: T; label: string }[]
+  onChange: (value: T) => void
+  label: string
+}) {
+  return (
+    <fieldset className="min-w-0">
+      <legend className="eyebrow mb-1.5">{label}</legend>
+      <div className="inline-flex flex-wrap gap-1 rounded-full border border-stage-line bg-stage-raised p-1">
+        {options.map((option) => {
+          const selected = option.value === value
+          return (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onChange(option.value)}
+              aria-pressed={selected}
+              className={cx(
+                'rounded-full px-3.5 py-1.5 text-step--1 transition duration-200 ease-physical',
+                selected
+                  ? 'bg-bamboo text-ink-inverse shadow-raised'
+                  : 'text-ink-muted hover:text-ink',
+              )}
+            >
+              {option.label}
+            </button>
+          )
+        })}
+      </div>
+    </fieldset>
+  )
+}
+
+/* --------------------------------------------------------------- fields -- */
+
+export function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string
+  hint?: string
+  children: ReactNode
+}) {
+  return (
+    <label className="flex min-w-0 flex-col gap-1.5">
+      <span className="eyebrow">{label}</span>
+      {children}
+      {hint !== undefined ? <span className="text-step--1 text-ink-faint">{hint}</span> : null}
+    </label>
+  )
+}
+
+const CONTROL =
+  'rounded-lg border border-stage-line bg-stage px-3 py-2 text-step-0 text-ink transition duration-200 hover:border-stage-strong focus:border-bamboo'
+
+export function Select({
+  className,
+  ...props
+}: React.SelectHTMLAttributes<HTMLSelectElement>) {
+  return <select className={cx(CONTROL, 'cursor-pointer pr-8', className)} {...props} />
+}
+
+export function NumberInput({
+  className,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement>) {
+  return (
+    <input
+      type="number"
+      className={cx(CONTROL, 'font-mono text-right tabular-nums', className)}
+      {...props}
+    />
+  )
+}
+
+export function TextArea({ className, ...props }: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+  return <textarea className={cx(CONTROL, 'font-mono text-step--1 leading-relaxed', className)} {...props} />
+}
+
+/* ------------------------------------------------------------- surfaces -- */
+
+export function Card({
+  className,
+  children,
+  as: Tag = 'div',
+}: {
+  className?: string
+  children: ReactNode
+  as?: 'div' | 'article' | 'section' | 'li'
+}) {
+  return (
+    <Tag
+      className={cx(
+        'rounded-card border border-stage-line bg-stage-raised/80 p-5 shadow-raised backdrop-blur-[2px] sm:p-6',
+        className,
+      )}
+    >
+      {children}
+    </Tag>
+  )
+}
+
+/** A card that is a link. Lifts on hover, so it reads as somewhere to go. */
+export function CardLink({
+  href,
+  eyebrow,
+  title,
+  children,
+}: {
+  href: string
+  eyebrow?: string
+  title: string
+  children: ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col gap-2 rounded-card border border-stage-line bg-stage-raised/80 p-5 shadow-raised transition duration-300 ease-physical hover:-translate-y-0.5 hover:border-bamboo/60 hover:bg-stage-hover hover:shadow-lifted sm:p-6"
+    >
+      {eyebrow !== undefined ? <span className="eyebrow">{eyebrow}</span> : null}
+      <span className="font-display text-step-2 text-ink transition-colors group-hover:text-sounding">
+        {title}
+      </span>
+      <span className="text-step--1 leading-relaxed text-ink-muted">{children}</span>
+      <span
+        aria-hidden="true"
+        className="mt-1 text-bamboo transition-transform duration-300 ease-physical group-hover:translate-x-1"
+      >
+        →
+      </span>
+    </Link>
+  )
+}
+
+export function Badge({
+  tone = 'neutral',
+  children,
+}: {
+  tone?: 'neutral' | 'sounding' | 'yourPart' | 'cue'
+  children: ReactNode
+}) {
+  const tones = {
+    neutral: 'border-stage-strong text-ink-muted',
+    sounding: 'border-sounding/50 text-sounding',
+    yourPart: 'border-yourPart/50 text-yourPart-light',
+    cue: 'border-cue/50 text-cue-light',
+  } as const
+  return (
+    <span
+      className={cx(
+        'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[0.68rem] uppercase tracking-wider',
+        tones[tone],
+      )}
+    >
+      {children}
+    </span>
+  )
+}
+
+/* ------------------------------------------------------------ structure -- */
+
+export function PageHeader({
+  eyebrow,
+  title,
+  lede,
+  children,
+}: {
+  eyebrow: string
+  title: string
+  lede: string
+  children?: ReactNode
+}) {
+  return (
+    <header className="space-y-4">
+      <p className="eyebrow">{eyebrow}</p>
+      <h1 className="max-w-readable text-step-4">{title}</h1>
+      <p className="max-w-prose text-step-1 leading-relaxed text-ink-muted">{lede}</p>
+      {children}
+    </header>
+  )
+}
+
+export function Section({
+  title,
+  description,
+  children,
+  className,
+}: {
+  title?: string
+  description?: string
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <section className={cx('space-y-5', className)}>
+      {title !== undefined ? (
+        <div className="space-y-2">
+          <h2 className="text-step-3">{title}</h2>
+          {description !== undefined ? (
+            <p className="max-w-prose text-ink-muted">{description}</p>
+          ) : null}
+        </div>
+      ) : null}
+      {children}
+    </section>
+  )
+}
+
+/**
+ * A Sundanese term with its plain-language gloss attached. The terms are never
+ * translated away (invariant 16), so the interface has to teach them instead —
+ * otherwise "tengkep" is just a word an average visitor scrolls past.
+ */
+export function Term({ term, gloss }: { term: string; gloss: string }) {
+  return (
+    <abbr
+      title={gloss}
+      className="cursor-help font-medium text-bamboo-light no-underline decoration-dotted underline-offset-4 [text-decoration-line:underline]"
+    >
+      {term}
+    </abbr>
+  )
+}
+
+/** Statistic with its label, for the places where a number is the message. */
+export function Stat({
+  value,
+  label,
+  tone = 'default',
+}: {
+  value: string
+  label: string
+  tone?: 'default' | 'sounding' | 'yourPart' | 'cue'
+}) {
+  const tones = {
+    default: 'text-ink',
+    sounding: 'text-sounding',
+    yourPart: 'text-yourPart-light',
+    cue: 'text-cue-light',
+  } as const
+  return (
+    <div className="flex flex-col gap-0.5">
+      <span className={cx('font-mono text-step-2 tabular-nums', tones[tone])}>{value}</span>
+      <span className="eyebrow">{label}</span>
+    </div>
+  )
+}
