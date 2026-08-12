@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Rack } from '@/components/rack/Rack'
+import { CueLane } from '@/components/timeline/CueLane'
 import { Timeline } from '@/components/timeline/Timeline'
 import { useAudio } from '@/components/audio/AudioProvider'
 import { audioClock, createScheduler, intervalTimer } from '@/lib/audio'
@@ -16,6 +17,10 @@ type Mode = 'dengar' | 'bagian-anda' | 'semua-bagian'
 
 const MODES: readonly Mode[] = ['dengar', 'bagian-anda', 'semua-bagian']
 
+/** How far ahead a cue lights, in beats. A conductor signals a number one beat early. */
+const CUE_LEAD_BEATS = 1
+const COUNT_IN_CHOICES = [0, 2, 4] as const
+
 export function EnsembleView({ dict }: { dict: Dictionary }) {
   const { play, releaseAll, engine, status } = useAudio()
   const [melodyId, setMelodyId] = useState('bintang-kecil')
@@ -23,14 +28,19 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   const [mode, setMode] = useState<Mode>('dengar')
   const [yourPlayerIndex, setYourPlayerIndex] = useState(0)
   const [positionSec, setPositionSec] = useState<number | null>(null)
+  const [bpm, setBpm] = useState<number | null>(null)
+  const [countInBeats, setCountInBeats] = useState<number>(4)
 
-  const schedulerRef = useRef<Scheduler<NoteAssignment> | null>(null)
+  const schedulerRef = useRef<Scheduler<NoteAssignment | null> | null>(null)
   const frameRef = useRef<number | null>(null)
 
   const melody = useMemo(() => getMelody(melodyId), [melodyId])
   const set = useMemo(() => buildSet(getSet(melody.setId)), [melody.setId])
-  const notes = useMemo(() => toTimedNotes(melody), [melody])
-  const durationSec = useMemo(() => melodyDurationSec(melody), [melody])
+  const tempo = bpm ?? melody.bpm
+  const beatSec = 60 / tempo
+  const countInSec = countInBeats * beatSec
+  const notes = useMemo(() => toTimedNotes(melody, tempo), [melody, tempo])
+  const durationSec = useMemo(() => melodyDurationSec(melody, tempo), [melody, tempo])
 
   const result = useMemo(
     () => distribute({ notes, set, ...(playerCount === null ? {} : { playerCount }) }),
@@ -58,17 +68,32 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
   // a distribution it no longer matches.
   useEffect(() => {
     stop()
-  }, [melodyId, playerCount, mode, stop])
+  }, [melodyId, playerCount, mode, tempo, countInBeats, stop])
 
   const start = useCallback(() => {
     if (engine === null || result.type !== 'feasible') return
     stop()
 
-    const scheduler = createScheduler<NoteAssignment>({
+    const scheduler = createScheduler<NoteAssignment | null>({
       clock: audioClock(engine.context),
       timer: intervalTimer(),
       onEvent: (event, audioTimeSec) => {
         const assignment = event.payload
+        if (assignment === null) {
+          // Count-in. A centok on the lowest angklung in the set, quiet — the
+          // conductor's beat, made of the same instrument as everything else.
+          const lowest = set[0]
+          if (lowest !== undefined) {
+            play({
+              angklung: lowest.spec,
+              techniqueType: 'centok',
+              atSec: audioTimeSec,
+              hardness: 0.9,
+              gain: 0.22,
+            })
+          }
+          return
+        }
         if (mode === 'semua-bagian') return
         if (mode === 'bagian-anda' && assignment.playerIndex === yourPlayerIndex) return
         play({
@@ -86,12 +111,16 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
     })
 
     schedulerRef.current = scheduler
-    scheduler.start(
-      result.assignments.map((assignment) => ({
-        timeSec: assignment.note.startSec,
+    scheduler.start([
+      ...Array.from({ length: countInBeats }, (_, beat) => ({
+        timeSec: beat * beatSec,
+        payload: null,
+      })),
+      ...result.assignments.map((assignment) => ({
+        timeSec: countInSec + assignment.note.startSec,
         payload: assignment,
       })),
-    )
+    ])
 
     // The playhead reads the audio clock too, so what you see is what you hear.
     const followPlayhead = () => {
@@ -101,7 +130,29 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
       frameRef.current = requestAnimationFrame(followPlayhead)
     }
     frameRef.current = requestAnimationFrame(followPlayhead)
-  }, [engine, mode, play, result, stop, yourPlayerIndex])
+  }, [beatSec, countInBeats, countInSec, engine, mode, play, result, set, stop, yourPlayerIndex])
+
+  /** What the conductor is about to signal, from the audio clock's position. */
+  const upcoming = useMemo(() => {
+    if (result.type !== 'feasible' || positionSec === null) return []
+    const relevant =
+      mode === 'bagian-anda'
+        ? result.assignments.filter(
+            (assignment) => assignment.playerIndex === yourPlayerIndex,
+          )
+        : result.assignments
+    return relevant
+      .map((assignment) => ({
+        assignment,
+        inSec: countInSec + assignment.note.startSec - positionSec,
+      }))
+      .filter((entry) => entry.inSec >= -0.05 && entry.inSec < beatSec * 6)
+      .slice(0, 6)
+  }, [beatSec, countInSec, mode, positionSec, result, yourPlayerIndex])
+
+  const cuedNumber =
+    upcoming.find((entry) => entry.inSec <= beatSec * CUE_LEAD_BEATS)?.assignment.angklung.spec
+      .nomor ?? null
 
   const isPlaying = positionSec !== null
 
@@ -166,6 +217,37 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
           </div>
         </fieldset>
 
+        <label className="flex flex-col gap-1 text-xs text-bamboo/60">
+          {dict.ansambel.tempo}
+          <span className="flex items-center gap-2">
+            <input
+              type="range"
+              min={40}
+              max={180}
+              step={1}
+              value={tempo}
+              onChange={(event) => setBpm(Number(event.target.value))}
+              className="w-32 accent-bamboo"
+            />
+            <span className="font-mono text-sm tabular-nums text-sounding">{tempo}</span>
+          </span>
+        </label>
+
+        <label className="flex flex-col gap-1 text-xs text-bamboo/60">
+          {dict.ansambel.countIn}
+          <select
+            value={countInBeats}
+            onChange={(event) => setCountInBeats(Number(event.target.value))}
+            className="rounded border border-rattan bg-stage px-3 py-1.5 text-sm text-sounding"
+          >
+            {COUNT_IN_CHOICES.map((beats) => (
+              <option key={beats} value={beats}>
+                {beats}
+              </option>
+            ))}
+          </select>
+        </label>
+
         <button
           type="button"
           disabled={status !== 'siap' || result.type !== 'feasible'}
@@ -200,6 +282,8 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
             {result.players.length} {dict.ansambel.player.toLowerCase()} · {melody.notes.length}{' '}
             {dict.ansambel.notesCount}
           </p>
+
+          <CueLane upcoming={upcoming} beatSec={beatSec} dict={dict} />
 
           <section className="grid gap-6 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
             <ol className="space-y-1">
@@ -265,6 +349,7 @@ export function EnsembleView({ dict }: { dict: Dictionary }) {
                 technique="kurulung"
                 numberLabel={dict.rak.nomor}
                 yourPartNumbers={(yourPart?.angklung ?? []).map((angklung) => angklung.spec.nomor)}
+                cuedNumber={cuedNumber}
               />
             </section>
           ) : null}
